@@ -10,9 +10,60 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_142819) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_09_153202) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "campaigns", force: :cascade do |t|
+    t.text "angles"
+    t.text "channels"
+    t.datetime "created_at", null: false
+    t.string "icp"
+    t.bigint "project_id", null: false
+    t.string "status"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_campaigns_on_project_id"
+  end
+
+  create_table "chats", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "project_id", null: false
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["project_id"], name: "index_chats_on_project_id"
+    t.index ["user_id"], name: "index_chats_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "chat_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.string "role"
+    t.datetime "updated_at", null: false
+    t.index ["chat_id"], name: "index_messages_on_chat_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description_ai"
+    t.text "doc_content"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_projects_on_user_id"
+  end
+
+  create_table "steps", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "day"
+    t.text "generated_content"
+    t.string "status"
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id"], name: "index_steps_on_campaign_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -25,4 +76,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_142819) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
+
+  add_foreign_key "campaigns", "projects"
+  add_foreign_key "chats", "projects"
+  add_foreign_key "chats", "users"
+  add_foreign_key "messages", "chats"
+  add_foreign_key "projects", "users"
+  add_foreign_key "steps", "campaigns"
 end

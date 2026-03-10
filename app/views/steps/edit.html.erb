@@ -1,0 +1,15 @@
+<h1>Modifier le step</h1>
+
+<%= @step.status%>
+  <%= @step.generated_content%>
+    <%= @step.day%>
+
+
+<%= form_with(model: [@campaign, @step]) do |f| %>
+  <div>
+    <%= f.label :status, "Statut" %>
+    <%= f.select :status, ["pending", "done"] %>
+  </div>
+
+  <%= f.submit "Mettre à jour" %>
+<% end %>

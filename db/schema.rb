@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_09_161653) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_10_110735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -18,21 +18,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_161653) do
     t.text "angles"
     t.text "channels"
     t.datetime "created_at", null: false
+    t.text "doc_content"
     t.string "icp"
-    t.bigint "project_id", null: false
     t.string "status"
     t.string "title"
     t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_campaigns_on_project_id"
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_campaigns_on_user_id"
   end
 
   create_table "chats", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "project_id", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
-    t.index ["project_id"], name: "index_chats_on_project_id"
     t.index ["user_id"], name: "index_chats_on_user_id"
   end
 
@@ -43,16 +42,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_161653) do
     t.string "role"
     t.datetime "updated_at", null: false
     t.index ["chat_id"], name: "index_messages_on_chat_id"
-  end
-
-  create_table "projects", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.text "description_ai"
-    t.text "doc_content"
-    t.string "title"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_projects_on_user_id"
   end
 
   create_table "steps", force: :cascade do |t|
@@ -78,10 +67,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_09_161653) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "campaigns", "projects"
-  add_foreign_key "chats", "projects"
+  add_foreign_key "campaigns", "users"
   add_foreign_key "chats", "users"
   add_foreign_key "messages", "chats"
-  add_foreign_key "projects", "users"
   add_foreign_key "steps", "campaigns"
 end

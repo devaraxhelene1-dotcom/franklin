@@ -6,8 +6,4 @@ class CampaignsController < ApplicationController
   def show
     @campaign = Campaign.find(params[:id])
   end
-
-  def create
-
-  end
 end

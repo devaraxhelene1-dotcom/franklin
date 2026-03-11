@@ -1,16 +1,26 @@
-<h2><%= @chat.title %></h2>
-
-<div style="border: 1px solid #ccc; padding: 1rem; height: 400px; overflow-y: auto; margin-bottom: 1rem;">
+<div class="chat-container">
+  <div class="chat-title">
+    <h2> Discutez avec <span> Franklin </span></h2>
+  </div>
+  <div class="chat-messages">
   <% @chat.messages.order(:created_at).each do |message| %>
-    <div style="margin-bottom: 0.75rem; text-align: <%= message.role == 'user' ? 'right' : 'left' %>;">
-      <strong><%= message.role == 'user' ? 'Vous' : 'Assistant' %></strong><br>
-      <%= message.content %>
+    <div class="message <%= message.role == 'user' ? 'message-user' : 'message-bot' %>">
+      <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
+        <%= simple_format(message.content) %>
+      </div>
     </div>
   <% end %>
 </div>
 
-<%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat) do |f| %>
-  <%= f.text_area :content, placeholder: "Votre message...", rows: 3, style: "width: 100%;" %>
-  <br>
-  <%= f.submit "Envoyer" %>
-<% end %>
+
+
+
+  <div class="chat-input">
+    <%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat) do |f| %>
+      <div class="input-wrapper">
+        <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1 %>
+        <%= f.submit "➤" %>
+      </div>
+    <% end %>
+  </div>
+</div>

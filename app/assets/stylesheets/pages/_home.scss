@@ -1,1 +1,107 @@
-// Specific CSS for your home-page
+// BODY
+.body{
+  background-color: #ffffff;
+}
+
+// HEADER
+.card_header {
+    padding: 100px 20px;
+    background: radial-gradient(circle at 50% 50%, #dcfce7 0%, #ffffff 35%);
+
+}
+.card_header h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #111;
+}
+.card_header h1 span {
+  background: linear-gradient(to right, #16a34a, #4ade80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
+// BOUTONS HOME
+.home-btn{
+  background-color: #111;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 15px 50px;
+  font-size: 20px;
+}
+
+.home-btn:hover {
+  background-color: rgb(2, 177, 2);
+  color: white;
+}
+
+
+// CARDS CATEGORY
+.cards {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.card-category {
+  border: 1.5px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 30px 24px;
+  width: 300px;
+  text-align: left;
+  background: transparent;
+  background-color: white;
+}
+
+.card-category h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.card-category p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+}
+
+.icon-home{
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background-color: #dcfce7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #16a34a;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+// CARD BANNER
+.card-banner {
+  background: linear-gradient(90deg, #90FFAC 0%, #33E446 100%);
+  border-radius: 16px;
+  max-width: 948px;
+  margin: 40px auto 0;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.card-banner h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.card-banner p {
+  color: #ffffff;
+  font-size: 23px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}

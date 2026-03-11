@@ -1,0 +1,14 @@
+.btn-registration {
+  border-radius: 11px;
+  font-weight: bolder;
+  text-align: center;
+  background-color: black;
+  color: white;
+  width: 100%;
+  display: block;
+
+  &:hover {
+    background-color: black;
+    color: white;
+  }
+}

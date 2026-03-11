@@ -1,0 +1,36 @@
+.carte{
+  border-radius: 20px;
+}
+
+.btn-connect {
+  background: #CBFED8;
+  border-radius: 11px;
+  color: #000000;
+  font-weight: bolder;
+
+  &:hover {
+    background: #CBFED8;
+    color: #000000;
+  }
+}
+
+.devise-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: $green;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,13 +1,7 @@
 <h2>Modifiez votre campagne</h2>
 
 <%= simple_form_for @campaign do |f| %>
-  <%= f.input :title, label: "Titre" %>
-  <%= f.input :icp, label: "ICP (Ideal Customer Profile)" %>
   <%= f.input :status, collection: ["draft", "active", "completed"], label: "Statut" %>
-  <%= f.input :angles, label: "Angles" %>
-  <%= f.input :channels, label: "Canaux" %>
-  <%= f.input :doc_content, as: :text, label: "Contenu du document" %>
-
   <%= f.submit "Enregistrer", class: "btn btn-primary" %>
 <% end %>
 

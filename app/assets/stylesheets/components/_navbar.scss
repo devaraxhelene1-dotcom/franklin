@@ -10,3 +10,30 @@
 .navbar-lewagon .navbar-brand img {
   width: 40px;
 }
+
+.btn-connect{
+margin-right: 10px;
+background: #CBFED8;
+border-radius: 11px;
+color: #000000;
+font-weight: bolder;
+}
+
+.btn-login{
+background: #000000;
+border-radius: 11px;
+color: #FFFFFF;
+font-weight: bolder;
+
+  &:hover {
+    background: #000000;
+    color: #FFFFFF;
+  }
+}
+
+.btn-logout{
+background: #000000;
+border-radius: 11px;
+color: #FFFFFF;
+font-weight: bolder;
+}

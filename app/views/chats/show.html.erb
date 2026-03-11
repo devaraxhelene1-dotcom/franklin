@@ -18,8 +18,12 @@
   <div class="chat-input">
     <%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat) do |f| %>
       <div class="input-wrapper">
-        <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1 %>
-        <%= f.submit "➤" %>
+        <label class="file-upload-btn">
+    <i class="fa-solid fa-paperclip"></i>
+    <%= f.file_field :file, style: "display: none;" %>
+    </label>
+    <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1 %>
+    <%= f.submit "➤" %>
       </div>
     <% end %>
   </div>

@@ -128,3 +128,23 @@
 .input-wrapper input[type="submit"]:hover {
   background-color: #16a34a;
 }
+
+.file-upload-btn {
+  background-color: rgb(147, 147, 147);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #ffff;
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+}
+
+.file-upload-btn:hover {
+  background-color: #16a34a;
+  color: #ffff;
+}

@@ -1,19 +1,22 @@
 // BODY
 .body{
   background-color: #ffffff;
+
 }
 
 // HEADER
 .card_header {
     padding: 100px 20px;
-    background: radial-gradient(circle at 50% 50%, #dcfce7 0%, #ffffff 35%);
+    background: radial-gradient(circle at 50% 50%, #a9e4be 0%, #ffffff 35%);
 
 }
 .card_header h1 {
   font-size: 3.5rem;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.15;
   color: #111;
+  font-family: 'Inter', sans-serif;
+
 }
 .card_header h1 span {
   background: linear-gradient(to right, #16a34a, #4ade80);
@@ -37,6 +40,7 @@
   background-color: rgb(2, 177, 2);
   color: white;
 }
+
 
 
 // CARDS CATEGORY
@@ -85,7 +89,7 @@
 
 // CARD BANNER
 .card-banner {
-  background: linear-gradient(90deg, #90FFAC 0%, #33E446 100%);
+  background: linear-gradient(90deg, #43f46f 30%, #60e06d 100%);
   border-radius: 16px;
   max-width: 948px;
   margin: 40px auto 0;
@@ -95,13 +99,17 @@
 
 .card-banner h2 {
   font-size: 2.2rem;
-  font-weight: 800;
+  font-weight: 700;
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', sans-serif;
+
 }
 
 .card-banner p {
   color: #ffffff;
   font-size: 23px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  font-family: 'Inter', sans-serif;
+
 }

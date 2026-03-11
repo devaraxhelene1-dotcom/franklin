@@ -40,6 +40,21 @@ bin/brakeman                     # Security scan
 - Simple Form with Bootstrap integration
 - Kamal for Docker deployment
 
+### AI Integration (ruby_llm)
+
+Flow utilisateur avec l'IA :
+
+1. **Chat libre** — L'utilisateur ouvre un chat. Il peut pousser sa doc produit ou juste discuter. Franklin (LLM) échange, pose des questions, challenge, creuse pour comprendre le produit/service.
+2. **Génération stratégie** — Quand Franklin estime avoir assez compris, il génère les ICP, channels et angles (en tant que pro du marketing). La doc vient uniquement du user. Franklin appelle un tool pour persister ces propositions.
+3. **Écran de validation** — Affichage récap des ICP, channels, angles proposés. L'utilisateur peut valider ou rediscuter (retour au chat).
+4. **Création campagne** — Après validation, Franklin crée la campagne complète avec les steps (plan jour par jour, contenus générés).
+
+Règles clés :
+- `doc_content` = input utilisateur uniquement
+- `icp`, `channels`, `angles` = générés par Franklin (le LLM)
+- La campagne n'est créée qu'après validation explicite du user
+- Le LLM utilise le tool use pour persister (create campaign, create steps)
+
 ### Important Paths
 
 - `config/routes.rb` — all routing (Devise + app routes)

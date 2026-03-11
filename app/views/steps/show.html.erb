@@ -1,8 +1,5 @@
-<%= form_with(model: [@campaign, @step], local: true) do |f| %>
-  <div>
-    <%= f.label :status, "Statut" %>
-    <%= f.select :status, ["pending", "in_progress", "done"] %>
-  </div>
+<h1>Steps</h1>
 
-  <%= f.submit "Mettre à jour" %>
-<% end %>
+<%= @step.status%>
+  <%= @step.generated_content%>
+    <%= @step.day%>

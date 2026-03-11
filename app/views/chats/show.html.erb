@@ -1,0 +1,16 @@
+<h2><%= @chat.title %></h2>
+
+<div style="border: 1px solid #ccc; padding: 1rem; height: 400px; overflow-y: auto; margin-bottom: 1rem;">
+  <% @chat.messages.order(:created_at).each do |message| %>
+    <div style="margin-bottom: 0.75rem; text-align: <%= message.role == 'user' ? 'right' : 'left' %>;">
+      <strong><%= message.role == 'user' ? 'Vous' : 'Assistant' %></strong><br>
+      <%= message.content %>
+    </div>
+  <% end %>
+</div>
+
+<%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat) do |f| %>
+  <%= f.text_area :content, placeholder: "Votre message...", rows: 3, style: "width: 100%;" %>
+  <br>
+  <%= f.submit "Envoyer" %>
+<% end %>

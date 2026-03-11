@@ -11,29 +11,33 @@
   width: 40px;
 }
 
-.btn-connect{
+.btn-connexion {
 margin-right: 10px;
 background: #CBFED8;
 border-radius: 11px;
 color: #000000;
-font-weight: bolder;
-}
-
-.btn-login{
-background: #000000;
-border-radius: 11px;
-color: #FFFFFF;
-font-weight: bolder;
-
   &:hover {
     background: #000000;
-    color: #FFFFFF;
+    color: #CBFED8;
   }
 }
 
-.btn-logout{
+.btn-login {
 background: #000000;
 border-radius: 11px;
 color: #FFFFFF;
-font-weight: bolder;
+  &:hover {
+    background: #FFFFFF;
+    color: #000000;
+  }
+}
+
+.btn-logout {
+background: #000000;
+border-radius: 11px;
+color: #FFFFFF;
+  &:hover {
+    background: #FFFFFF;
+    color: #000000;
+  }
 }

@@ -7,7 +7,7 @@
       <%= f.input :email, required: false, autofocus: true, label: "Adresse e-mail", input_html: { autocomplete: "email", class: "form-control" } %>
       <%= f.input :password, required: false, label: "Mot de passe", input_html: { autocomplete: "current-password", class: "form-control" } %>
       <%= f.input :remember_me, as: :boolean, label: "Se souvenir de moi" if devise_mapping.rememberable? %>
-      <%= f.button :submit, "Se connecter", class: "btn btn-connect w-100 mt-2" %>
+      <%= f.button :submit, "Se connecter", class: "btn btn-connexion w-100 mt-2" %>
     <% end %>
 
     <%= render "devise/shared/links" %>

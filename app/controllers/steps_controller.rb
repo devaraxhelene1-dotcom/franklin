@@ -1,17 +1,13 @@
 class StepsController < ApplicationController
+  before_action :set_campaign_and_step
+
   def show
-    @campaign = Campaign.find(params[:campaign_id])
-    @step = @campaign.steps.find(params[:id])
   end
 
   def edit
-    @campaign = Campaign.find(params[:campaign_id])
-    @step = @campaign.steps.find(params[:id])
   end
 
   def update
-    @campaign = Campaign.find(params[:campaign_id])
-    @step = @campaign.steps.find(params[:id])
     if @step.update(step_params)
       redirect_to edit_campaign_step_path(@campaign, @step), notice: "Step modifié avec succès"
     else
@@ -20,6 +16,11 @@ class StepsController < ApplicationController
   end
 
   private
+
+  def set_campaign_and_step
+    @campaign = current_user.campaigns.find(params[:campaign_id])
+    @step = @campaign.steps.find(params[:id])
+  end
 
   def step_params
     params.require(:step).permit(:status)

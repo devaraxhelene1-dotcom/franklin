@@ -52,18 +52,11 @@ class MessagesController < ApplicationController
   PROMPT
 
   def create
-    @chat = Chat.find(params[:chat_id])
-    @message = @chat.messages.new(message_params)
-    @message.role = "user"
+    @chat = current_user.chats.find(params[:chat_id])
+    @message = @chat.messages.new(content: build_content, role: "user")
 
     if @message.save
-      response = call_llm
-
-      @chat.messages.create!(
-        role: "assistant",
-        content: response.content
-      )
-
+      save_llm_response
       redirect_to chat_path(@chat)
     else
       render "chats/show", status: :unprocessable_entity
@@ -71,6 +64,24 @@ class MessagesController < ApplicationController
   end
 
   private
+
+  def build_content
+    content = params[:message][:content].to_s
+    return content unless params[:message][:file].present?
+
+    file_text = params[:message][:file].read.force_encoding('UTF-8')
+    "#{content}\n\n--- Document fourni par l'utilisateur ---\n#{file_text}"
+  end
+
+  def save_llm_response
+    response = call_llm
+    @chat.messages.create!(role: "assistant", content: response.content)
+  rescue StandardError => e
+    @chat.messages.create!(
+      role: "assistant",
+      content: "Désolé, une erreur est survenue (#{e.message}). Réessaie dans quelques instants."
+    )
+  end
 
   def call_llm
     llm_chat = RubyLLM.chat(model: "gpt-4o-mini")

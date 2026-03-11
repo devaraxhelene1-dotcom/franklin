@@ -1,29 +1,34 @@
-<div class="chat-container">
+<div class="chat-container" data-controller="chat">
   <div class="chat-title">
     <h2> Discutez avec <span> Franklin </span></h2>
   </div>
-  <div class="chat-messages">
-  <% @chat.messages.order(:created_at).each do |message| %>
-    <div class="message <%= message.role == 'user' ? 'message-user' : 'message-bot' %>">
-      <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
-        <%= simple_format(message.content) %>
+
+  <div class="chat-messages" data-chat-target="messages">
+    <% @chat.messages.order(:created_at).each do |message| %>
+      <div class="message <%= message.role == 'user' ? 'message-user' : 'message-bot' %>">
+        <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
+          <%= message.content %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="message message-bot d-none" data-chat-target="loading">
+      <div class="message-content bubble-bot">
+        Franklin est en train d'écrire...
       </div>
     </div>
-  <% end %>
-</div>
-
-
-
+  </div>
 
   <div class="chat-input">
-    <%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat) do |f| %>
+    <%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat), multipart: true,
+        data: { action: "submit->chat#submit" } do |f| %>
       <div class="input-wrapper">
         <label class="file-upload-btn">
-    <i class="fa-solid fa-paperclip"></i>
-    <%= f.file_field :file, style: "display: none;" %>
-    </label>
-    <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1 %>
-    <%= f.submit "➤" %>
+          <i class="fa-solid fa-paperclip"></i>
+          <%= f.file_field :file, style: "display: none;" %>
+        </label>
+        <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1 %>
+        <%= f.submit "➤", data: { chat_target: "submit" } %>
       </div>
     <% end %>
   </div>

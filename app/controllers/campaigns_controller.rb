@@ -1,18 +1,17 @@
 class CampaignsController < ApplicationController
+  before_action :set_campaign, only: [:show, :edit, :update]
+
   def index
-    @campaigns = Campaign.all
+    @campaigns = current_user.campaigns
   end
 
   def show
-    @campaign = Campaign.find(params[:id])
   end
 
   def edit
-    @campaign = Campaign.find(params[:id])
   end
 
   def update
-    @campaign = Campaign.find(params[:id])
     if @campaign.update(campaign_params)
       redirect_to @campaign
     else
@@ -21,6 +20,10 @@ class CampaignsController < ApplicationController
   end
 
   private
+
+  def set_campaign
+    @campaign = current_user.campaigns.find(params[:id])
+  end
 
   def campaign_params
     params.require(:campaign).permit(:title, :icp, :status, :angles, :channels, :doc_content)

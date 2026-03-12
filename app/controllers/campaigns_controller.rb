@@ -2,7 +2,7 @@ class CampaignsController < ApplicationController
   before_action :set_campaign, only: [:show, :edit, :update]
 
   def index
-    @campaigns = current_user.campaigns
+    @campaigns = Campaign.includes(:steps)
   end
 
   def show

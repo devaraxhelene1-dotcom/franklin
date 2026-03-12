@@ -1,5 +1,37 @@
-<h1> Mes campagnes </h1>
+<div class="campaigns-index">
+  <div class="container">
+    <div class="campaigns-header">
+      <h1>Mes campagnes</h1>
+      <%= link_to "Nouvelle campagne", chats_path, data: { turbo_method: :post }, class: "btn btn-new-campaign" %>
+    </div>
 
-<% @campaigns.each do |campaign|%>
-  <%=campaign.title %>
-<% end %>
+    <div class="campaigns-list">
+      <% visible_campaigns = @campaigns.reject { |c| c.status == "draft" } %>
+      <% if visible_campaigns.any? %>
+        <% visible_campaigns.each do |campaign| %>
+          <%= link_to campaign_path(campaign), class: "campaign-item" do %>
+            <div class="campaign-info">
+              <span class="campaign-title"><%= campaign.title %></span>
+              <span class="campaign-status <%= campaign.status %>">
+                <%= case campaign.status
+                    when "draft" then "Brouillon"
+                    when "active" then "Active"
+                    when "completed" then "Terminée"
+                    end %>
+              </span>
+            </div>
+            <div class="campaign-progress">
+              <span>Étape <%= campaign.steps.done.count %>/<%= campaign.steps.count %></span>
+              <span class="campaign-date"><%= campaign.created_at.strftime("%d/%m/%Y") %></span>
+            </div>
+            <span class="campaign-arrow">→</span>
+          <% end %>
+        <% end %>
+      <% else %>
+        <div class="campaigns-empty">
+          <p>Aucune campagne pour l'instant.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

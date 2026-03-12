@@ -6,9 +6,8 @@
     </div>
 
     <div class="campaigns-list">
-      <% visible_campaigns = @campaigns.reject { |c| c.status == "draft" } %>
-      <% if visible_campaigns.any? %>
-        <% visible_campaigns.each do |campaign| %>
+      <% if @campaigns.any? %>
+        <% @campaigns.each do |campaign| %>
           <%= link_to campaign_path(campaign), class: "campaign-item" do %>
             <div class="campaign-info">
               <span class="campaign-title"><%= campaign.title %></span>

@@ -1,0 +1,50 @@
+<div class="sidebar" id="sidebar" data-controller="sidebar" data-sidebar-target="panel">
+  <div class="sidebar-header">
+    <div class="sidebar-brand">
+      <%= link_to "#" do %>
+        <%= image_tag "Logo_Franklin.png", class: "sidebar-logo" %>
+      <% end %>
+    </div>
+    <button class="sidebar-toggle" data-action="click->sidebar#toggle">
+      <i class="fa-solid fa-xmark sidebar-close-icon"></i>
+      <i class="fa-solid fa-bars sidebar-open-icon"></i>
+    </button>
+  </div>
+
+  <ul class="sidebar-nav">
+    <li class="sidebar-item <%= 'active' if current_page?(root_path) %>">
+      <%= link_to root_path, class: "sidebar-link" do %>
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Dashboard</span>
+      <% end %>
+    </li>
+
+    <li class="sidebar-item <%= 'active' if current_page?(campaigns_path) %>">
+      <%= link_to campaigns_path, class: "sidebar-link" do %>
+        <i class="fa-solid fa-book-open"></i>
+        <span>Mes campagnes</span>
+      <% end %>
+    </li>
+
+
+    <li class="sidebar-item <%= 'active' if controller_name == 'chats' %>">
+  <%= button_to chats_path, method: :post, class: "sidebar-link" do %>
+    <i class="fa-solid fa-comment"></i>
+    <span>Nouveau chat</span>
+  <% end %>
+</li>
+
+  </ul>
+
+  <div class="sidebar-footer">
+    <% if user_signed_in? %>
+      <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "sidebar-link sidebar-logout" do %>
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Se déconnecter</span>
+      <% end %>
+    <% else %>
+      <%= link_to "Se connecter", new_user_session_path, class: "btn btn-sidebar-login" %>
+      <%= link_to "S'inscrire", new_user_registration_path, class: "btn btn-sidebar-signup" %>
+    <% end %>
+  </div>
+</div>

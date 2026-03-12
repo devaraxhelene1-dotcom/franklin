@@ -48,6 +48,7 @@ gem "simple_form", github: "heartcombo/simple_form"
 gem "sassc-rails"
 gem "cloudinary"
 gem "ruby_llm"
+gem "ruby-openai"
 
 group :development, :test do
   gem "dotenv-rails"

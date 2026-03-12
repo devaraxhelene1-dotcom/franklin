@@ -1,4 +1,4 @@
-$sidebar-width: 220px;
+$sidebar-width: 240px;
 $sidebar-collapsed-width: 60px;
 
 .sidebar {
@@ -56,12 +56,11 @@ $sidebar-collapsed-width: 60px;
   margin: 4px 10px;
   white-space: nowrap;
 
-  &:hover {
-    background-color: #e0e0e0;
-  }
-
-  &.active {
+ 
+  &.active > .sidebar-link,
+  &.active > form .sidebar-link {
     background-color: #d4f5d0;
+    border-radius: 8px;
   }
 }
 
@@ -149,6 +148,14 @@ $sidebar-collapsed-width: 60px;
     }
   }
 
+  .sidebar-chevron-btn {
+    display: none;
+  }
+
+  .sidebar-submenu {
+    display: none;
+  }
+
   .sidebar-footer {
     display: none;
   }
@@ -176,4 +183,63 @@ body.has-sidebar {
   width: 100%;
   font-family: inherit;
   font-size: inherit;
+}
+.sidebar-item[data-controller="dropdown"] {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .sidebar-link {
+    flex: 1;
+    min-width: 0;
+    padding-right: 0;
+  }
+
+  .sidebar-chevron-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 12px 12px 12px 4px;
+    color: #333;
+  }
+
+  .sidebar-chevron {
+    transition: transform 0.2s ease;
+
+    &.rotated {
+      transform: rotate(180deg);
+    }
+  }
+
+  .sidebar-submenu {
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar-submenu-item {
+    padding: 0;
+
+    &.active .sidebar-submenu-link {
+      background-color: #d4f5d0;
+      border-radius: 6px;
+    }
+  }
+
+  .sidebar-submenu-link {
+    display: block;
+    padding: 8px 20px 8px 52px;
+    text-decoration: none;
+    color: #333;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+      background-color: #e0e0e0;
+      border-radius: 6px;
+    }
+  }
 }

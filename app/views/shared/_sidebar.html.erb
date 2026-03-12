@@ -19,10 +19,23 @@
       <% end %>
     </li>
 
-    <li class="sidebar-item <%= 'active' if current_page?(campaigns_path) %>">
+    <li class="sidebar-item <%= 'active' if current_page?(campaigns_path) %>" data-controller="dropdown">
       <%= link_to campaigns_path, class: "sidebar-link" do %>
         <i class="fa-solid fa-book-open"></i>
         <span>Mes campagnes</span>
+      <% end %>
+
+      <% if @campaigns.present? %>
+        <button class="sidebar-chevron-btn" data-action="click->dropdown#toggle">
+          <i class="fa-solid fa-chevron-down sidebar-chevron" data-dropdown-target="chevron"></i>
+        </button>
+        <ul class="sidebar-submenu" data-dropdown-target="menu" <%= 'hidden' unless controller_name == 'campaigns' && action_name == 'show' %>>
+          <% @campaigns.each do |campaign| %>
+            <li class="sidebar-submenu-item <%= 'active' if current_page?(campaign_path(campaign)) %>">
+              <%= link_to campaign.title, campaign_path(campaign), class: "sidebar-submenu-link" %>
+            </li>
+          <% end %>
+        </ul>
       <% end %>
     </li>
 

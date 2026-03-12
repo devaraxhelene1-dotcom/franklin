@@ -3,3 +3,4 @@
 <%= @step.status%>
   <%= @step.generated_content%>
     <%= @step.day%>
+<%= image_tag @step.image if @step.image.attached? %>

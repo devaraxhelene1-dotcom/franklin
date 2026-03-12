@@ -25,8 +25,12 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= render "shared/navbar" %>
+  <body class="<%= 'has-sidebar' if user_signed_in? %>">
+    <% if user_signed_in? %>
+      <%= render "shared/sidebar" %>
+    <% else %>
+      <%= render "shared/navbar" %>
+    <% end %>
     <%= render "shared/flashes" %>
 
     <%= yield %>

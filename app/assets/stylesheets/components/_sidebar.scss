@@ -1,0 +1,179 @@
+$sidebar-width: 220px;
+$sidebar-collapsed-width: 60px;
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $sidebar-width;
+  height: 100vh;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: width 0.3s ease;
+  border-right: solid 1px rgb(82, 82, 82);
+  overflow: hidden;
+}
+
+// --- Header (logo left, toggle right) ---
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  margin-bottom: 10px;
+}
+
+// --- Toggle button ---
+.sidebar-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+
+.sidebar-open-icon {
+  display: none;
+}
+
+// --- Brand / Logo ---
+.sidebar-logo {
+  height: 40px;
+  width: auto;
+}
+
+// --- Nav ---
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-item {
+  border-radius: 8px;
+  margin: 4px 10px;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+
+  &.active {
+    background-color: #d4f5d0;
+  }
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 15px;
+
+  i {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+}
+
+// --- Footer ---
+.sidebar-footer {
+  margin-top: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-sidebar-login {
+  background-color: #d4f5d0;
+  color: #333;
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.btn-sidebar-signup {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  padding: 8px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+// --- Collapsed state ---
+.sidebar.collapsed {
+  width: $sidebar-collapsed-width;
+
+  .sidebar-close-icon {
+    display: none;
+  }
+
+  .sidebar-open-icon {
+    display: inline;
+  }
+
+  .sidebar-header {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .sidebar-brand {
+    display: none;
+  }
+
+  .sidebar-item {
+    margin: 4px 5px;
+  }
+
+  .sidebar-link {
+    justify-content: center;
+    padding: 12px 0;
+
+    i {
+      margin-right: 0;
+    }
+
+    span {
+      display: none;
+    }
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+}
+
+// --- Body margin (only when sidebar is present) ---
+body.has-sidebar {
+  margin-left: $sidebar-width;
+  transition: margin-left 0.3s ease;
+
+  &.sidebar-collapsed {
+    margin-left: $sidebar-collapsed-width;
+  }
+}
+
+.sidebar-item form {
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-item form button.sidebar-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+}

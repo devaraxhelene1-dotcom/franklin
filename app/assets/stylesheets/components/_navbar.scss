@@ -13,22 +13,21 @@
 
 .btn-connexion {
 margin-right: 10px;
-background: #CBFED8;
+background: #4ade80;
 border-radius: 11px;
-color: #000000;
+color: white;
   &:hover {
-    background: #000000;
-    color: #CBFED8;
+    background-color: #35ba66;
+    color: white;
   }
 }
 
 .btn-login {
 background: #000000;
 border-radius: 11px;
-color: #FFFFFF;
+color: #ffffff;
   &:hover {
-    background: #FFFFFF;
-    color: #000000;
+    color: white;
   }
 }
 

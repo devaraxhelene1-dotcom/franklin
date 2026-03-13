@@ -148,3 +148,87 @@
   background-color: #16a34a;
   color: #ffff;
 }
+
+// ── Campaign created banner ───────────────────────────────────────
+.campaign-created-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin: 0 0 16px;
+
+  .campaign-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .campaign-banner-icon { font-size: 1.4rem; }
+
+  .campaign-banner-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #16a34a;
+    margin: 0 0 2px;
+  }
+
+  .campaign-banner-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+  }
+
+  .btn-campaign-link {
+    background: #1EDD88;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 18px;
+    white-space: nowrap;
+    transition: background 0.15s;
+
+    &:hover { background: #17b870; color: #000; }
+  }
+}
+
+// ── Validate banner ───────────────────────────────────────────────
+.validate-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border: 1.5px solid #e4e4e4;
+  border-radius: 14px;
+  padding: 14px 20px;
+  margin: 0 0 12px;
+
+  .validate-banner-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+  }
+
+  .btn-validate {
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover { background: #16a34a; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}

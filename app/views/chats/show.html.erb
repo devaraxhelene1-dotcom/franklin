@@ -25,7 +25,18 @@
     <% @chat.messages.order(:created_at).each do |message| %>
       <div class="message <%= message.role == 'user' ? 'message-user' : 'message-bot' %>">
         <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
-          <%= message.content.gsub("[VALIDATE]", "").strip %>
+          <% display = message.content.gsub("[VALIDATE]", "").gsub(/\n\n--- Document (PDF )?fourni par l'utilisateur ---\n.*\z/m, "").strip %>
+          <% display = "" if display == "J'ai joint une image." && message.file.attached? %>
+          <%= display if display.present? %>
+          <% if message.file.attached? %>
+            <% if message.file.content_type&.start_with?("image/") %>
+              <%= image_tag rails_blob_path(message.file, disposition: "inline"), class: "chat-image mt-2" %>
+            <% else %>
+              <div class="file-badge mt-2">
+                <i class="fa-solid fa-file-lines me-1"></i><%= message.file.filename %>
+              </div>
+            <% end %>
+          <% end %>
         </div>
       </div>
     <% end %>
@@ -49,12 +60,17 @@
     <%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat), multipart: true,
         data: { action: "submit->chat#submit" } do |f| %>
       <div class="input-wrapper">
-        <label class="file-upload-btn">
+        <label class="file-upload-btn" title="Joindre un fichier">
           <i class="fa-solid fa-paperclip"></i>
-          <%= f.file_field :file, style: "display: none;" %>
+          <%= f.file_field :file, style: "display: none;", data: { action: "change->chat#fileChange", chat_target: "fileInput" } %>
         </label>
         <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1 %>
         <%= f.submit "➤", data: { chat_target: "submit" } %>
+      </div>
+      <div class="file-preview d-none" data-chat-target="filePreview">
+        <i class="fa-solid fa-paperclip me-1"></i>
+        <span data-chat-target="fileName"></span>
+        <button type="button" class="file-remove-btn" data-action="click->chat#removeFile">&times;</button>
       </div>
     <% end %>
   </div>

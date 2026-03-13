@@ -1,0 +1,74 @@
+// ── Step Show ────────────────────────────────────────────────────
+.step-show {
+  padding: 40px 0;
+
+  .container { max-width: 860px; }
+
+  .back-link {
+    font-size: 0.85rem;
+    color: #888;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 20px;
+    &:hover { color: #1EDD88; }
+  }
+
+  .step-show-header { margin-bottom: 32px; }
+
+  .step-show-title-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    h1 { font-size: 28px; font-weight: 800; margin: 0; }
+  }
+
+  .step-status-badge {
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    &.pending { background: #f0f0f0; color: #555; }
+    &.done    { background: #CBFED8; color: #000; }
+  }
+
+  .step-show-card {
+    border: 1.5px solid #e4e4e4;
+    border-radius: 14px;
+    padding: 24px;
+    background: #fff;
+    font-size: 0.95rem;
+    color: #222;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .step-show-image {
+    margin-bottom: 24px;
+    img {
+      max-width: 100%;
+      border-radius: 14px;
+    }
+  }
+
+  .empty-field { color: #bbb; font-style: italic; font-size: 0.9rem; }
+
+  .step-show-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-edit-status {
+    background: #1EDD88;
+    color: #000;
+    border: none;
+    border-radius: 11px;
+    font-weight: 600;
+    padding: 8px 20px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    &:hover { background: #17b870; color: #000; }
+  }
+}

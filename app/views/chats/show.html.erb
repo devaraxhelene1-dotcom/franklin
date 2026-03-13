@@ -1,23 +1,49 @@
+<% last_bot_message = @chat.messages.where(role: "assistant").last %>
+<% awaiting_validation = last_bot_message&.content&.include?("[VALIDATE]") && @chat.campaign.nil? %>
+
 <div class="chat-container" data-controller="chat">
   <div class="chat-title mt-5">
-    <h2> Discutez avec <span> Franklin </span></h2>
+    <h2>Discutez avec <span>Franklin</span></h2>
   </div>
+
+  <% if @chat.campaign.present? %>
+    <div class="campaign-created-banner">
+      <div class="campaign-banner-left">
+        <span class="campaign-banner-icon">🎯</span>
+        <div>
+          <p class="campaign-banner-label">Campagne créée</p>
+          <p class="campaign-banner-title"><%= @chat.campaign.title %></p>
+        </div>
+      </div>
+      <%= link_to campaign_path(@chat.campaign), class: "btn btn-campaign-link" do %>
+        Voir ma campagne <span>→</span>
+      <% end %>
+    </div>
+  <% end %>
 
   <div class="chat-messages" data-chat-target="messages">
     <% @chat.messages.order(:created_at).each do |message| %>
       <div class="message <%= message.role == 'user' ? 'message-user' : 'message-bot' %>">
         <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
-          <%= message.content %>
+          <%= message.content.gsub("[VALIDATE]", "").strip %>
         </div>
       </div>
     <% end %>
 
     <div class="message message-bot d-none" data-chat-target="loading">
-      <div class="message-content bubble-bot">
-        Franklin est en train d'écrire...
-      </div>
+      <div class="message-content bubble-bot">Franklin est en train d'écrire...</div>
     </div>
   </div>
+
+  <% if awaiting_validation %>
+    <div class="validate-banner">
+      <p class="validate-banner-text">Prêt à lancer la campagne ?</p>
+      <%= form_with url: chat_messages_path(@chat), data: { action: "submit->chat#submit" } do |f| %>
+        <input type="hidden" name="message[content]" value="Je valide la stratégie proposée.">
+        <%= f.submit "✓ Valider la stratégie", class: "btn btn-validate", data: { chat_target: "submit" } %>
+      <% end %>
+    </div>
+  <% end %>
 
   <div class="chat-input">
     <%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat), multipart: true,

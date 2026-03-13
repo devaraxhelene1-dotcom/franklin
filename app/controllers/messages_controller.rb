@@ -29,6 +29,9 @@ class MessagesController < ApplicationController
 
     3. PHASE VALIDATION — L'utilisateur valide, modifie ou challenge tes propositions.
        Tu ajustes jusqu'à ce qu'il soit satisfait. Ne crée JAMAIS la campagne sans validation explicite.
+       IMPORTANT : quand tu présentes ta proposition finale (ICP, channels, angles) et que tu attends
+       la validation de l'utilisateur, tu DOIS terminer ton message par le tag [VALIDATE] sur une ligne seule.
+       N'ajoute ce tag QUE lorsque tu attends explicitement une validation pour créer la campagne.
 
     4. PHASE CRÉATION — Une fois validé, tu utilises l'outil create_campaign pour persister la campagne,
        puis l'outil generate_campaign_steps pour créer le plan d'action :

@@ -81,7 +81,7 @@
       <% if @campaign.steps.any? %>
         <div class="steps-list">
           <% @campaign.steps.order(:day).each do |step| %>
-            <div class="step-item <%= step.status %>">
+            <%= link_to campaign_step_path(@campaign, step), class: "step-item #{step.status}", style: "text-decoration: none;" do %>
               <div class="step-day">Jour <%= step.day %></div>
               <div class="step-content">
                 <% if step.generated_content.present? %>
@@ -93,7 +93,7 @@
               <span class="step-status-badge <%= step.status %>">
                 <%= step.status == "done" ? "Fait" : "En attente" %>
               </span>
-            </div>
+            <% end %>
           <% end %>
         </div>
       <% else %>

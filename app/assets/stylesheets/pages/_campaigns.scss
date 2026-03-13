@@ -51,14 +51,14 @@
   }
 
   .btn-new-campaign {
-    background: #1EDD88;
-    color: #000;
+    background: #000000;
+    color: #ffffff;
     border: none;
     border-radius: 11px;
-    font-weight: 600;
+    font-weight: 550;
     padding: 8px 20px;
 
-    &:hover { background: #17b870; color: #000; }
+    &:hover { background: #35ba66; color: white; }
   }
 
   .campaigns-list { @extend %list-container; }

@@ -1,6 +1,33 @@
-<h1>Steps</h1>
+<div class="step-show">
+  <div class="container">
 
-<%= @step.status%>
-  <%= @step.generated_content%>
-    <%= @step.day%>
-<%= image_tag @step.image if @step.image.attached? %>
+    <div class="step-show-header">
+      <%= link_to "← Retour à la campagne", campaign_path(@campaign), class: "back-link" %>
+      <div class="step-show-title-row">
+        <h1>Jour <%= @step.day %></h1>
+        <span class="step-status-badge <%= @step.status %>">
+          <%= @step.status == "done" ? "Fait" : "En attente" %>
+        </span>
+      </div>
+    </div>
+
+    <div class="step-show-card">
+      <% if @step.generated_content.present? %>
+        <%= simple_format(@step.generated_content) %>
+      <% else %>
+        <span class="empty-field">Contenu non généré</span>
+      <% end %>
+    </div>
+
+    <% if @step.image.attached? %>
+      <div class="step-show-image">
+        <%= image_tag @step.image %>
+      </div>
+    <% end %>
+
+    <div class="step-show-actions">
+      <%= link_to "Modifier le statut", edit_campaign_step_path(@campaign, @step), class: "btn-edit-status" %>
+    </div>
+
+  </div>
+</div>

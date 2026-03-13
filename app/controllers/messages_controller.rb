@@ -1,3 +1,5 @@
+require "pdf/reader"
+
 class MessagesController < ApplicationController
   SYSTEM_PROMPT = <<~PROMPT
     Tu es Franklin, un expert en marketing digital extrêmement compétent et performant.
@@ -70,6 +72,7 @@ class MessagesController < ApplicationController
   def create
     @chat = current_user.chats.find(params[:chat_id])
     @message = @chat.messages.new(content: build_content, role: "user")
+    @message.file.attach(params[:message][:file]) if params[:message][:file].present?
 
     if @message.save
       save_llm_response
@@ -85,8 +88,27 @@ class MessagesController < ApplicationController
     content = params[:message][:content].to_s
     return content unless params[:message][:file].present?
 
-    file_text = params[:message][:file].read.force_encoding('UTF-8')
-    "#{content}\n\n--- Document fourni par l'utilisateur ---\n#{file_text}"
+    file = params[:message][:file]
+    ext = File.extname(file.original_filename).downcase
+
+    case ext
+    when ".pdf"
+      reader = PDF::Reader.new(file.tempfile)
+      text = reader.pages.map(&:text).join("\n")
+      "#{content}\n\n--- Document PDF fourni par l'utilisateur ---\n#{text}"
+    when ".jpg", ".jpeg", ".png"
+      content.presence || "J'ai joint une image."
+    else
+      file_text = file.read.force_encoding("UTF-8")
+      "#{content}\n\n--- Document fourni par l'utilisateur ---\n#{file_text}"
+    end
+  end
+
+  def image_upload?
+    return false unless params[:message][:file].present?
+
+    ext = File.extname(params[:message][:file].original_filename).downcase
+    %w[.jpg .jpeg .png].include?(ext)
   end
 
   def save_llm_response
@@ -100,7 +122,7 @@ class MessagesController < ApplicationController
   end
 
   def call_llm
-    llm_chat = RubyLLM.chat(model: "gpt-4.1")
+    llm_chat = RubyLLM.chat(model: "gpt-4.1-nano")
     llm_chat.with_instructions(SYSTEM_PROMPT)
 
     # Passer des instances de tools avec le contexte injecté (chat + user)
@@ -124,7 +146,13 @@ class MessagesController < ApplicationController
     end
 
     # Seul le dernier message (celui qu'on vient de créer) déclenche un appel au LLM
-    llm_chat.ask(@message.content)
+    if @message.file.attached? && @message.file.content_type&.start_with?("image/")
+      blob = @message.file.blob
+      base64 = Base64.strict_encode64(blob.download)
+      llm_chat.ask(@message.content, with: { image: "data:#{blob.content_type};base64,#{base64}" })
+    else
+      llm_chat.ask(@message.content)
+    end
   end
 
   def message_params

@@ -49,6 +49,7 @@ gem "sassc-rails"
 gem "cloudinary"
 gem "ruby_llm"
 gem "ruby-openai"
+gem "pdf-reader"
 
 group :development, :test do
   gem "dotenv-rails"

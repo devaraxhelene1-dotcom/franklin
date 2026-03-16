@@ -27,7 +27,7 @@
     </div>
 
     <%# ── Strategy section (collapsible) ──────────────────────── %>
-    <details class="strategy-section">
+    <details class="strategy-section" open>
       <summary class="strategy-toggle">
         <span class="strategy-toggle-left">
           <span class="strategy-toggle-title">Stratégie</span>
@@ -109,8 +109,8 @@
             <span class="strategy-label">Angles</span>
             <div class="strategy-angles">
               <% angles = @campaign.angles
-                   .split(/[,\n]+|\d+\.\s+/)
-                   .map { |a| a.gsub(/^[-–•"']+|["']+$/, "").strip }
+                   .split(/\n+/)
+                   .map { |a| a.gsub(/^[-–•"'\d.)\s]+|["']+$/, "").strip }
                    .reject(&:empty?) %>
               <% angles.each_with_index do |angle, i| %>
                 <div class="strategy-angle">

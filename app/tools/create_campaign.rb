@@ -65,9 +65,9 @@ class CreateCampaign < RubyLLM::Tool
       return parts.map { |p| p.gsub(/\A[-–•\d.)\s]+/, "").strip }.reject(&:empty?).join("\n")
     end
 
-    # Essayer split par virgule (seulement pour les channels courts)
+    # Essayer split par virgule (seulement si chaque partie est un item indépendant : court + commence par majuscule)
     parts = single.split(/\s*,\s*/)
-    if parts.length >= 2 && parts.all? { |p| p.length < 80 }
+    if parts.length >= 2 && parts.all? { |p| p.length < 80 && p.strip.match?(/\A[A-ZÀ-Ü]/) }
       return parts.map { |p| p.gsub(/\A[-–•\d.)\s]+/, "").strip }.reject(&:empty?).join("\n")
     end
 

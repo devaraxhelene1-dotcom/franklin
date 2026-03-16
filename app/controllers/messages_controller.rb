@@ -87,12 +87,7 @@ class MessagesController < ApplicationController
 
     if @message.save
       save_llm_response
-      @chat.reload
-      if @chat.campaign&.status == "active" && @chat.campaign.created_at > 2.minutes.ago
-        redirect_to campaign_path(@chat.campaign, new: "1")
-      else
-        redirect_to chat_path(@chat)
-      end
+      redirect_to chat_path(@chat)
     else
       render "chats/show", status: :unprocessable_entity
     end
@@ -138,7 +133,7 @@ class MessagesController < ApplicationController
   end
 
   def call_llm
-    llm_chat = RubyLLM.chat(model: "gpt-4.1-nano")
+    llm_chat = RubyLLM.chat(model: "gpt-4.1-mini")
     llm_chat.with_instructions(SYSTEM_PROMPT)
 
     # Passer des instances de tools avec le contexte injecté (chat + user)

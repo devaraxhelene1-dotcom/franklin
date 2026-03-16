@@ -2,7 +2,7 @@ class CampaignsController < ApplicationController
   before_action :set_campaign, only: [:show, :edit, :update]
 
   def index
-    @campaigns = current_user.campaigns.where.not(status: :draft).includes(:steps)
+    @campaigns = current_user.campaigns.where.not(status: :draft).includes(:steps).order(created_at: :desc)
   end
 
   def show

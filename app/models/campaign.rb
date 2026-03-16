@@ -5,4 +5,5 @@ class Campaign < ApplicationRecord
 
   validates :title, presence: true
   validates :status, inclusion: { in: %w[draft active completed] }
+  validates :icp, :channels, :angles, presence: true, if: -> { status != "draft" }
 end

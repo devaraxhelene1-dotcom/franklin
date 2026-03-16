@@ -13,16 +13,22 @@ class CampaignsController < ApplicationController
 
   def update
     if @campaign.update(campaign_params)
-      redirect_to @campaign
+      respond_to do |format|
+        format.html { redirect_to @campaign }
+        format.json { render json: { status: @campaign.status } }
+      end
     else
-      render :edit, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { error: "Update failed" }, status: :unprocessable_entity }
+      end
     end
   end
 
   private
 
   def set_campaign
-    @campaign = current_user.campaigns.find(params[:id])
+    @campaign = current_user.campaigns.includes(:chat, steps: { image_attachment: :blob }).find(params[:id])
   end
 
   def campaign_params

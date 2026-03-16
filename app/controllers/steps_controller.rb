@@ -10,7 +10,10 @@ class StepsController < ApplicationController
   def toggle_status
     new_status = @step.status == "done" ? "pending" : "done"
     @step.update!(status: new_status)
-    redirect_to campaign_step_path(@campaign, @step)
+    respond_to do |format|
+      format.html { redirect_to campaign_step_path(@campaign, @step) }
+      format.json { render json: { status: @step.status } }
+    end
   end
 
   def update

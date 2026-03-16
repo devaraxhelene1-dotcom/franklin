@@ -61,15 +61,16 @@
     gap: 12px;
   }
 
-  .btn-edit-status {
-    background: #1EDD88;
-    color: #000;
+  .btn-toggle-status {
     border: none;
     border-radius: 11px;
     font-weight: 600;
     padding: 8px 20px;
-    text-decoration: none;
     font-size: 0.9rem;
-    &:hover { background: #17b870; color: #000; }
+    cursor: pointer;
+    text-decoration: none;
+    &.pending { background: #1EDD88; color: #000; }
+    &.done    { background: #f0f0f0; color: #555; }
+    &:hover   { opacity: 0.85; }
   }
 }

@@ -8,7 +8,14 @@ class GenerateCampaignSteps < RubyLLM::Tool
               "et les instructions précises pour l'utilisateur (quoi faire, comment, pourquoi). " \
               "Répartir les steps de manière stratégique sur les 14 jours (pas forcément consécutifs)."
 
-  param :steps, type: :array, desc: "Liste de 5 à 8 steps. Chaque step est un objet avec 'day' (integer entre 1 et 14) et 'generated_content' (string avec le channel, le contenu à poster et les instructions pour l'utilisateur). Les steps doivent être en français."
+  param :steps, type: :array, desc: "Liste de 5 à 8 steps. Chaque step est un objet avec exactement 2 clés : " \
+    "'day' (integer entre 1 et 14) et 'generated_content' (string formatée). " \
+    "Le generated_content DOIT suivre ce format exact :\n" \
+    "**Channel** : Nom du channel\n" \
+    "**Contenu à poster** : Le texte complet prêt à copier-coller\n" \
+    "**Instructions** : Les actions concrètes pour l'utilisateur\n" \
+    "NE PAS inclure de JSON, de numéro de jour, ni de clé 'images_requested' dans generated_content. " \
+    "Uniquement ces 3 sections markdown. Les steps doivent être en français."
 
   def execute(steps:)
     campaign = @chat.campaign
@@ -35,7 +42,6 @@ class GenerateCampaignSteps < RubyLLM::Tool
         day = data[:day]
         content = data[:generated_content]
       elsif step_data.is_a?(String)
-        # Le LLM peut envoyer des JSON stringifiés ou des strings libres
         begin
           parsed = JSON.parse(step_data)
           if parsed.is_a?(Hash)
@@ -44,7 +50,6 @@ class GenerateCampaignSteps < RubyLLM::Tool
             content = parsed[:generated_content]
           end
         rescue JSON::ParserError
-          # Fallback : extraire le jour depuis le texte "Day 3 : LinkedIn — ..." ou "Jour 3"
           day_match = step_data.match(/(?:Day|Jour)\s*(\d+)/i)
           day = day_match ? day_match.captures.first.to_i : nil
           content = step_data
@@ -58,12 +63,47 @@ class GenerateCampaignSteps < RubyLLM::Tool
 
       next unless content.present?
 
-      campaign.steps.create!(day: day, generated_content: content, status: "pending")
+      cleaned = normalize_content(content)
+      campaign.steps.create!(day: day, generated_content: cleaned, status: "pending")
       created_count += 1
     end
 
     campaign.update!(status: "active")
 
     { result: "#{created_count} actions créées pour la campagne '#{campaign.title}' sur 14 jours. La campagne est maintenant active." }
+  end
+
+  private
+
+  def normalize_content(raw)
+    text = raw.to_s.strip
+
+    # 1. Désencapsuler le JSON brut : {"day":3,"generated_content":"..."}
+    if text.match?(/\A\s*\{.*"generated_content"\s*:/m)
+      begin
+        parsed = JSON.parse(text)
+        text = parsed["generated_content"].to_s.strip if parsed.is_a?(Hash) && parsed["generated_content"]
+      rescue JSON::ParserError
+        if (m = text.match(/"generated_content"\s*:\s*"((?:[^"\\]|\\.)*)"/m))
+          text = m[1].gsub('\"', '"').gsub('\n', "\n").strip
+        end
+      end
+    end
+
+    # 2. Supprimer les artefacts images_requested
+    text.gsub!(/\*?\*?images_requested\*?\*?\s*[:\-]?\s*\[?[^\]\n]*\]?\s*/i, "")
+
+    # 3. Supprimer les headers "Jour X" / "Day X" en doublon (le champ day s'en charge)
+    text.gsub!(/\A\s*(?:\*\*)?(?:Day|Jour)\s*\d+\s*(?:\*\*)?[:\-—]?\s*/i, "")
+
+    # 4. Si le format **Channel** / **Contenu** est absent, wrapper le contenu
+    has_channel = text.match?(/\*\*Channel\*\*/i)
+    has_contenu = text.match?(/\*\*Contenu/i)
+
+    unless has_channel && has_contenu
+      text = "**Channel** : Non spécifié\n**Contenu à poster** : #{text}\n**Instructions** : Publier ce contenu."
+    end
+
+    text.strip
   end
 end

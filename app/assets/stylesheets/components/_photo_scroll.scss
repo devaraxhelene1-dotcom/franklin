@@ -1,0 +1,45 @@
+.photo-scroll-container {
+  overflow: hidden;
+  width: 100%;
+  padding: 40px 0;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+
+  }
+}
+
+.photo-scroll {
+  display: flex;
+  gap: 50px;
+  animation: scroll 30s linear infinite;
+
+  img {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+
+    &:hover {
+      filter: grayscale(0%);
+
+      transform: scale(1.1);
+    }
+  }
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.photo-scroll-container:hover .photo-scroll {
+  animation-play-state: paused;
+}

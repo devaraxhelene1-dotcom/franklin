@@ -11,18 +11,26 @@
     </button>
   </div>
 
+    <li class="sidebar-item new-chath">
+  <%= button_to chats_path, method: :post, class: "sidebar-link" do %>
+    <i class="fa-solid fa-plus icon-new-chat"></i>
+    <span>Nouveau chat</span>
+  <% end %>
+    </li>
+
+
   <ul class="sidebar-nav">
     <li class="sidebar-item <%= 'active' if current_page?(root_path) %>">
       <%= link_to root_path, class: "sidebar-link" do %>
-        <i class="fa-solid fa-chart-pie"></i>
+        <i class="fa-solid fa-chart-line icons"></i>
         <span>Dashboard</span>
       <% end %>
     </li>
 
     <li class="sidebar-item <%= 'active' if current_page?(campaigns_path) %>" data-controller="dropdown">
       <%= link_to campaigns_path, class: "sidebar-link" do %>
-        <i class="fa-solid fa-book-open"></i>
-        <span>Mes campagnes</span>
+      <i class="fa-solid fa-table-columns"></i>
+      <span>Mes campagnes</span>
       <% end %>
 
       <% if @campaigns.present? %>
@@ -39,18 +47,24 @@
       <% end %>
     </li>
 
+    <li class="sidebar-item <%= 'active' if current_page?(root_path) %>">
+      <%= link_to root_path, class: "sidebar-link" do %>
+        <i class="fa-solid fa-gear icons"></i>
+        <span>Paramètres</span>
+      <% end %>
+    </li>
 
-    <li class="sidebar-item <%= 'active' if controller_name == 'chats' %>">
-  <%= button_to chats_path, method: :post, class: "sidebar-link" do %>
-    <i class="fa-solid fa-comment"></i>
-    <span>Nouveau chat</span>
-  <% end %>
-</li>
 
   </ul>
 
-  <div class="sidebar-footer">
+<div class="sidebar-footer">
     <% if user_signed_in? %>
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">
+          <%= current_user.username&.first&.upcase %>
+        </div>
+        <span class="sidebar-user-name"><%= current_user.username&.capitalize %></span>
+      </div>
       <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "sidebar-link sidebar-logout" do %>
         <i class="fa-solid fa-right-from-bracket"></i>
         <span>Se déconnecter</span>

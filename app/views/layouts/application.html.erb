@@ -28,11 +28,14 @@
   <body class="<%= 'has-sidebar' if user_signed_in? %>">
     <% if user_signed_in? %>
       <%= render "shared/sidebar" %>
-    <% else %>
-      <%= render "shared/navbar" %>
     <% end %>
-    <%= render "shared/flashes" %>
 
-    <%= yield %>
+    <div class="<%= 'main-content' if user_signed_in? %>">
+      <% unless user_signed_in? %>
+        <%= render "shared/navbar" %>
+      <% end %>
+      <%= render "shared/flashes" %>
+      <%= yield %>
+    </div>
   </body>
 </html>

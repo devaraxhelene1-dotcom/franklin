@@ -26,7 +26,11 @@
     <% end %>
 
     <div class="step-show-actions">
-      <%= link_to "Modifier le statut", edit_campaign_step_path(@campaign, @step), class: "btn-edit-status" %>
+      <%= button_to toggle_status_campaign_step_path(@campaign, @step),
+          method: :patch,
+          class: "btn-toggle-status #{@step.status}" do %>
+        <%= @step.status == "done" ? "Remettre en attente" : "Marquer comme fait" %>
+      <% end %>
     </div>
 
   </div>

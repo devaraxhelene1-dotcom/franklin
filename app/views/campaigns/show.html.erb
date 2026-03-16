@@ -2,10 +2,20 @@
   <div class="container">
 
     <div class="campaign-show-header">
-      <%= link_to "← Mes campagnes", campaigns_path, class: "back-link" %>
+      <div class="campaign-show-nav">
+        <%= link_to "← Mes campagnes", campaigns_path, class: "back-link" %>
+        <% if @campaign.chat.present? %>
+          <%= link_to chat_path(@campaign.chat), class: "btn-continue-chat" do %>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7C2 4.24 4.24 2 7 2s5 2.24 5 5-2.24 5-5 5H2.5L2 12V7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+            Continuer avec Franklin
+          <% end %>
+        <% end %>
+      </div>
       <div class="campaign-show-title-row">
         <h1><%= @campaign.title %></h1>
-        <span class="step-status-badge <%= @campaign.status %>">
+        <span class="campaign-status-pill <%= @campaign.status %>">
           <%= case @campaign.status
               when "draft" then "Brouillon"
               when "active" then "Active"
@@ -13,95 +23,164 @@
               end %>
         </span>
       </div>
-      <p class="campaign-show-date">Créée le <%= @campaign.created_at.strftime("%d/%m/%Y") %></p>
+      <p class="campaign-show-date">Créée le <%= @campaign.created_at.strftime("%d %B %Y") %></p>
     </div>
 
-    <div class="campaign-cards-grid">
+    <%# ── Strategy section (collapsible) ──────────────────────── %>
+    <details class="strategy-section">
+      <summary class="strategy-toggle">
+        <span class="strategy-toggle-left">
+          <span class="strategy-toggle-title">Stratégie</span>
+          <span class="strategy-toggle-hint">ICP · Channels · Angles</span>
+        </span>
+        <svg class="strategy-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </summary>
 
-      <div class="campaign-card">
-        <div class="campaign-card-header">
-          <span class="campaign-card-icon">🎯</span>
-          <h3>ICP</h3>
-        </div>
-        <div class="campaign-card-body">
-          <% if @campaign.icp.present? %>
-            <%= @campaign.icp %>
-          <% else %>
-            <span class="empty-field">Non défini</span>
-          <% end %>
-        </div>
+      <div class="strategy-body">
+
+        <%# ICP — Persona cards %>
+        <% if @campaign.icp.present? %>
+          <div class="strategy-row">
+            <span class="strategy-label">ICP</span>
+            <div class="strategy-personas">
+              <% @campaign.icp.split(/\n+/).map(&:strip).reject(&:empty?).each do |profile| %>
+                <%
+                  clean  = profile.gsub(/^[-–•\d.)\s]+/, "").strip
+                  detail = clean.match(/\(([^)]+)\)/)&.captures&.first
+                  title  = clean.gsub(/\s*\([^)]+\)/, "").strip
+                  type   = case title.downcase
+                           when /freelance/              then ["Freelance",   "freelance"]
+                           when /consultant/             then ["Consultant",  "consultant"]
+                           when /startup/                then ["Startup",     "startup"]
+                           when /agence/                 then ["Agence",      "agence"]
+                           when /entreprise|pme|société/ then ["Entreprise",  "company"]
+                           when /manager|directeur|ceo/  then ["Manager",     "manager"]
+                           when /développeur|dev|tech/   then ["Tech",        "tech"]
+                           else                               ["Profil",      "default"]
+                           end
+                %>
+                <div class="persona-card">
+                  <span class="persona-type persona-type--<%= type[1] %>"><%= type[0] %></span>
+                  <div class="persona-info">
+                    <span class="persona-title"><%= title %></span>
+                    <% if detail %>
+                      <span class="persona-detail"><%= detail %></span>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <%# Channels — colored pills by network %>
+        <% if @campaign.channels.present? %>
+          <div class="strategy-row">
+            <span class="strategy-label">Channels</span>
+            <div class="strategy-pills">
+              <% @campaign.channels.split(/\n+/).map(&:strip).reject(&:empty?).each do |ch| %>
+                <% clean = ch.gsub(/^[-–•\d.)\s]+/, "").strip %>
+                <%
+                  network = case clean.downcase
+                  when /linkedin/           then "linkedin"
+                  when /facebook|fb/        then "facebook"
+                  when /twitter|x\.com/     then "twitter"
+                  when /instagram/          then "instagram"
+                  when /email|mail/         then "email"
+                  when /forum|reddit/       then "forum"
+                  when /slack|discord/      then "community"
+                  when /communaut|groupe/   then "community"
+                  else                           "default"
+                  end
+                %>
+                <span class="strategy-pill strategy-pill--<%= network %>">
+                  <span class="pill-dot"></span><%= clean %>
+                </span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <%# Angles — numbered pillars %>
+        <% if @campaign.angles.present? %>
+          <div class="strategy-row">
+            <span class="strategy-label">Angles</span>
+            <div class="strategy-angles">
+              <% angles = @campaign.angles
+                   .split(/[,\n]+|\d+\.\s+/)
+                   .map { |a| a.gsub(/^[-–•"']+|["']+$/, "").strip }
+                   .reject(&:empty?) %>
+              <% angles.each_with_index do |angle, i| %>
+                <div class="strategy-angle">
+                  <span class="angle-number"><%= format("%02d", i + 1) %></span>
+                  <span class="angle-text"><%= angle %></span>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
       </div>
+    </details>
 
-      <div class="campaign-card">
-        <div class="campaign-card-header">
-          <span class="campaign-card-icon">📡</span>
-          <h3>Cannaux</h3>
+    <% steps = @campaign.steps.sort_by(&:day) %>
+    <% done_count = steps.count { |s| s.status == "done" } %>
+    <% total_count = steps.count %>
+    <% progress_pct = total_count > 0 ? (done_count * 100.0 / total_count).round : 0 %>
+
+    <% steps_data = steps.map do |s| %>
+      <% {
+        id: s.id,
+        day: s.day,
+        status: s.status,
+        content: s.generated_content,
+        image_url: s.image.attached? ? url_for(s.image) : nil,
+        campaign_id: @campaign.id
+      } %>
+    <% end %>
+
+    <% if steps.any? %>
+      <div class="campaign-journey"
+           data-controller="campaign-journey"
+           data-campaign-journey-steps-value="<%= html_escape(steps_data.to_json) %>"
+           data-campaign-journey-campaign-id-value="<%= @campaign.id %>"
+           data-campaign-journey-is-new-value="<%= params[:new].present? %>">
+
+        <% if params[:new].present? %>
+          <div class="journey-ai-banner">
+            <span class="banner-dot"></span>
+            Franklin vient de construire ta stratégie — explore chaque étape ci-dessous.
+          </div>
+        <% end %>
+
+        <div class="journey-progress-header">
+          <div class="journey-progress-left">
+            <span class="journey-progress-title">Progression</span>
+            <span class="journey-progress-count"><%= done_count %> / <%= total_count %> étapes terminées</span>
+          </div>
+          <div class="journey-progress-bar-wrap">
+            <div class="journey-progress-bar" style="width: <%= progress_pct %>%"></div>
+          </div>
         </div>
-        <div class="campaign-card-body">
-          <% if @campaign.channels.present? %>
-            <%= @campaign.channels %>
-          <% else %>
-            <span class="empty-field">Non défini</span>
-          <% end %>
+
+        <div class="journey-canvas" data-campaign-journey-target="canvas"></div>
+
+        <div class="journey-panel" data-campaign-journey-target="panel">
+          <div class="journey-panel-body" data-campaign-journey-target="panelBody"></div>
         </div>
+
+        <div class="journey-overlay"
+             data-campaign-journey-target="overlay"
+             data-action="click->campaign-journey#closePanel"></div>
+
       </div>
-
-      <div class="campaign-card">
-        <div class="campaign-card-header">
-          <span class="campaign-card-icon">💡</span>
-          <h3>Angles</h3>
-        </div>
-        <div class="campaign-card-body">
-          <% if @campaign.angles.present? %>
-            <%= @campaign.angles %>
-          <% else %>
-            <span class="empty-field">Non défini</span>
-          <% end %>
-        </div>
+    <% else %>
+      <div class="steps-empty">
+        <p>Aucune étape pour cette campagne.</p>
       </div>
-
-      <div class="campaign-card">
-        <div class="campaign-card-header">
-          <span class="campaign-card-icon">📄</span>
-          <h3>Documentation</h3>
-        </div>
-        <div class="campaign-card-body">
-          <% if @campaign.doc_content.present? %>
-            <%= simple_format @campaign.doc_content %>
-          <% else %>
-            <span class="empty-field">Aucune documentation</span>
-          <% end %>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="campaign-steps-section">
-      <h2>Étapes de la campagne</h2>
-      <% if @campaign.steps.any? %>
-        <div class="steps-list">
-          <% @campaign.steps.order(:day).each do |step| %>
-            <%= link_to campaign_step_path(@campaign, step), class: "step-item #{step.status}", style: "text-decoration: none;" do %>
-              <div class="step-day">Jour <%= step.day %></div>
-              <div class="step-content">
-                <% if step.generated_content.present? %>
-                  <%= step.generated_content %>
-                <% else %>
-                  <span class="empty-field">Contenu non généré</span>
-                <% end %>
-              </div>
-              <span class="step-status-badge <%= step.status %>">
-                <%= step.status == "done" ? "Fait" : "En attente" %>
-              </span>
-            <% end %>
-          <% end %>
-        </div>
-      <% else %>
-        <div class="steps-empty">
-          <p>Aucune étape pour cette campagne.</p>
-        </div>
-      <% end %>
-    </div>
+    <% end %>
 
   </div>
 </div>

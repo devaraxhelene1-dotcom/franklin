@@ -76,7 +76,12 @@ class MessagesController < ApplicationController
 
     if @message.save
       save_llm_response
-      redirect_to chat_path(@chat)
+      @chat.reload
+      if @chat.campaign&.status == "active" && @chat.campaign.created_at > 2.minutes.ago
+        redirect_to campaign_path(@chat.campaign, new: "1")
+      else
+        redirect_to chat_path(@chat)
+      end
     else
       render "chats/show", status: :unprocessable_entity
     end

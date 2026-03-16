@@ -7,6 +7,12 @@ class StepsController < ApplicationController
   def edit
   end
 
+  def toggle_status
+    new_status = @step.status == "done" ? "pending" : "done"
+    @step.update!(status: new_status)
+    redirect_to campaign_step_path(@campaign, @step)
+  end
+
   def update
     if @step.update(step_params)
       redirect_to edit_campaign_step_path(@campaign, @step), notice: "Step modifié avec succès"

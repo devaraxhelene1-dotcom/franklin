@@ -9,7 +9,8 @@ class GenerateCampaignImage < RubyLLM::Tool
               "L'image sera générée par IA et attachée directement au step."
 
   param :day, type: :integer, desc: "Le numéro du jour (1 à 14) du step auquel attacher l'image"
-  param :prompt, desc: "Description détaillée de l'image à générer en anglais. Sois précis sur le style, les couleurs, le sujet."
+  param :prompt,
+        desc: "Description détaillée de l'image à générer en anglais. Sois précis sur le style, les couleurs, le sujet."
 
   def execute(day:, prompt:)
     campaign = @chat.campaign
@@ -20,18 +21,18 @@ class GenerateCampaignImage < RubyLLM::Tool
 
     Rails.logger.info("=== IMAGE GENERATION START === Day: #{day}, Prompt: #{prompt.first(80)}...")
 
-    client = OpenAI::Client.new(access_token: ENV["OPENAI_API_KEY"])
+    client = OpenAI::Client.new(access_token: ENV.fetch("OPENAI_API_KEY", nil))
 
     response = client.images.generate(
       parameters: {
         model: "gpt-image-1",
         prompt: prompt,
         n: 1,
-        size: "1024x1024"
+        size: "512x512"
       }
     )
 
-    Rails.logger.info("=== IMAGE API RESPONSE keys === #{response.dig("data", 0)&.keys}")
+    Rails.logger.info("=== IMAGE API RESPONSE keys === #{response.dig('data', 0)&.keys}")
 
     # L'API gpt-image-1 retourne du base64 (b64_json), pas une URL
     b64_data = response.dig("data", 0, "b64_json")

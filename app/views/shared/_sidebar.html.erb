@@ -20,8 +20,8 @@
 
 
   <ul class="sidebar-nav">
-    <li class="sidebar-item <%= 'active' if current_page?(root_path) %>">
-      <%= link_to root_path, class: "sidebar-link" do %>
+    <li class="sidebar-item <%= 'active' if current_page?(dashboard_path) %>">
+      <%= link_to dashboard_path, class: "sidebar-link" do %>
         <i class="fa-solid fa-chart-line icons"></i>
         <span>Dashboard</span>
       <% end %>

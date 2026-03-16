@@ -1,10 +1,8 @@
-// BODY
 .body{
   background-color: #ffffff;
 
 }
 
-// HEADER
 .card_header {
     padding: 100px 20px;
     background: radial-gradient(circle at 50% 50%, #a9e4be 0%, #ffffff 35%);
@@ -25,8 +23,6 @@
   background-clip: text;
 }
 
-
-// BOUTONS HOME
 .home-btn{
   background-color: #111;
   color: #ffffff;
@@ -42,8 +38,6 @@
 }
 
 
-
-// CARDS CATEGORY
 .cards {
   display: flex;
   gap: 24px;
@@ -87,7 +81,6 @@
   margin-bottom: 16px;
 }
 
-// CARD BANNER
 .card-banner {
   background: linear-gradient(90deg, #2bd957 30%, #019e11 100%);
   border-radius: 16px;

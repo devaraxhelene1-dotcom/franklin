@@ -7,4 +7,8 @@ class PagesController < ApplicationController
       redirect_to chat_path(chat)
     end
   end
+
+  def dashboard
+    
+  end
 end

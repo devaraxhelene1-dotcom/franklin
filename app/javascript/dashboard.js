@@ -1,5 +1,5 @@
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("turbo:load", () => {
   initCounters();
   initRevenueLeadsChart();
   initDistributionChart();

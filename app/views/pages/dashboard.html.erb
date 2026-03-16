@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Marketing</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h1 class="dashboard-title">Marketing <span>Dashboard</span></h1>
+        <p class="dashboard-subtitle">Vue d'ensemble — Mars 2026</p>
+      </div>
+      <div class="header-right">
+        <div class="period-badge">Q1 2026</div>
+      </div>
+    </header>
+
+    <section class="kpi-grid">
+
+      <div class="kpi-card" data-trend="up">
+        <div class="kpi-card__header">
+          <div class="kpi-icon kpi-icon--green">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="kpi-badge kpi-badge--up">↗ +23%</span>
+        </div>
+        <p class="kpi-label">Revenue total</p>
+        <p class="kpi-value" data-target="50900" data-suffix=" €">0 €</p>
+      </div>
+
+      <div class="kpi-card" data-trend="down">
+        <div class="kpi-card__header">
+          <div class="kpi-icon kpi-icon--yellow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <span class="kpi-badge kpi-badge--down">↘ -7%</span>
+        </div>
+        <p class="kpi-label">Taux de conversion</p>
+        <p class="kpi-value" data-target="6.4" data-suffix=" %" data-decimal="1">0 %</p>
+      </div>
+
+      <div class="kpi-card" data-trend="up">
+        <div class="kpi-card__header">
+          <div class="kpi-icon kpi-icon--blue">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <span class="kpi-badge kpi-badge--up">↗ +15%</span>
+        </div>
+        <p class="kpi-label">ROI moyen</p>
+        <p class="kpi-value" data-target="80" data-suffix="%">0%</p>
+      </div>
+
+    </section>
+
+    <section class="charts-grid">
+
+      <div class="chart-card chart-card--large">
+        <div class="chart-card__header">
+          <h2 class="chart-title">Revenue et leads</h2>
+          <div class="chart-legend">
+            <span class="legend-dot legend-dot--revenue"></span><span>Revenue (€)</span>
+            <span class="legend-dot legend-dot--leads"></span><span>Leads</span>
+          </div>
+        </div>
+        <div class="chart-card__body">
+          <canvas id="revenueLeadsChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <h2 class="chart-title">Distribution par canal</h2>
+        </div>
+        <div class="chart-card__body chart-card__body--centered">
+          <canvas id="distributionChart" height="220"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="charts-grid">
+
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <h2 class="chart-title">Performance par campagne</h2>
+          <div class="chart-legend">
+            <span class="legend-dot legend-dot--roi"></span><span>ROI (%)</span>
+            <span class="legend-dot legend-dot--conv"></span><span>Conversion (%)</span>
+          </div>
+        </div>
+        <div class="chart-card__body">
+          <canvas id="campaignChart" height="220"></canvas>
+        </div>
+      </div>
+
+
+      <div class="chart-card">
+        <div class="chart-card__header">
+          <h2 class="chart-title">Statistiques de trafic</h2>
+        </div>
+        <div class="chart-card__body">
+          <div class="traffic-stats">
+
+            <div class="traffic-stat-item">
+              <div class="traffic-stat__icon traffic-stat__icon--blue">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div class="traffic-stat__info">
+                <p class="traffic-stat__label">Impressions totales</p>
+                <p class="traffic-stat__value" data-target="210000" data-format="space">0</p>
+              </div>
+              <span class="kpi-badge kpi-badge--up">↗ +15%</span>
+            </div>
+
+            <div class="traffic-stat-item">
+              <div class="traffic-stat__icon traffic-stat__icon--yellow">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+              </div>
+              <div class="traffic-stat__info">
+                <p class="traffic-stat__label">Clics totaux</p>
+                <p class="traffic-stat__value" data-target="5500" data-format="space">0</p>
+              </div>
+              <span class="kpi-badge kpi-badge--up">↗ +23%</span>
+            </div>
+
+            <div class="traffic-stat-item">
+              <div class="traffic-stat__icon traffic-stat__icon--green">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <div class="traffic-stat__info">
+                <p class="traffic-stat__label">CTR moyen</p>
+                <p class="traffic-stat__value" data-target="2.64" data-suffix="%" data-decimal="2">0%</p>
+              </div>
+              <span class="kpi-badge kpi-badge--down">↘ -7%</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<%= javascript_include_tag 'dashboard', defer: true %>
+
+</body>
+</html>

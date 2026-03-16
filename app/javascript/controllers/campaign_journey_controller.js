@@ -1,0 +1,561 @@
+import { Controller } from "@hotwired/stimulus"
+import { marked } from "marked"
+
+export default class extends Controller {
+  static targets = ["canvas", "panel", "panelBody", "overlay"]
+  static values  = { steps: Array, campaignId: Number, isNew: Boolean }
+
+  connect() {
+    this._resizeTimer = null
+    this._previewEl   = null
+    this.build()
+    this._onResize = () => {
+      clearTimeout(this._resizeTimer)
+      this._resizeTimer = setTimeout(() => this.build(), 200)
+    }
+    window.addEventListener("resize", this._onResize)
+  }
+
+  disconnect() {
+    window.removeEventListener("resize", this._onResize)
+  }
+
+  // ─── Build ────────────────────────────────────────────────────
+
+  build() {
+    const canvas = this.canvasTarget
+    const W      = canvas.offsetWidth
+    if (!W) return
+
+    const steps = this.stepsValue
+    if (!steps.length) return
+
+    const isMobile  = W < 600
+    const positions = this.calcPositions(steps.length, W, isMobile)
+    const totalH    = Math.max(...positions.map(p => p.y)) + 100
+
+    canvas.innerHTML    = ""
+    canvas.style.height = totalH + "px"
+
+    canvas.appendChild(this.buildSvg(W, totalH, positions, steps))
+    canvas.appendChild(this.buildNodes(positions, steps))
+
+    this._previewEl           = document.createElement("div")
+    this._previewEl.className = "journey-preview-card"
+    canvas.appendChild(this._previewEl)
+  }
+
+  // ─── Positions ───────────────────────────────────────────────
+
+  calcPositions(n, W, isMobile) {
+    const padX = 70, padY = 80
+    if (isMobile) {
+      return Array.from({ length: n }, (_, i) => ({ x: W / 2, y: padY + i * 110 }))
+    }
+    const perRow = W < 680 ? 3 : 4
+    const colW   = perRow > 1 ? (W - padX * 2) / (perRow - 1) : 0
+    const rowH   = 160
+    return Array.from({ length: n }, (_, i) => {
+      const row   = Math.floor(i / perRow)
+      const col   = i % perRow
+      const isOdd = row % 2 === 1
+      return {
+        x: isOdd ? padX + (perRow - 1 - col) * colW : padX + col * colW,
+        y: padY + row * rowH
+      }
+    })
+  }
+
+  // ─── SVG ─────────────────────────────────────────────────────
+
+  buildSvg(W, H, positions, steps) {
+    const NS  = "http://www.w3.org/2000/svg"
+    const svg = document.createElementNS(NS, "svg")
+    svg.setAttribute("width",   W)
+    svg.setAttribute("height",  H)
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`)
+    svg.classList.add("journey-svg")
+
+    const defs = document.createElementNS(NS, "defs")
+    defs.innerHTML = `
+      <filter id="jglow" x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>`
+    svg.appendChild(defs)
+
+    // Background segments — dashed for upcoming, gray for now (green added below)
+    for (let i = 1; i < positions.length; i++) {
+      const bothDone = steps[i - 1].status === "done" && steps[i].status === "done"
+      const seg = document.createElementNS(NS, "path")
+      seg.setAttribute("d",              this.segPath(positions[i - 1], positions[i], i))
+      seg.setAttribute("fill",           "none")
+      seg.setAttribute("stroke",         "#e0e0e0")        // start gray — green applied below
+      seg.setAttribute("stroke-width",   bothDone ? "2.5" : "2")
+      seg.setAttribute("stroke-linecap", "round")
+      if (!bothDone) seg.setAttribute("stroke-dasharray", "5 7")  // dashed upcoming
+      seg.dataset.segmentIndex = i
+      seg.dataset.bothDone     = bothDone
+      svg.appendChild(seg)
+    }
+
+    // Staggered green reveal for done segments after path draw begins
+    setTimeout(() => {
+      svg.querySelectorAll("path[data-segment-index]").forEach(seg => {
+        if (seg.dataset.bothDone === "true") {
+          const idx = parseInt(seg.dataset.segmentIndex)
+          setTimeout(() => {
+            seg.style.transition = "stroke 0.5s ease, stroke-width 0.3s ease"
+            seg.style.stroke     = "#1EDD88"
+          }, idx * 100)
+        }
+      })
+    }, 350)
+
+    // Animated draw overlay
+    const dur      = this.isNewValue ? 3 : 2
+    const animPath = document.createElementNS(NS, "path")
+    animPath.setAttribute("d",              this.fullPath(positions))
+    animPath.setAttribute("fill",           "none")
+    animPath.setAttribute("stroke",         "#f5f5f5")
+    animPath.setAttribute("stroke-width",   "3.5")
+    animPath.setAttribute("stroke-linecap", "round")
+    animPath.classList.add("journey-anim-path")
+    svg.appendChild(animPath)
+
+    requestAnimationFrame(() => {
+      const len = animPath.getTotalLength()
+      animPath.style.strokeDasharray  = len
+      animPath.style.strokeDashoffset = len
+      requestAnimationFrame(() => {
+        animPath.style.transition       = `stroke-dashoffset ${dur}s cubic-bezier(0.4, 0, 0.2, 1)`
+        animPath.style.strokeDashoffset = 0
+      })
+    })
+
+    return svg
+  }
+
+  segPath(a, b, i) {
+    const dy = b.y - a.y
+    if (Math.abs(dy) < 20) {
+      const sign = i % 2 === 0 ? -1 : 1
+      return `M ${a.x} ${a.y} Q ${(a.x + b.x) / 2} ${a.y + sign * 28} ${b.x} ${b.y}`
+    }
+    return `M ${a.x} ${a.y} C ${a.x} ${a.y + dy * 0.6} ${b.x} ${b.y - dy * 0.6} ${b.x} ${b.y}`
+  }
+
+  fullPath(positions) {
+    if (positions.length < 2) return ""
+    let d = `M ${positions[0].x} ${positions[0].y}`
+    for (let i = 1; i < positions.length; i++) {
+      const a = positions[i - 1], b = positions[i]
+      const dy = b.y - a.y
+      if (Math.abs(dy) < 20) {
+        const sign = i % 2 === 0 ? -1 : 1
+        d += ` Q ${(a.x + b.x) / 2} ${a.y + sign * 28} ${b.x} ${b.y}`
+      } else {
+        d += ` C ${a.x} ${a.y + dy * 0.6} ${b.x} ${b.y - dy * 0.6} ${b.x} ${b.y}`
+      }
+    }
+    return d
+  }
+
+  // ─── Nodes ───────────────────────────────────────────────────
+
+  buildNodes(positions, steps) {
+    const firstPending = steps.findIndex(s => s.status === "pending")
+    const baseDelay    = this.isNewValue ? 900 : 400
+    const stepDelay    = this.isNewValue ? 300 : 150
+    const wrap         = document.createElement("div")
+    wrap.classList.add("journey-nodes")
+
+    steps.forEach((step, i) => {
+      const pos   = positions[i]
+      const state = step.status === "done" ? "done"
+                  : i === firstPending      ? "current"
+                  : "upcoming"
+
+      const node = document.createElement("div")
+      node.classList.add("journey-node", state)
+      node.style.left           = pos.x + "px"
+      node.style.top            = pos.y + "px"
+      node.style.animationDelay = `${baseDelay + i * stepDelay}ms`
+      node.dataset.stepIndex    = i
+
+      // Circle — 40px
+      const circle = document.createElement("div")
+      circle.classList.add("node-circle")
+      if (state === "done") {
+        circle.innerHTML = `<svg class="node-check" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`
+      } else if (state === "current") {
+        circle.innerHTML = `<span class="node-pulse-ring"></span><span class="node-dot"></span>`
+      } else {
+        circle.innerHTML = `<span class="node-dot"></span>`
+      }
+
+      // Label
+      const label = document.createElement("div")
+      label.classList.add("node-label")
+      label.style.animationDelay = `${baseDelay + 100 + i * stepDelay}ms`
+      label.textContent = `Jour ${step.day}`
+
+      node.appendChild(circle)
+      node.appendChild(label)
+
+      // Channel sub-label
+      const channel = this.extractChannel(step.content)
+      if (channel) {
+        const sub = document.createElement("div")
+        sub.classList.add("node-sublabel")
+        sub.style.animationDelay = `${baseDelay + 120 + i * stepDelay}ms`
+        sub.textContent = channel
+        node.appendChild(sub)
+      }
+
+      node.addEventListener("mouseenter", () => this.showPreview(step, pos))
+      node.addEventListener("mouseleave", ()  => this.hidePreview())
+      node.addEventListener("click",      ()  => this.openPanel(step, i))
+
+      wrap.appendChild(node)
+    })
+
+    return wrap
+  }
+
+  // ─── Preview Card ─────────────────────────────────────────────
+
+  showPreview(step, pos) {
+    if (!this._previewEl) return
+    const { channel, content } = this.parseStepContent(step.content)
+    const excerpt = content.replace(/\*\*/g, "").substring(0, 110).trimEnd()
+
+    this._previewEl.innerHTML = `
+      <div class="preview-day">
+        Jour ${step.day}
+        ${channel ? `<span class="preview-channel">${channel}</span>` : ""}
+      </div>
+      ${step.image_url ? `<img src="${step.image_url}" class="preview-img" alt="">` : ""}
+      <p class="preview-excerpt">${excerpt}${content.length > 110 ? "…" : ""}</p>
+    `
+
+    const canvasW = this.canvasTarget.offsetWidth
+    let left = pos.x + 30
+    let top  = pos.y - 20
+    if (left + 254 > canvasW) left = pos.x - 280
+
+    this._previewEl.style.left = left + "px"
+    this._previewEl.style.top  = top  + "px"
+    this._previewEl.classList.add("visible")
+  }
+
+  hidePreview() {
+    this._previewEl?.classList.remove("visible")
+  }
+
+  // ─── Panel ───────────────────────────────────────────────────
+
+  openPanel(step, stepIndex) {
+    this._activeStep      = step
+    this._activeStepIndex = stepIndex
+
+    const { channel, content, instructions } = this.parseStepContent(step.content)
+    const renderedContent = marked.parse(content || step.content || "")
+
+    const copyBtn = content ? `
+      <button
+        class="btn-copy"
+        data-step-id="${step.id}"
+        data-action="click->campaign-journey#copyContent"
+        title="Copier le contenu">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M1 9V2a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Copier
+      </button>` : ""
+
+    const checklistHtml = instructions.length ? `
+      <div class="panel-checklist">
+        <h4 class="checklist-title">Instructions</h4>
+        <ul class="checklist-list">
+          ${instructions.map(item => `
+            <li class="checklist-item">
+              <label class="checklist-label">
+                <input type="checkbox" class="checklist-checkbox">
+                <span class="checklist-check">
+                  <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                    <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="checklist-text">${item}</span>
+              </label>
+            </li>`).join("")}
+        </ul>
+      </div>` : ""
+
+    this.panelBodyTarget.innerHTML = `
+      <div class="panel-header">
+        <div class="panel-title-row">
+          <h2 class="panel-title">Jour ${step.day}</h2>
+          ${channel ? `<span class="panel-channel-badge">${channel}</span>` : ""}
+          <span class="panel-status-badge ${step.status}">
+            ${step.status === "done" ? "Fait" : "En attente"}
+          </span>
+        </div>
+        <button class="panel-close-btn" data-action="click->campaign-journey#closePanel" aria-label="Fermer">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      ${step.image_url ? `
+      <div class="panel-image-wrap">
+        <img src="${step.image_url}" alt="Visuel du post">
+        <button class="btn-download-image" data-image-url="${step.image_url}" data-action="click->campaign-journey#downloadImage">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M6.5 1v7M4 6l2.5 2.5L9 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M1.5 10.5h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          Télécharger
+        </button>
+      </div>` : ""}
+      <div class="panel-content-wrap">
+        ${content ? `<div class="panel-content-header">
+          <span class="panel-content-label">Contenu à poster</span>
+          ${copyBtn}
+        </div>` : ""}
+        <div class="panel-content">${renderedContent}</div>
+      </div>
+      ${checklistHtml}
+      <div class="panel-actions">
+        <button
+          class="btn-mark-done ${step.status}"
+          data-step-id="${step.id}"
+          data-campaign-id="${this.campaignIdValue}"
+          data-action="click->campaign-journey#markDone">
+          ${step.status === "done" ? "Remettre en attente" : "Marquer comme fait"}
+        </button>
+      </div>
+    `
+
+    this.panelTarget.classList.add("open")
+    this.overlayTarget.classList.add("visible")
+    document.body.classList.add("journey-panel-open")
+  }
+
+  closePanel() {
+    this.panelTarget.classList.remove("open")
+    this.overlayTarget.classList.remove("visible")
+    document.body.classList.remove("journey-panel-open")
+  }
+
+  // ─── Copy Content ────────────────────────────────────────────
+
+  async copyContent(event) {
+    const btn    = event.currentTarget
+    const stepId = parseInt(btn.dataset.stepId)
+    const step   = this.stepsValue.find(s => s.id === stepId)
+    const { content } = this.parseStepContent(step?.content || "")
+
+    try {
+      await navigator.clipboard.writeText(content)
+      btn.classList.add("copied")
+      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+        <path d="M2 7L5 10L11 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg> Copié`
+      setTimeout(() => {
+        btn.classList.remove("copied")
+        btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+          <rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M1 9V2a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg> Copier`
+      }, 2200)
+    } catch {
+      // Fallback for older browsers
+      const ta = document.createElement("textarea")
+      ta.value = content
+      ta.style.position = "fixed"
+      ta.style.opacity  = "0"
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand("copy")
+      document.body.removeChild(ta)
+    }
+  }
+
+  // ─── Download Image ──────────────────────────────────────────
+
+  async downloadImage(event) {
+    const btn = event.currentTarget
+    const url = btn.dataset.imageUrl
+    try {
+      const res  = await fetch(url)
+      const blob = await res.blob()
+      const obj  = URL.createObjectURL(blob)
+      const a    = document.createElement("a")
+      a.href     = obj
+      a.download = url.split("/").pop().split("?")[0] || "image"
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(obj)
+    } catch {
+      window.open(url, "_blank")
+    }
+  }
+
+  // ─── Mark Done ───────────────────────────────────────────────
+
+  async markDone(event) {
+    const btn        = event.currentTarget
+    const stepId     = parseInt(btn.dataset.stepId)
+    const campaignId = btn.dataset.campaignId
+    const csrf       = document.querySelector('meta[name="csrf-token"]')?.content
+
+    btn.disabled    = true
+    btn.textContent = "…"
+
+    try {
+      const res = await fetch(`/campaigns/${campaignId}/steps/${stepId}/toggle_status`, {
+        method:  "PATCH",
+        headers: {
+          "X-CSRF-Token": csrf,
+          "Accept":       "application/json",
+          "Content-Type": "application/json"
+        }
+      })
+
+      if (!res.ok) { this.resetBtn(btn); return }
+
+      const data      = await res.json()
+      const stepIndex = this.stepsValue.findIndex(s => s.id === stepId)
+
+      this.closePanel()
+
+      if (data.status === "done") {
+        const nodeEl = this.canvasTarget.querySelector(`.journey-node[data-step-index="${stepIndex}"]`)
+        nodeEl?.classList.add("completing")
+        this.flashSegmentGreen(stepIndex)
+
+        setTimeout(() => {
+          const nextNode = this.canvasTarget.querySelector(`.journey-node[data-step-index="${stepIndex + 1}"]`)
+          nextNode?.classList.add("activating")
+        }, 280)
+
+        setTimeout(() => this.rebuildWith(stepId, data.status), 650)
+      } else {
+        this.rebuildWith(stepId, data.status)
+      }
+    } catch {
+      this.resetBtn(btn)
+    }
+  }
+
+  rebuildWith(stepId, newStatus) {
+    this.stepsValue = this.stepsValue.map(s =>
+      s.id === stepId ? { ...s, status: newStatus } : s
+    )
+    this.build()
+    this.syncProgressHeader()
+  }
+
+  flashSegmentGreen(stepIndex) {
+    const seg = this.canvasTarget.querySelector(`svg path[data-segment-index="${stepIndex}"]`)
+    if (seg) {
+      seg.style.transition = "stroke 0.45s ease"
+      seg.style.stroke     = "#1EDD88"
+    }
+  }
+
+  syncProgressHeader() {
+    const steps   = this.stepsValue
+    const done    = steps.filter(s => s.status === "done").length
+    const total   = steps.length
+    const pct     = total > 0 ? Math.round(done * 100 / total) : 0
+    const allDone = done === total && total > 0
+
+    const countEl = this.element.querySelector(".journey-progress-count")
+    const barEl   = this.element.querySelector(".journey-progress-bar")
+    const header  = this.element.querySelector(".journey-progress-header")
+
+    if (countEl) countEl.textContent = allDone
+      ? "Toutes les étapes terminées"
+      : `${done} / ${total} étapes terminées`
+    if (barEl)   barEl.style.width   = pct + "%"
+    if (header)  header.classList.toggle("all-done", allDone)
+
+    this.syncCampaignStatus(allDone)
+  }
+
+  async syncCampaignStatus(allDone) {
+    const pill          = document.querySelector(".campaign-status-pill")
+    const isCompleted   = pill?.classList.contains("completed")
+    const targetStatus  = allDone ? "completed" : "active"
+
+    if ((allDone && isCompleted) || (!allDone && !isCompleted)) return
+
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.content
+    try {
+      await fetch(`/campaigns/${this.campaignIdValue}`, {
+        method: "PATCH",
+        headers: {
+          "X-CSRF-Token": csrf,
+          "Accept":       "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ campaign: { status: targetStatus } })
+      })
+      if (pill) {
+        pill.className   = `campaign-status-pill ${targetStatus}`
+        pill.textContent = allDone ? "Terminée" : "Active"
+      }
+    } catch {
+      // Silently fail — non-critique
+    }
+  }
+
+  resetBtn(btn) {
+    btn.disabled    = false
+    btn.textContent = "Erreur — réessayer"
+  }
+
+  // ─── Content Parser ───────────────────────────────────────────
+
+  parseStepContent(raw) {
+    if (!raw) return { channel: null, content: "", instructions: [] }
+
+    const parts = raw.split(/\n(?=\*\*\w)/g)
+    let channel = null, content = "", instructions = []
+
+    parts.forEach(part => {
+      const chM = part.match(/^\*\*Channel\*\*\s*[:\-]?\s*(.+)/i)
+      const coM = part.match(/^\*\*Contenu[^*]*\*\*\s*[:\-]?\s*([\s\S]+)/i)
+      const inM = part.match(/^\*\*Instructions?\*\*\s*[:\-]?\s*([\s\S]+)/i)
+
+      if (chM) {
+        channel = chM[1].trim()
+      } else if (coM) {
+        content = coM[1].trim()
+      } else if (inM) {
+        const text  = inM[1].trim()
+        const lines = text
+          .split(/\n+/)
+          .map(l => l.replace(/^[-•*\d.)]+\s*/g, "").trim())
+          .filter(l => l.length > 2)
+        instructions = lines.length ? lines : text.length > 2 ? [text] : []
+      }
+    })
+
+    if (!content && !channel) content = raw
+    return { channel, content, instructions }
+  }
+
+  extractChannel(content) {
+    if (!content) return null
+    const m = content.match(/\*\*Channel\*\*\s*[:\-]?\s*([^\n*]+)/i)
+    return m ? m[1].trim().substring(0, 26) : null
+  }
+}

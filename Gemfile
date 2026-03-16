@@ -50,6 +50,9 @@ gem "cloudinary"
 gem "ruby_llm"
 gem "ruby-openai"
 gem "pdf-reader"
+gem "kramdown"
+gem "rouge"
+gem "kramdown-parser-gfm"
 
 group :development, :test do
   gem "dotenv-rails"

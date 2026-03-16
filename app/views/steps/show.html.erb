@@ -13,7 +13,7 @@
 
     <div class="step-show-card">
       <% if @step.generated_content.present? %>
-        <%= simple_format(@step.generated_content) %>
+        <%= raw(render_markdown(@step.generated_content)) %>
       <% else %>
         <span class="empty-field">Contenu non généré</span>
       <% end %>

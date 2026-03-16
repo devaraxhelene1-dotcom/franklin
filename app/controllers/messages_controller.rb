@@ -42,10 +42,21 @@ class MessagesController < ApplicationController
        - CHAQUE STEP DOIT CONTENIR LE TEXTE FINAL PRÊT À COPIER-COLLER.
          L'utilisateur doit pouvoir prendre le contenu du step et le poster tel quel sur le channel.
          Pas de résumé, pas de description, pas de "poster un thread sur X" — le texte complet du post.
-       - Format de chaque step :
-         **Channel** : [nom du channel]
-         **Contenu à poster** : [LE TEXTE COMPLET, prêt à copier-coller]
-         **Instructions** : [ce que l'utilisateur doit faire concrètement avec ce contenu]
+
+       FORMAT OBLIGATOIRE du champ generated_content (respecte EXACTEMENT cette structure) :
+
+         **Channel** : LinkedIn
+         **Contenu à poster** : Voici le texte complet du post, prêt à copier-coller. Il peut faire
+         plusieurs lignes, avec des hashtags, des mentions, etc.
+         **Instructions** : 1. Publier le mardi matin entre 8h et 10h. 2. Taguer les profils mentionnés.
+
+       RÈGLES DU FORMAT :
+       - Commence TOUJOURS par "**Channel** :" sur la première ligne
+       - Puis "**Contenu à poster** :" avec le texte COMPLET (pas un résumé)
+       - Puis "**Instructions** :" avec les actions concrètes
+       - N'inclus PAS le numéro du jour dans generated_content (le champ 'day' s'en charge)
+       - N'inclus PAS de JSON brut, pas de clés "day" ou "images_requested" dans le contenu
+       - generated_content est une STRING de texte formaté, JAMAIS du JSON
        - INTERDIT : les résumés type "Poster un thread sur le sujet X". Il faut LE thread écrit en entier.
 
     IMAGES :

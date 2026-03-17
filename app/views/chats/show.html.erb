@@ -6,7 +6,7 @@
     <h2>Discutez avec <span>Franklin</span></h2>
   </div>
 
-  <% if @chat.campaign.present? %>
+  <% if @chat.campaign&.status == "active" %>
     <div class="campaign-created-banner">
       <div class="campaign-banner-left">
         <span class="campaign-banner-icon">🎯</span>

@@ -1,21 +1,16 @@
 class GenerateCampaignSteps < RubyLLM::Tool
   attr_accessor :chat
 
-  description "Générer le plan d'action marketing jour par jour pour une campagne validée. " \
-              "Appelle cet outil juste après la création de la campagne. " \
-              "Génère entre 5 et 8 steps (actions concrètes) répartis intelligemment sur 14 jours (day 1 à 14). " \
-              "Chaque step contient le contenu complet : le channel utilisé, le texte/contenu à poster, " \
-              "et les instructions précises pour l'utilisateur (quoi faire, comment, pourquoi). " \
-              "Répartir les steps de manière stratégique sur les 14 jours (pas forcément consécutifs)."
+  description "Générer le plan d'action marketing pour une campagne validée. " \
+              "Appelle cet outil juste après create_campaign. " \
+              "4 à 7 steps répartis stratégiquement sur 14 jours (pas forcément consécutifs)."
 
-  param :steps, type: :array, desc: "Liste de 5 à 8 steps. Chaque step est un objet avec exactement 2 clés : " \
-    "'day' (integer entre 1 et 14) et 'generated_content' (string formatée). " \
-    "Le generated_content DOIT suivre ce format exact :\n" \
+  param :steps, type: :array, desc: "Liste de 4 à 7 steps. Chaque step = objet avec 'day' (integer 1-14) et 'generated_content' (string). " \
+    "Format de generated_content :\n" \
     "**Channel** : Nom du channel\n" \
-    "**Contenu à poster** : Le texte complet prêt à copier-coller\n" \
-    "**Instructions** : Les actions concrètes pour l'utilisateur\n" \
-    "NE PAS inclure de JSON, de numéro de jour, ni de clé 'images_requested' dans generated_content. " \
-    "Uniquement ces 3 sections markdown. Les steps doivent être en français."
+    "**Contenu à poster** : Texte complet prêt à copier-coller\n" \
+    "**Instructions** : Actions concrètes pour l'utilisateur (2 phrases max, complètes)\n" \
+    "Pas de JSON ni de numéro de jour dans generated_content. En français."
 
   def execute(steps:)
     campaign = @chat.campaign
@@ -28,6 +23,14 @@ class GenerateCampaignSteps < RubyLLM::Tool
 
     # Parser les steps si c'est une string JSON
     parsed_steps = steps.is_a?(String) ? JSON.parse(steps) : steps
+
+    # Garde-fou : minimum 4 steps requis
+    if parsed_steps.length < 4
+      return {
+        error: "Tu n'as fourni que #{parsed_steps.length} step(s). " \
+               "Génère entre 4 et 7 steps répartis sur 14 jours, puis rappelle generate_campaign_steps."
+      }
+    end
 
     # Répartition par défaut si aucun jour n'est trouvé
     default_days = [1, 3, 5, 8, 10, 12, 14]
@@ -104,6 +107,10 @@ class GenerateCampaignSteps < RubyLLM::Tool
       text = "**Channel** : Non spécifié\n**Contenu à poster** : #{text}\n**Instructions** : Publier ce contenu."
     end
 
-    text.strip
+    # 5. Compléter les phrases tronquées (pas de ponctuation finale)
+    text.strip!
+    text << "." unless text.match?(/[.!?…"]\z/)
+
+    text
   end
 end

@@ -26,7 +26,6 @@
       <p class="campaign-show-date">Créée le <%= @campaign.created_at.strftime("%d %B %Y") %></p>
     </div>
 
-    <%# ── Strategy section (collapsible) ──────────────────────── %>
     <details class="strategy-section" open>
       <summary class="strategy-toggle">
         <span class="strategy-toggle-left">
@@ -40,7 +39,6 @@
 
       <div class="strategy-body">
 
-        <%# ICP — Persona cards %>
         <% if @campaign.icp.present? %>
           <div class="strategy-row">
             <span class="strategy-label">ICP</span>
@@ -75,7 +73,6 @@
           </div>
         <% end %>
 
-        <%# Channels — colored pills by network %>
         <% if @campaign.channels.present? %>
           <div class="strategy-row">
             <span class="strategy-label">Channels</span>
@@ -103,7 +100,6 @@
           </div>
         <% end %>
 
-        <%# Angles — numbered pillars %>
         <% if @campaign.angles.present? %>
           <div class="strategy-row">
             <span class="strategy-label">Angles</span>

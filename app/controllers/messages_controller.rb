@@ -81,16 +81,33 @@ class MessagesController < ApplicationController
   PROMPT
 
   def create
-    @chat = current_user.chats.find(params[:chat_id])
-    @message = @chat.messages.new(content: build_content, role: "user")
-    @message.file.attach(params[:message][:file]) if params[:message][:file].present?
+  @chat = current_user.chats.find(params[:chat_id])
+  @message = @chat.messages.new(content: build_content, role: "user")
+  @message.file.attach(params[:message][:file]) if params[:message][:file].present?
 
-    if @message.save
+  if @message.save
+    # Si c'est une validation de stratégie, traiter différemment
+    if params[:message][:content] == "Je valide la stratégie proposée."
+      # Appeler le LLM pour créer la campagne
+      save_llm_response
+
+      # Recharger le chat pour avoir la campagne créée
+      @chat.reload
+
+      # Rediriger directement vers la campagne
+      if @chat.campaign.present?
+        redirect_to campaign_path(@chat.campaign), notice: "Campagne créée avec succès !"
+      else
+        redirect_to chat_path(@chat), alert: "Une erreur est survenue lors de la création de la campagne."
+      end
+    else
+      # Comportement normal pour les autres messages
       save_llm_response
       redirect_to chat_path(@chat)
-    else
-      render "chats/show", status: :unprocessable_entity
     end
+  else
+    render "chats/show", status: :unprocessable_entity
+  end
   end
 
   private

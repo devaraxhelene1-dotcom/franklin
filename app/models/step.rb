@@ -7,26 +7,53 @@ class Step < ApplicationRecord
 
   scope :done, -> { where(status: "done") }
 
-  CHANNELS = %w[Email LinkedIn Twitter Instagram TikTok SMS Blog].freeze
+  CHANNELS = [
+    "LinkedIn", "Email", "Twitter / X", "Instagram",
+    "TikTok", "Facebook", "Blog / Article", "Forum / Reddit", "Slack / Discord", "Autre"
+  ].freeze
 
-  # generated_content format:
-  # CHANNEL: <channel>
-  # ---
-  # <content body>
-  # ===INSTRUCTIONS===
-  # <instructions>
+  # Parse generated_content (markdown format) into 3 structured fields.
+  # Mirrors parseStepContent() in campaign_journey_controller.js.
+  # Falls back to raw content in :content if format not recognized.
   def parse_content
     raw = generated_content.to_s
-    channel_match = raw.match(/\ACHANNEL:\s*(.+)\n---\n/m)
-    channel = channel_match ? channel_match[1].strip : ""
-    after_header = channel_match ? raw[channel_match.end(0)..] : raw
-    parts = after_header.split("===INSTRUCTIONS===", 2)
-    { channel: channel, content: parts[0].to_s.strip, instructions: parts[1].to_s.strip }
+    parts = raw.split(/\n(?=\*\*\w)/m)
+
+    channel      = nil
+    content      = ""
+    instructions = ""
+
+    parts.each do |part|
+      if (m = part.match(/\A\*\*Channel\*\*\s*[:\-]?\s*(.+)/i))
+        channel = m[1].strip
+      elsif (m = part.match(/\A\*\*Contenu[^*]*\*\*\s*[:\-]?\s*([\s\S]+)/i))
+        content = m[1].strip
+      elsif (m = part.match(/\A\*\*Instructions?\*\*\s*[:\-]?\s*([\s\S]+)/i))
+        instructions = m[1].strip
+      end
+    end
+
+    # Fallback: unrecognized format → put everything in content
+    content = raw if content.blank? && channel.nil?
+
+    { channel: channel.to_s, content: content, instructions: instructions }
   end
 
+  # Reassemble 3 structured fields into the markdown format
+  # expected by parseStepContent() in JS.
   def self.assemble_content(channel:, content:, instructions:)
-    text = "CHANNEL: #{channel}\n---\n#{content}"
-    text += "\n===INSTRUCTIONS===\n#{instructions}" if instructions.present?
-    text
+    parts = []
+    parts << "**Channel** : #{channel.strip}"          if channel.present?
+    parts << "**Contenu à poster** :\n#{content.strip}" if content.present?
+
+    if instructions.present?
+      lines = instructions.split("\n").map(&:strip).reject(&:empty?)
+      numbered = lines.each_with_index.map do |line, i|
+        line.match?(/\A\d+\./) ? line : "#{i + 1}. #{line}"
+      end.join("\n")
+      parts << "**Instructions** :\n#{numbered}"
+    end
+
+    parts.join("\n\n")
   end
 end

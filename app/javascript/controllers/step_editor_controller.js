@@ -1,5 +1,3 @@
-import { Controller } from "@hotwired/stimulus"
-
 function buildChannelMeta(name) {
   const handle = `@${name.toLowerCase().replace(/\s+/g, "_")}`
   return {
@@ -15,6 +13,8 @@ function buildChannelMeta(name) {
     "Autre":           { color: "#6b7280", sub: name,                            actions: ["↗ Partager"] },
   }
 }
+
+import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = [

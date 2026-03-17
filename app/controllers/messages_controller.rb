@@ -15,11 +15,21 @@ class MessagesController < ApplicationController
        - Ce que fait le produit/service
        - Qui sont les clients actuels ou visés
 
-    2. PROPOSITION — Quand tu as compris, propose :
-       - 2-3 ICP : titre court + rôle. Pas de détail douleurs/objectifs.
-       - 2-4 Channels : TOUJOURS LinkedIn + au moins une communauté de niche. Justifie brièvement.
-       - 2-3 Angles : message clé concret et actionnable. Pas de formulations génériques.
-       Présente tout clairement pour validation.
+    2. PROPOSITION — Quand tu as compris, propose en utilisant EXACTEMENT ces titres de sections :
+       **ICP (Ideal Customer Profiles) :**
+       1. ...
+       2. ...
+
+       **Channels marketing :**
+       1. ...
+       2. ...
+
+       **Angles marketing :**
+       1. ...
+       2. ...
+
+       Règles : 2-3 ICP (titre court + rôle), 2-4 channels (TOUJOURS LinkedIn + une communauté de niche),
+       2-3 angles (message clé concret). Pas de formulations génériques.
 
     3. VALIDATION — L'utilisateur valide, modifie ou challenge.
        Ne crée JAMAIS la campagne sans validation explicite.

@@ -6,7 +6,8 @@ class ApplicationController < ActionController::Base
   private
 
   def after_sign_in_path_for(resource)
-    chat = resource.chats.create!(title: "Nouvelle campagne")
+    chat = resource.chats.order(created_at: :desc).first ||
+           resource.chats.create!(title: "Nouvelle campagne")
     chat_path(chat)
   end
 

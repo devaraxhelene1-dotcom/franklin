@@ -1,35 +1,252 @@
-<div class="step-show">
-  <div class="container">
+<%# Channel icons ──────────────────────────────────────────────── %>
+<% channel_icons = {
+  "LinkedIn"        => '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>',
+  "Email"           => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+  "Twitter / X"     => '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.736l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+  "Instagram"       => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>',
+  "TikTok"          => '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.16 8.16 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>',
+  "Facebook"        => '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>',
+  "Blog / Article"  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+  "Forum / Reddit"  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  "Slack / Discord" => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M8 12h8M12 8v8"/></svg>',
+  "Autre"           => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>'
+} %>
 
-    <div class="step-show-header">
-      <%= link_to "← Retour à la campagne", campaign_path(@campaign), class: "back-link" %>
-      <div class="step-show-title-row">
-        <h1>Jour <%= @step.day %></h1>
-        <span class="step-status-badge <%= @step.status %>">
+<% channel_colors = {
+  'LinkedIn' => '#0A66C2', 'Twitter / X' => '#000', 'Email' => '#6366f1',
+  'Instagram' => '#E1306C', 'TikTok' => '#010101', 'Facebook' => '#1877F2',
+  'Blog / Article' => '#7c3aed', 'Forum / Reddit' => '#FF4500',
+  'Slack / Discord' => '#4A154B', 'Autre' => '#6b7280'
+} %>
+
+<% channel        = @parsed[:channel].presence || "Autre" %>
+<% channel_color  = channel_colors.fetch(channel, '#1EDD88') %>
+<% display_name   = current_user.username.presence || current_user.email.split("@").first %>
+<% display_initial = display_name[0].upcase %>
+<% has_content     = @parsed[:content].present? %>
+<% has_instructions = @parsed[:instructions].present? %>
+<% progress_pct   = @total_steps > 0 ? (@done_steps.to_f / @total_steps * 100).round : 0 %>
+
+<div class="step-page">
+  <div class="step-page-inner">
+
+    <%# ── Sticky top bar ──────────────────────────────────────────── %>
+    <div class="step-topbar">
+      <%= link_to campaign_path(@campaign), class: "step-back" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        <%= @campaign.title %>
+      <% end %>
+
+      <%# Prev / Next navigation %>
+      <div class="step-nav-arrows">
+        <% if @prev_step %>
+          <%= link_to campaign_step_path(@campaign, @prev_step), class: "step-nav-arrow", title: "Jour #{@prev_step.day}" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          <% end %>
+        <% else %>
+          <span class="step-nav-arrow is-disabled">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </span>
+        <% end %>
+
+        <span class="step-nav-label">Jour <%= @step.day %></span>
+
+        <% if @next_step %>
+          <%= link_to campaign_step_path(@campaign, @next_step), class: "step-nav-arrow", title: "Jour #{@next_step.day}" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <% end %>
+        <% else %>
+          <span class="step-nav-arrow is-disabled">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+        <% end %>
+      </div>
+
+      <div class="step-topbar-actions">
+        <span class="step-status-pill <%= @step.status %>">
+          <span class="step-status-dot"></span>
           <%= @step.status == "done" ? "Fait" : "En attente" %>
         </span>
+        <%= link_to edit_campaign_step_path(@campaign, @step), class: "step-btn-secondary" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Modifier
+        <% end %>
       </div>
     </div>
 
-    <div class="step-show-card">
-      <% if @step.generated_content.present? %>
-        <%= raw(render_markdown(@step.generated_content)) %>
-      <% else %>
-        <span class="empty-field">Contenu non généré</span>
-      <% end %>
+    <%# ── Progress bar ─────────────────────────────────────────────── %>
+    <div class="step-progress-bar-wrap">
+      <div class="step-progress-meta">
+        <span class="step-progress-label">
+          <%= @step_position %> / <%= @total_steps %> étapes
+          <% if @parsed[:channel].present? %>
+            &nbsp;·&nbsp;
+            <%= raw channel_icons.fetch(channel, channel_icons["Autre"]) %>
+            <%= channel %>
+          <% end %>
+        </span>
+        <span class="step-progress-count"><%= @done_steps %> terminées</span>
+      </div>
+      <div class="step-progress-track">
+        <div class="step-progress-fill" style="width: <%= progress_pct %>%;"></div>
+        <%# Mark current step position %>
+        <div class="step-progress-cursor" style="left: calc(<%= (((@step_position - 1).to_f / [@total_steps - 1, 1].max) * 100).round %>% - 4px);"></div>
+      </div>
     </div>
 
-    <% if @step.image.attached? %>
-      <div class="step-show-image">
-        <%= image_tag @step.image %>
+    <%# ── Main two-column layout ───────────────────────────────────── %>
+    <div class="step-two-col">
+
+      <%# Left: content display %>
+      <div class="step-editor-col">
+        <% if has_content %>
+          <div class="step-content-display">
+            <div class="step-content-display-header">
+              <span class="step-editor-box-label">Contenu à poster</span>
+              <button class="step-copy-btn"
+                      onclick="navigator.clipboard.writeText(this.dataset.text).then(() => { this.classList.add('copied'); this.querySelector('.lbl').textContent = 'Copié !'; setTimeout(() => { this.classList.remove('copied'); this.querySelector('.lbl').textContent = 'Copier'; }, 1800); })"
+                      data-text="<%= j @parsed[:content] %>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span class="lbl">Copier</span>
+              </button>
+            </div>
+            <div class="step-content-display-body step-content-editorial">
+              <%= simple_format @parsed[:content] %>
+            </div>
+          </div>
+        <% elsif @step.generated_content.present? %>
+          <div class="step-content-display">
+            <div class="step-content-display-header">
+              <span class="step-editor-box-label">Contenu</span>
+            </div>
+            <div class="step-content-display-body step-content-editorial">
+              <%= raw(render_markdown(@step.generated_content)) %>
+            </div>
+          </div>
+        <% else %>
+          <div class="step-empty-state">
+            <p>Aucun contenu généré pour cette étape.</p>
+            <%= link_to "Ajouter du contenu", edit_campaign_step_path(@campaign, @step), class: "step-btn-secondary", style: "margin-top:12px;display:inline-flex;" %>
+          </div>
+        <% end %>
+
+        <%# Image section (left column, below content) %>
+        <% if @step.image.attached? %>
+          <div class="step-image-section">
+            <div class="step-image-section-header">
+              <span class="step-editor-box-label">Visuel attaché</span>
+              <%= link_to url_for(@step.image), class: "step-copy-btn", target: "_blank", rel: "noopener" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Télécharger
+              <% end %>
+            </div>
+            <%= image_tag @step.image, class: "step-image-full" %>
+          </div>
+        <% end %>
+      </div>
+
+      <%# Right: static preview %>
+      <div class="step-preview-col">
+        <div class="step-preview-wrap">
+          <div class="step-preview-header">
+            <span class="step-preview-title">Aperçu</span>
+            <span class="step-preview-channel-name" style="color: <%= channel_color %>;">
+              <%= raw channel_icons.fetch(channel, channel_icons["Autre"]) %>
+              <%= channel %>
+            </span>
+          </div>
+          <div class="step-preview-body">
+            <div class="step-preview-card" style="border-top: 3px solid <%= channel_color %>;">
+              <div class="step-preview-card-inner">
+                <div class="step-preview-card-header">
+                  <div class="step-preview-avatar" style="background: <%= channel_color %>"><%= display_initial %></div>
+                  <div>
+                    <div class="step-preview-name"><%= display_name %></div>
+                    <div class="step-preview-sub"><%= {
+                      'LinkedIn'        => "#{display_name} · Maintenant · 🌐",
+                      'Twitter / X'     => "@#{display_name.downcase.gsub(/\s+/, '_')}",
+                      'Email'           => 'À : votre liste',
+                      'Instagram'       => "@#{display_name.downcase.gsub(/\s+/, '_')}",
+                      'TikTok'          => "@#{display_name.downcase.gsub(/\s+/, '_')}",
+                      'Facebook'        => "#{display_name} · Public",
+                      'Blog / Article'  => "#{display_name} · Blog",
+                      'Forum / Reddit'  => "u/#{display_name.downcase}",
+                      'Slack / Discord' => '#marketing',
+                      'Autre'           => display_name
+                    }.fetch(channel, display_name) %></div>
+                  </div>
+                </div>
+
+                <% if has_content %>
+                  <p class="step-preview-text"><%= truncate(@parsed[:content], length: 280) %></p>
+                <% else %>
+                  <p class="step-preview-text is-placeholder">Votre contenu apparaîtra ici…</p>
+                <% end %>
+
+                <%# Image inside preview %>
+                <% if @step.image.attached? %>
+                  <div class="step-preview-image-wrap">
+                    <%= image_tag @step.image, class: "step-preview-image" %>
+                  </div>
+                <% end %>
+
+                <div class="step-preview-actions">
+                  <%= raw({
+                    'LinkedIn'        => '<span>👍 J\'aime</span><span>💬 Commenter</span><span>↗ Partager</span>',
+                    'Twitter / X'     => '<span>💬 0</span><span>🔁 0</span><span>❤️ 0</span><span>↗</span>',
+                    'Email'           => '<span>📤 Envoyer</span>',
+                    'Instagram'       => '<span>❤️ 0</span><span>💬 0</span><span>↗</span>',
+                    'TikTok'          => '<span>❤️ 0</span><span>💬 0</span><span>🔁 0</span>',
+                    'Facebook'        => '<span>👍 J\'aime</span><span>💬 Commenter</span><span>↗ Partager</span>',
+                    'Blog / Article'  => '<span>📖 Lire</span><span>💬 Commenter</span>',
+                    'Forum / Reddit'  => '<span>⬆️ 0</span><span>💬 0</span><span>↗ Partager</span>',
+                    'Slack / Discord' => '<span>😊</span><span>💬 Répondre</span><span>↗</span>',
+                    'Autre'           => '<span>↗ Partager</span>'
+                  }.fetch(channel, '<span>↗ Partager</span>')) %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <%# ── Instructions ──────────────────────────────────────────────── %>
+    <% if has_instructions %>
+      <div class="step-workflow-section">
+        <div class="step-workflow-header">
+          <span class="step-label" style="margin:0;">Instructions</span>
+        </div>
+        <div class="step-workflow-list">
+          <% @parsed[:instructions].split("\n").map(&:strip).reject(&:empty?).each_with_index do |line, i| %>
+            <div class="step-workflow-row">
+              <span class="step-workflow-num"><%= i + 1 %></span>
+              <span class="step-workflow-text"><%= line.gsub(/\A\d+\.\s*/, "") %></span>
+            </div>
+          <% end %>
+        </div>
       </div>
     <% end %>
 
-    <div class="step-show-actions">
+    <%# ── Primary CTA (unique, en bas) ──────────────────────────────── %>
+    <div class="step-primary-action">
       <%= button_to toggle_status_campaign_step_path(@campaign, @step),
           method: :patch,
-          class: "btn-toggle-status #{@step.status}" do %>
-        <%= @step.status == "done" ? "Remettre en attente" : "Marquer comme fait" %>
+          class: "step-btn-primary #{@step.status} step-btn-primary--large" do %>
+        <% if @step.status == "done" %>
+          Remettre en attente
+        <% else %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Marquer comme fait
+        <% end %>
+      <% end %>
+
+      <% if @next_step %>
+        <%= link_to campaign_step_path(@campaign, @next_step), class: "step-btn-ghost step-btn-next" do %>
+          Étape suivante
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <% end %>
       <% end %>
     </div>
 

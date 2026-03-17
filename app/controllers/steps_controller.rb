@@ -2,9 +2,18 @@ class StepsController < ApplicationController
   before_action :set_campaign_and_step
 
   def show
+    @parsed = @step.parse_content
+    ordered       = @campaign.steps.order(:day).to_a
+    idx           = ordered.index { |s| s.id == @step.id }
+    @prev_step    = ordered[idx - 1] if idx > 0
+    @next_step    = ordered[idx + 1]
+    @total_steps  = ordered.length
+    @step_position = idx + 1
+    @done_steps   = @campaign.steps.where(status: "done").count
   end
 
   def edit
+    @parsed = @step.parse_content
   end
 
   def toggle_status
@@ -17,10 +26,25 @@ class StepsController < ApplicationController
   end
 
   def update
-    if @step.update(step_params)
-      redirect_to edit_campaign_step_path(@campaign, @step), notice: "Step modifié avec succès"
+    sp = params[:step] || {}
+    assembled = Step.assemble_content(
+      channel:      sp[:channel].to_s,
+      content:      sp[:content_body].to_s,
+      instructions: sp[:instructions].to_s
+    )
+
+    @step.generated_content = assembled
+    @step.status = sp[:status] || @step.status
+
+    if @step.save
+      redirect_to campaign_path(@campaign), notice: "Étape modifiée avec succès."
     else
-      render :edit
+      @parsed = {
+        channel:      sp[:channel].to_s,
+        content:      sp[:content_body].to_s,
+        instructions: sp[:instructions].to_s
+      }
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -29,9 +53,5 @@ class StepsController < ApplicationController
   def set_campaign_and_step
     @campaign = current_user.campaigns.find(params[:campaign_id])
     @step = @campaign.steps.find(params[:id])
-  end
-
-  def step_params
-    params.require(:step).permit(:status)
   end
 end

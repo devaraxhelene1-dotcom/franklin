@@ -4,14 +4,14 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Geist', sans-serif;
+  font-family: 'Inter', sans-serif;
   background: radial-gradient(circle at 50% 50%, #dcfce7 0%, #ffffff 60%);
 
 }
 
 .chat-title {
   text-align: center;
-    font-family: 'Geist', sans-serif;
+    font-family: 'Inter', sans-serif;
 
 }
 
@@ -20,7 +20,7 @@
   font-weight: 700;
   line-height: 1.15;
   color: #111;
-    font-family: 'Geist', sans-serif;
+    font-family: 'Inter', sans-serif;
 
 }
 
@@ -105,7 +105,7 @@
   background: transparent;
   outline: none;
   font-size: 15px;
-  font-family: 'Geist', sans-serif;
+  font-family: 'Inter', sans-serif;
   resize: none;
   line-height: 1.5;
 }
@@ -149,7 +149,6 @@
   color: #ffff;
 }
 
-// ── Campaign created banner ───────────────────────────────────────
 .campaign-created-banner {
   display: flex;
   align-items: center;
@@ -199,7 +198,6 @@
   }
 }
 
-// ── Validate banner ───────────────────────────────────────────────
 .validate-banner {
   display: flex;
   align-items: center;
@@ -233,7 +231,6 @@
   }
 }
 
-/* Strategy Proposal Card */
 .strategy-card {
   background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
   border-radius: 20px;

@@ -1,4 +1,3 @@
-// ── Shared placeholders ──────────────────────────────────────────
 %page-section { padding: 40px 0; }
 
 %card-border {
@@ -36,7 +35,6 @@
   p { margin: 0; }
 }
 
-// ── Campaigns Index ──────────────────────────────────────────────
 .campaigns-index {
   @extend %page-section;
 
@@ -105,9 +103,6 @@
   }
 }
 
-// ── Campaign Journey ─────────────────────────────────────────────
-
-// Progress header
 .campaign-journey {
   position: relative;
   margin-top: 8px;
@@ -160,7 +155,6 @@
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-// Canvas
 .journey-canvas {
   position: relative;
   width: 100%;
@@ -176,7 +170,6 @@
   overflow: visible;
 }
 
-// Nodes container
 .journey-nodes {
   position: absolute;
   top: 0;
@@ -186,7 +179,6 @@
   pointer-events: none;
 }
 
-// Individual node
 @keyframes nodeAppear {
   from { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
   to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -303,7 +295,6 @@
   animation: labelFadeIn 0.35s ease forwards;
 }
 
-// Node completing / activating states
 .journey-node.completing {
   animation: nodeComplete 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
 
@@ -322,7 +313,6 @@
   }
 }
 
-// Panel channel badge
 .panel-channel-badge {
   background: #eef5ff;
   color: #0070F3;
@@ -333,7 +323,6 @@
   letter-spacing: 0.02em;
 }
 
-// Checklist
 .panel-checklist {
   margin-bottom: 28px;
   padding: 16px 18px;
@@ -392,7 +381,6 @@
 
 .checklist-text { flex: 1; transition: color 0.15s; }
 
-// Checked state via CSS :has()
 .checklist-label:has(.checklist-checkbox:checked) {
   .checklist-check {
     background: #1EDD88;
@@ -403,7 +391,6 @@
   .checklist-text { color: #bbb; text-decoration: line-through; }
 }
 
-// "isNew" entry animation — AI building banner
 @keyframes pulseDot {
   0%, 100% { opacity: 1;   transform: scale(1); }
   50%       { opacity: 0.4; transform: scale(1.35); }
@@ -438,7 +425,6 @@
   }
 }
 
-// Preview card
 .journey-preview-card {
   position: absolute;
   width: 240px;
@@ -505,7 +491,6 @@
   overflow: hidden;
 }
 
-// Overlay
 .journey-overlay {
   visibility: hidden;
   pointer-events: none;
@@ -524,7 +509,6 @@
   }
 }
 
-// Side panel
 .journey-panel {
   position: fixed;
   top: 0;
@@ -554,7 +538,6 @@
 
 body.journey-panel-open { overflow: hidden; }
 
-// Panel internals
 .panel-header {
   display: flex;
   align-items: flex-start;
@@ -669,7 +652,6 @@ body.journey-panel-open { overflow: hidden; }
   &.done    { background: #f0f0f0; color: #555; }
 }
 
-// Responsive
 @media (max-width: 600px) {
   .journey-panel     { width: 100vw; }
   .journey-panel-body { padding: 20px 18px 32px; }
@@ -677,14 +659,12 @@ body.journey-panel-open { overflow: hidden; }
   .journey-progress-bar-wrap { width: 100%; }
 }
 
-// ── Campaign Show ────────────────────────────────────────────────
 .campaign-show {
   @extend %page-section;
 
   .container { max-width: 880px; }
 }
 
-// Header
 .campaign-show-nav {
   display: flex;
   align-items: center;
@@ -744,7 +724,6 @@ body.journey-panel-open { overflow: hidden; }
 
 .campaign-show-date { font-size: 0.78rem; color: #bbb; margin: 6px 0 0; }
 
-// Strategy section — collapsible
 .strategy-section {
   border: 1.5px solid #ebebeb;
   border-radius: 14px;
@@ -817,7 +796,6 @@ body.journey-panel-open { overflow: hidden; }
   padding-top: 4px;
 }
 
-// ICP — Persona cards
 .strategy-personas {
   display: flex;
   flex-direction: column;
@@ -881,7 +859,6 @@ body.journey-panel-open { overflow: hidden; }
   line-height: 1.4;
 }
 
-// Channels — colored pills
 .strategy-pills {
   display: flex;
   flex-wrap: wrap;
@@ -907,7 +884,6 @@ body.journey-panel-open { overflow: hidden; }
     opacity: 0.7;
   }
 
-  // Default
   background: #f0f0f0;
   color: #555;
 
@@ -920,7 +896,6 @@ body.journey-panel-open { overflow: hidden; }
   &--community   { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
 }
 
-// Angles — numbered pillars
 .strategy-angles {
   display: flex;
   flex-direction: column;
@@ -954,14 +929,12 @@ body.journey-panel-open { overflow: hidden; }
   font-weight: 500;
 }
 
-// Empty state (steps)
 .steps-empty {
   @extend %empty-state;
   @extend %card-border;
   padding: 32px 24px;
 }
 
-// Progress header — all-done celebration state
 .journey-progress-header.all-done {
   background: linear-gradient(135deg, #f0fff7 0%, #e8f5f0 100%);
   border-color: #b3f0d0;
@@ -980,7 +953,6 @@ body.journey-panel-open { overflow: hidden; }
   100% { background-position:  200% 0; }
 }
 
-// Panel copy button
 
 .panel-content-header {
   display: flex;

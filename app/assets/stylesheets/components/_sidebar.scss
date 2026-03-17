@@ -49,6 +49,8 @@ $sidebar-collapsed-width: 60px;
   list-style: none;
   padding: 0;
   margin: 0;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .sidebar-item {

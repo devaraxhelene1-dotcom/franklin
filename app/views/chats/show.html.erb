@@ -1,6 +1,3 @@
-<% last_bot_message = @chat.messages.where(role: "assistant").last %>
-<% awaiting_validation = last_bot_message&.content&.include?("[VALIDATE]") && @chat.campaign.nil? %>
-
 <div class="chat-container" data-controller="chat">
   <div class="chat-title mt-5">
     <h2>Discutez avec <span>Franklin</span></h2>
@@ -24,20 +21,36 @@
   <div class="chat-messages" data-chat-target="messages">
     <% @chat.messages.order(:created_at).each do |message| %>
       <div class="message <%= message.role == 'user' ? 'message-user' : 'message-bot' %>">
-        <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
-          <% display = message.content.gsub("[VALIDATE]", "").gsub(/\n\n--- Document (PDF )?fourni par l'utilisateur ---\n.*\z/m, "").strip %>
-          <% display = "" if display == "J'ai joint une image." && message.file.attached? %>
-          <%= display if display.present? %>
-          <% if message.file.attached? %>
-            <% if message.file.content_type&.start_with?("image/") %>
-              <%= image_tag rails_blob_path(message.file, disposition: "inline"), class: "chat-image mt-2" %>
-            <% else %>
-              <div class="file-badge mt-2">
-                <i class="fa-solid fa-file-lines me-1"></i><%= message.file.filename %>
-              </div>
+        <%
+          # Vérifier si c'est une vraie stratégie complète (nouveau format avec **)
+          is_strategy = message.role == 'assistant' &&
+                        message.content.include?("[VALIDATE]") &&
+                        message.content.match?(/\*\*ICP.*:\*\*/i) &&
+                        message.content.match?(/\*\*Channels?.*:\*\*/i) &&
+                        message.content.match?(/\*\*Angles?.*:\*\*/i)
+        %>
+
+        <% if is_strategy %>
+          <!-- Afficher la carte de stratégie -->
+          <%= render_strategy_card(message.content) %>
+        <% else %>
+          <!-- Affichage normal du chat -->
+          <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
+            <% display = message.content.gsub("[VALIDATE]", "").gsub(/\n\n--- Document (PDF )?fourni par l'utilisateur ---\n.*\z/m, "").strip %>
+            <% display = "" if display == "J'ai joint une image." && message.file.attached? %>
+            <%= simple_format(display) if display.present? %>
+
+            <% if message.file.attached? %>
+              <% if message.file.content_type&.start_with?("image/") %>
+                <%= image_tag rails_blob_path(message.file, disposition: "inline"), class: "chat-image mt-2" %>
+              <% else %>
+                <div class="file-badge mt-2">
+                  <i class="fa-solid fa-file-lines me-1"></i><%= message.file.filename %>
+                </div>
+              <% end %>
             <% end %>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
       </div>
     <% end %>
 
@@ -45,16 +58,6 @@
       <div class="message-content bubble-bot">Franklin est en train d'écrire...</div>
     </div>
   </div>
-
-  <% if awaiting_validation %>
-    <div class="validate-banner">
-      <p class="validate-banner-text">Prêt à lancer la campagne ?</p>
-      <%= form_with url: chat_messages_path(@chat), data: { action: "submit->chat#submit" } do |f| %>
-        <input type="hidden" name="message[content]" value="Je valide la stratégie proposée.">
-        <%= f.submit "✓ Valider la stratégie", class: "btn btn-validate", data: { chat_target: "submit" } %>
-      <% end %>
-    </div>
-  <% end %>
 
   <div class="chat-input">
     <%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat), multipart: true,

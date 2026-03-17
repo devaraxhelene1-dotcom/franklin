@@ -10,21 +10,9 @@ class PagesController < ApplicationController
   end
 
   def dashboard
-    campaigns = current_user.campaigns
-    @total_campaigns     = campaigns.count
-    @active_campaigns    = campaigns.where(status: "active").count
-    @completed_campaigns = campaigns.where(status: "completed").count
-    @draft_campaigns     = campaigns.where(status: "draft").count
-
-    all_steps    = Step.where(campaign: campaigns)
-    @total_steps = all_steps.count
-    @done_steps  = all_steps.where(status: "done").count
-
-    @recent_campaigns   = campaigns.where.not(status: :draft).order(created_at: :desc).limit(5)
-    @steps_per_campaign = @recent_campaigns.map do |c|
-      done  = c.steps.where(status: "done").count
-      total = c.steps.count
-      { name: c.title, done: done, pending: total - done }
-    end
+    @active_campaigns_count    = current_user.campaigns.where(status: "active").count
+    @completed_campaigns_count = current_user.campaigns.where(status: "completed").count
+    @last_campaign             = current_user.campaigns.order(created_at: :desc).first
+    @pending_steps_count       = @last_campaign&.steps&.where(status: "pending")&.count || 0
   end
 end

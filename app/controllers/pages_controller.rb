@@ -3,7 +3,7 @@ class PagesController < ApplicationController
 
   def home
     if user_signed_in?
-      chat = current_user.chats.create!(title: "New Chat")
+      chat = current_user.chats.order(created_at: :desc).first || current_user.chats.create!(title: "New Chat")
       redirect_to chat_path(chat)
     end
   end

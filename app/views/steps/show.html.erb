@@ -1,36 +1,124 @@
-<div class="step-show">
-  <div class="container">
+<div class="step-page">
 
-    <div class="step-show-header">
-      <%= link_to "← Retour à la campagne", campaign_path(@campaign), class: "back-link" %>
-      <div class="step-show-title-row">
-        <h1>Jour <%= @step.day %></h1>
-        <span class="step-status-badge <%= @step.status %>">
-          <%= @step.status == "done" ? "Fait" : "En attente" %>
+  <%# ── Navigation bar ── %>
+  <div class="step-topbar">
+    <div class="step-topbar__left">
+      <%= link_to campaign_path(@campaign), class: "step-back-link" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Retour à la campagne
+      <% end %>
+    </div>
+    <div class="step-topbar__center">
+      <span class="step-topbar__campaign"><%= @campaign.title %></span>
+    </div>
+    <div class="step-topbar__right">
+      <% if @prev_step %>
+        <%= link_to campaign_step_path(@campaign, @prev_step), class: "step-nav-btn" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        <% end %>
+      <% else %>
+        <span class="step-nav-btn step-nav-btn--disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </span>
+      <% end %>
+      <span class="step-nav-pos"><%= @step_position %> / <%= @total_steps %></span>
+      <% if @next_step %>
+        <%= link_to campaign_step_path(@campaign, @next_step), class: "step-nav-btn" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        <% end %>
+      <% else %>
+        <span class="step-nav-btn step-nav-btn--disabled">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── Progress bar ── %>
+  <div class="step-progress-wrap">
+    <div class="step-progress-bar" style="width: <%= (@done_steps.to_f / @total_steps * 100).round %>%"></div>
+  </div>
+
+  <%# ── Main content ── %>
+  <div class="step-body">
+
+    <%# Left column: meta + content %>
+    <div class="step-main">
+
+      <div class="step-header">
+        <div class="step-day-chip">Jour <%= @step.day %></div>
+        <% if @parsed[:channel].present? %>
+          <div class="step-channel-chip"><%= @parsed[:channel] %></div>
+        <% end %>
+        <span class="step-status-pill step-status-pill--<%= @step.status %>">
+          <%= @step.status == "done" ? "✓ Fait" : "En attente" %>
         </span>
       </div>
-    </div>
 
-    <div class="step-show-card">
-      <% if @step.generated_content.present? %>
-        <%= raw(render_markdown(@step.generated_content)) %>
+      <h1 class="step-title">
+        <%= @parsed[:channel].present? ? "#{@parsed[:channel]} — Jour #{@step.day}" : "Jour #{@step.day}" %>
+      </h1>
+
+      <% if @parsed[:content].present? %>
+        <div class="step-content-editorial">
+          <%= raw(render_markdown(@parsed[:content])) %>
+        </div>
       <% else %>
-        <span class="empty-field">Contenu non généré</span>
+        <p class="step-empty">Contenu non généré</p>
       <% end %>
+
+      <% if @parsed[:instructions].present? %>
+        <div class="step-instructions-block">
+          <div class="step-instructions-block__label">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Instructions de publication
+          </div>
+          <div class="step-instructions-block__body">
+            <%= raw(render_markdown(@parsed[:instructions])) %>
+          </div>
+        </div>
+      <% end %>
+
+      <div class="step-actions">
+        <%= button_to toggle_status_campaign_step_path(@campaign, @step),
+            method: :patch,
+            class: "btn-step-toggle btn-step-toggle--#{@step.status}" do %>
+          <%= @step.status == "done" ? "Remettre en attente" : "Marquer comme fait" %>
+        <% end %>
+        <%= link_to "Modifier", edit_campaign_step_path(@campaign, @step), class: "btn-step-edit" %>
+      </div>
     </div>
 
-    <% if @step.image.attached? %>
-      <div class="step-show-image">
-        <%= image_tag @step.image %>
+    <%# Right column: preview card %>
+    <div class="step-preview-col">
+      <div class="step-preview-card">
+        <div class="step-preview-card__header">
+          <div class="step-preview-avatar">
+            <%= current_user.username.to_s[0].upcase %>
+          </div>
+          <div class="step-preview-meta">
+            <span class="step-preview-name"><%= current_user.username %></span>
+            <span class="step-preview-time">Maintenant</span>
+          </div>
+        </div>
+        <% if @step.image.attached? %>
+          <div class="step-preview-image">
+            <%= image_tag @step.image, class: "step-preview-img" %>
+          </div>
+        <% end %>
+        <div class="step-preview-card__body">
+          <% if @parsed[:content].present? %>
+            <%= @parsed[:content].truncate(240) %>
+          <% else %>
+            <span class="step-empty">Aucun contenu</span>
+          <% end %>
+        </div>
+        <% if @parsed[:channel].present? %>
+          <div class="step-preview-card__footer">
+            <span class="step-preview-channel"><%= @parsed[:channel] %></span>
+          </div>
+        <% end %>
       </div>
-    <% end %>
-
-    <div class="step-show-actions">
-      <%= button_to toggle_status_campaign_step_path(@campaign, @step),
-          method: :patch,
-          class: "btn-toggle-status #{@step.status}" do %>
-        <%= @step.status == "done" ? "Remettre en attente" : "Marquer comme fait" %>
-      <% end %>
     </div>
 
   </div>

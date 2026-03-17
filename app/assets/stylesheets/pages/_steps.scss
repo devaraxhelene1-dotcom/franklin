@@ -1,76 +1,537 @@
-// ── Step Show ────────────────────────────────────────────────────
-.step-show {
-  padding: 40px 0;
+// ── Step Page Shell ──────────────────────────────────────────────
+.step-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+}
 
-  .container { max-width: 860px; }
+// ── Top bar ──────────────────────────────────────────────────────
+.step-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 32px;
+  background: #fff;
+  border-bottom: 1px solid #ebebeb;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
 
-  .back-link {
-    font-size: 0.85rem;
-    color: #888;
-    text-decoration: none;
-    display: inline-block;
-    margin-bottom: 20px;
-    &:hover { color: #1EDD88; }
-  }
+.step-topbar__left,
+.step-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 160px;
+}
 
-  .step-show-header { margin-bottom: 32px; }
+.step-topbar__right {
+  justify-content: flex-end;
+}
 
-  .step-show-title-row {
+.step-topbar__center {
+  flex: 1;
+  text-align: center;
+}
+
+.step-topbar__campaign {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.step-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #888;
+  text-decoration: none;
+  font-weight: 500;
+  svg { width: 16px; height: 16px; }
+  &:hover { color: #1EDD88; }
+}
+
+.step-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  color: #333;
+  text-decoration: none;
+  svg { width: 16px; height: 16px; }
+  &:hover { background: #e5e7eb; }
+  &--disabled { opacity: 0.3; cursor: default; pointer-events: none; }
+}
+
+.step-nav-pos {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+  white-space: nowrap;
+}
+
+// ── Progress bar ─────────────────────────────────────────────────
+.step-progress-wrap {
+  height: 3px;
+  background: #e5e7eb;
+}
+
+.step-progress-bar {
+  height: 100%;
+  background: #1EDD88;
+  transition: width 0.4s ease;
+}
+
+// ── Body layout ──────────────────────────────────────────────────
+.step-body {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 32px 60px;
+  width: 100%;
+}
+
+// ── Header chips ─────────────────────────────────────────────────
+.step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.step-day-chip {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #888;
+  background: #f3f4f6;
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.step-channel-chip {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1EDD88;
+  background: rgba(30, 221, 136, 0.1);
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.step-status-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 20px;
+  padding: 4px 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  &--pending { background: #f0f0f0; color: #666; }
+  &--done    { background: #CBFED8; color: #166534; }
+}
+
+// ── Main column ──────────────────────────────────────────────────
+.step-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1a1f2e;
+  line-height: 1.2;
+  margin-bottom: 28px;
+  letter-spacing: -0.02em;
+}
+
+.step-content-editorial {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #333;
+  margin-bottom: 32px;
+
+  p  { margin-bottom: 1em; }
+  h1, h2, h3 { font-weight: 700; margin: 1.4em 0 0.6em; }
+  ul, ol { padding-left: 1.4em; margin-bottom: 1em; }
+  strong { font-weight: 700; }
+  em     { font-style: italic; }
+}
+
+.step-empty {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.step-instructions-block {
+  background: #f8f9fa;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 32px;
+
+  &__label {
     display: flex;
     align-items: center;
-    gap: 14px;
-    h1 { font-size: 28px; font-weight: 800; margin: 0; }
-  }
-
-  .step-status-badge {
+    gap: 7px;
+    font-size: 0.78rem;
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 0.7rem;
     text-transform: uppercase;
-    white-space: nowrap;
-    letter-spacing: 0.04em;
-    &.pending { background: #f0f0f0; color: #555; }
-    &.done    { background: #CBFED8; color: #000; }
+    letter-spacing: 0.06em;
+    color: #888;
+    margin-bottom: 12px;
+    svg { width: 14px; height: 14px; }
   }
 
-  .step-show-card {
-    border: 1.5px solid #ebebeb;
-    border-radius: 14px;
-    padding: 24px;
-    background: #fff;
-    font-size: 0.95rem;
-    color: #222;
-    line-height: 1.6;
-    margin-bottom: 24px;
-  }
-
-  .step-show-image {
-    margin-bottom: 24px;
-    img {
-      max-width: 320px;
-      width: 100%;
-      border-radius: 12px;
-    }
-  }
-
-  .empty-field { color: #bbb; font-style: italic; font-size: 0.9rem; }
-
-  .step-show-actions {
-    display: flex;
-    gap: 12px;
-  }
-
-  .btn-toggle-status {
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    padding: 8px 20px;
+  &__body {
     font-size: 0.9rem;
-    cursor: pointer;
-    text-decoration: none;
-    &.pending { background: #1EDD88; color: #000; }
-    &.done    { background: #f0f0f0; color: #555; }
-    &:hover   { opacity: 0.85; }
+    line-height: 1.6;
+    color: #555;
+  }
+}
+
+.step-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-step-toggle {
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 10px 22px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+  &--pending { background: #1EDD88; color: #000; }
+  &--done    { background: #f0f0f0; color: #555; }
+  &:hover { opacity: 0.85; }
+}
+
+.btn-step-edit {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 10px 22px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: #333;
+  background: #fff;
+  &:hover { background: #f3f4f6; border-color: #ccc; }
+}
+
+// ── Preview card ─────────────────────────────────────────────────
+.step-preview-col {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+}
+
+.step-preview-card {
+  background: #fff;
+  border: 1.5px solid #ebebeb;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px 10px;
+  }
+
+  &__body {
+    padding: 0 16px 14px;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: #333;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  &__footer {
+    padding: 10px 16px 14px;
+    border-top: 1px solid #f0f0f0;
+  }
+}
+
+.step-preview-image {
+  width: 100%;
+  overflow: hidden;
+  max-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  margin-bottom: 8px;
+}
+
+.step-preview-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.step-preview-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #d4f5d0;
+  color: #166534;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-preview-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.step-preview-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a1f2e;
+}
+
+.step-preview-time {
+  font-size: 0.73rem;
+  color: #aaa;
+}
+
+.step-preview-channel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #1EDD88;
+}
+
+// ── Editor layout ─────────────────────────────────────────────────
+.step-editor-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 32px 60px;
+  width: 100%;
+}
+
+.step-editor-preview {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+}
+
+.step-preview-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #aaa;
+  margin-bottom: 12px;
+}
+
+.step-preview-channel-meta {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: #888;
+  line-height: 1.5;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 0;
+  min-height: 0;
+  transition: all 0.2s;
+
+  &.visible {
+    padding: 12px 14px;
+  }
+}
+
+// ── Form fields ──────────────────────────────────────────────────
+.step-field-group {
+  margin-bottom: 24px;
+  &--inline { display: flex; align-items: center; gap: 16px; }
+}
+
+.step-field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.step-field-optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #bbb;
+  font-size: 0.75rem;
+}
+
+.step-field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.step-char-count {
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+.step-textarea {
+  width: 100%;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  font-family: inherit;
+  color: #1a1f2e;
+  background: #fff;
+  resize: vertical;
+  transition: border-color 0.2s;
+  &:focus { outline: none; border-color: #1EDD88; }
+  &--sm { min-height: 90px; }
+}
+
+// ── Channel pills ─────────────────────────────────────────────────
+.step-channel-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.step-channel-pill {
+  cursor: pointer;
+
+  input[type="radio"] { display: none; }
+
+  span {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1.5px solid #e5e7eb;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #555;
+    background: #fff;
+    transition: all 0.15s;
+  }
+
+  &:hover span { border-color: #1EDD88; color: #1EDD88; }
+
+  input:checked + span {
+    background: #1EDD88;
+    border-color: #1EDD88;
+    color: #fff;
+  }
+}
+
+// ── Status pills ─────────────────────────────────────────────────
+.step-status-pills {
+  display: flex;
+  gap: 8px;
+}
+
+.step-status-pill {
+  cursor: pointer;
+
+  input[type="radio"] { display: none; }
+
+  span {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1.5px solid #e5e7eb;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #555;
+    background: #fff;
+    transition: all 0.15s;
+  }
+
+  &:hover span { border-color: #ccc; }
+
+  input:checked + span {
+    background: #CBFED8;
+    border-color: #CBFED8;
+    color: #166534;
+  }
+}
+
+// ── Form actions ─────────────────────────────────────────────────
+.step-form-actions {
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.btn-step-save {
+  border: none;
+  border-radius: 10px;
+  background: #1a1f2e;
+  color: #fff;
+  font-weight: 700;
+  padding: 11px 28px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  &:hover { background: #1EDD88; color: #000; }
+}
+
+.btn-step-cancel {
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 11px 22px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: #666;
+  background: #fff;
+  &:hover { background: #f3f4f6; }
+}
+
+// ── Responsive ───────────────────────────────────────────────────
+@media (max-width: 860px) {
+  .step-body,
+  .step-editor-layout {
+    grid-template-columns: 1fr;
+    padding: 24px 16px 40px;
+  }
+
+  .step-preview-col,
+  .step-editor-preview {
+    position: static;
   }
 }

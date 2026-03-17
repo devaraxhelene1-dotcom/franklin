@@ -1,15 +1,119 @@
-<h1>Modifier le step</h1>
+<div class="step-page" data-controller="step-editor">
 
-<%= @step.status%>
-  <%= @step.generated_content%>
-    <%= @step.day%>
-
-
-<%= form_with(model: [@campaign, @step]) do |f| %>
-  <div>
-    <%= f.label :status, "Statut" %>
-    <%= f.select :status, ["pending", "done"] %>
+  <%# ── Top bar ── %>
+  <div class="step-topbar">
+    <div class="step-topbar__left">
+      <%= link_to campaign_path(@campaign), class: "step-back-link" do %>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Retour à la campagne
+      <% end %>
+    </div>
+    <div class="step-topbar__center">
+      <span class="step-topbar__campaign"><%= @campaign.title %> — Jour <%= @step.day %></span>
+    </div>
+    <div class="step-topbar__right"></div>
   </div>
 
-  <%= f.submit "Mettre à jour" %>
-<% end %>
+  <%# ── Two-column editor ── %>
+  <div class="step-editor-layout">
+
+    <%# LEFT: form %>
+    <div class="step-editor-form">
+
+      <%= form_with url: campaign_step_path(@campaign, @step), method: :patch, local: true do |f| %>
+
+        <%# Channel picker %>
+        <div class="step-field-group">
+          <label class="step-field-label">Canal de publication</label>
+          <div class="step-channel-pills">
+            <% Step::CHANNELS.each do |ch| %>
+              <label class="step-channel-pill">
+                <input type="radio" name="step[channel]" value="<%= ch %>"
+                       <%= "checked" if @parsed[:channel] == ch %>
+                       data-action="change->step-editor#updatePreview">
+                <span><%= ch %></span>
+              </label>
+            <% end %>
+          </div>
+        </div>
+
+        <%# Content body %>
+        <div class="step-field-group">
+          <div class="step-field-label-row">
+            <label class="step-field-label">Contenu</label>
+            <span class="step-char-count" data-step-editor-target="charCount">0 car.</span>
+          </div>
+          <textarea name="step[content_body]"
+                    class="step-textarea"
+                    rows="10"
+                    placeholder="Rédigez votre contenu ici…"
+                    data-step-editor-target="content"
+                    data-action="input->step-editor#updatePreview"><%= @parsed[:content] %></textarea>
+        </div>
+
+        <%# Instructions %>
+        <div class="step-field-group">
+          <label class="step-field-label">Instructions de publication <span class="step-field-optional">(optionnel)</span></label>
+          <textarea name="step[instructions]"
+                    class="step-textarea step-textarea--sm"
+                    rows="4"
+                    placeholder="Hashtags, heure d'envoi, cible…"
+                    data-step-editor-target="instructions"
+                    data-action="input->step-editor#updatePreview"><%= @parsed[:instructions] %></textarea>
+        </div>
+
+        <%# Status %>
+        <div class="step-field-group step-field-group--inline">
+          <label class="step-field-label">Statut</label>
+          <div class="step-status-pills">
+            <label class="step-status-pill">
+              <input type="radio" name="step[status]" value="pending" <%= "checked" if @step.status == "pending" %>>
+              <span>En attente</span>
+            </label>
+            <label class="step-status-pill">
+              <input type="radio" name="step[status]" value="done" <%= "checked" if @step.status == "done" %>>
+              <span>Fait ✓</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="step-form-actions">
+          <%= f.submit "Enregistrer", class: "btn-step-save" %>
+          <%= link_to "Annuler", campaign_step_path(@campaign, @step), class: "btn-step-cancel" %>
+        </div>
+
+      <% end %>
+    </div>
+
+    <%# RIGHT: live preview %>
+    <div class="step-editor-preview">
+      <div class="step-preview-label">Aperçu</div>
+
+      <div class="step-preview-card" data-step-editor-target="previewCard">
+        <div class="step-preview-card__header">
+          <div class="step-preview-avatar">
+            <%= current_user.username.to_s[0].upcase %>
+          </div>
+          <div class="step-preview-meta">
+            <span class="step-preview-name"><%= current_user.username %></span>
+            <span class="step-preview-time">Maintenant</span>
+          </div>
+        </div>
+        <% if @step.image.attached? %>
+          <div class="step-preview-image">
+            <%= image_tag @step.image, class: "step-preview-img" %>
+          </div>
+        <% end %>
+        <div class="step-preview-card__body" data-step-editor-target="previewBody">
+          <%= @parsed[:content].present? ? @parsed[:content].truncate(240) : "Votre contenu apparaîtra ici…" %>
+        </div>
+        <div class="step-preview-card__footer" data-step-editor-target="previewFooter">
+          <span class="step-preview-channel" data-step-editor-target="previewChannel"><%= @parsed[:channel] %></span>
+        </div>
+      </div>
+
+      <div class="step-preview-channel-meta" data-step-editor-target="channelMeta"></div>
+    </div>
+
+  </div>
+</div>

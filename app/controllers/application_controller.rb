@@ -15,7 +15,6 @@ class ApplicationController < ActionController::Base
   end
 
   def set_sidebar_campaigns
-    @campaigns = current_user.campaigns.where.not(status: :draft).order(created_at: :desc).limit(10) if user_signed_in?
+    @campaigns = current_user.campaigns.where.not(status: :draft).order(created_at: :desc) if user_signed_in?
   end
-
 end

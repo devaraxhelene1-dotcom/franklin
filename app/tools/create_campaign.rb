@@ -1,25 +1,13 @@
 class CreateCampaign < RubyLLM::Tool
   attr_accessor :chat, :user
 
-  description "Créer une campagne marketing après validation par l'utilisateur. " \
-              "Appelle cet outil UNIQUEMENT quand l'utilisateur a explicitement validé les ICP, channels et angles proposés. " \
-              "Ne jamais appeler cet outil sans validation claire de l'utilisateur. " \
-              "Les ICP, channels et angles doivent avoir été discutés et approuvés dans le chat avant l'appel."
+  description "Créer une campagne marketing après validation explicite de l'utilisateur."
 
-  param :title, desc: "Titre court et percutant de la campagne marketing"
-  param :doc_content, desc: "Résumé fidèle de la documentation produit/service fournie par l'utilisateur (ne rien inventer, reprendre les infos du user)"
-  param :icp, desc: "Ideal Customer Profiles validés (2 à 3 profils). " \
-    "UN profil par ligne, séparés par des retours à la ligne \\n. " \
-    "Chaque profil = titre court + rôle + contexte entre parenthèses. " \
-    "Exemple : \"Gérant d'agence immo indépendante (1-10 pers.)\\nConsultant RH freelance (TPE/PME)\""
-  param :channels, desc: "Channels marketing validés (2 à 4). " \
-    "UN channel par ligne, séparés par des retours à la ligne \\n. " \
-    "Juste le nom du channel, pas de justification. " \
-    "Exemple : \"LinkedIn\\nReddit (r/fitness)\\nInstagram\""
-  param :angles, desc: "Angles marketing validés (2 à 3). " \
-    "UN angle par ligne, séparés par des retours à la ligne \\n. " \
-    "Chaque angle = une phrase complète et concrète. " \
-    "Exemple : \"Progresse sans coach, à ta façon\\nTon téléphone suffit, plus besoin de salle\""
+  param :title, desc: "Titre court de la campagne"
+  param :doc_content, desc: "Résumé fidèle de la doc produit fournie par l'utilisateur"
+  param :icp, desc: "2-3 ICP validés, un par ligne séparés par \\n"
+  param :channels, desc: "2-4 channels validés, un par ligne séparés par \\n"
+  param :angles, desc: "2-3 angles validés, un par ligne séparés par \\n"
 
   def execute(title:, doc_content:, icp:, channels:, angles:)
     campaign = Campaign.create!(

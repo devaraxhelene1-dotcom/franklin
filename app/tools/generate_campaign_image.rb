@@ -4,8 +4,9 @@ require "stringio"
 class GenerateCampaignImage < RubyLLM::Tool
   attr_accessor :chat
 
-  description "Générer une image pour un step de campagne marketing. " \
-              "Utilise ce tool quand un step nécessite un visuel (post LinkedIn, bannière, illustration). " \
+  description "Générer UNE image pour la campagne. " \
+              "Appelle ce tool UNE SEULE FOIS par campagne, pour le premier step visuel uniquement. " \
+              "Ne JAMAIS proposer de vidéo — uniquement des images statiques. " \
               "L'image sera générée par IA et attachée directement au step."
 
   param :day, type: :integer, desc: "Le numéro du jour (1 à 14) du step auquel attacher l'image"
@@ -28,7 +29,7 @@ class GenerateCampaignImage < RubyLLM::Tool
         model: "gpt-image-1",
         prompt: prompt,
         n: 1,
-        size: "512x512"
+        size: "1024x1024"
       }
     )
 

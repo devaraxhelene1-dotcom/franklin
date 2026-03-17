@@ -3,6 +3,21 @@
     <h2>Discutez avec <span>Franklin</span></h2>
   </div>
 
+  <% if @chat.campaign&.status == "active" %>
+    <div class="campaign-created-banner">
+      <div class="campaign-banner-left">
+        <span class="campaign-banner-icon">🎯</span>
+        <div>
+          <p class="campaign-banner-label">Campagne créée</p>
+          <p class="campaign-banner-title"><%= @chat.campaign.title %></p>
+        </div>
+      </div>
+      <%= link_to campaign_path(@chat.campaign), class: "btn btn-campaign-link" do %>
+        Voir ma campagne <span>→</span>
+      <% end %>
+    </div>
+  <% end %>
+
   <div class="chat-messages" data-chat-target="messages">
     <% @chat.messages.order(:created_at).each do |message| %>
       <div class="message <%= message.role == 'user' ? 'message-user' : 'message-bot' %>">

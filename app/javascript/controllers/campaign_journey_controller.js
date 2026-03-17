@@ -338,6 +338,12 @@ export default class extends Controller {
           data-action="click->campaign-journey#markDone">
           ${step.status === "done" ? "Remettre en attente" : "Marquer comme fait"}
         </button>
+        <a href="/campaigns/${this.campaignIdValue}/steps/${step.id}/edit" class="btn-edit-step">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+            <path d="M9 2L11 4L4.5 10.5H2.5V8.5L9 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          Modifier
+        </a>
       </div>
     `
 

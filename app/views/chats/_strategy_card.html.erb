@@ -1,0 +1,97 @@
+<%
+  # Nettoyer le tag [VALIDATE] au début
+  clean_content = content.gsub("[VALIDATE]", "").strip
+
+  # Parser très simple ligne par ligne
+  lines = clean_content.split("\n").map(&:strip).reject(&:blank?)
+
+  icps = []
+  channels = []
+  angles = []
+  current_section = nil
+
+  lines.each do |line|
+    # Détecter les sections avec ** **
+    line_clean = line.gsub(/\*\*/, "")
+    line_lower = line_clean.downcase
+
+    # Détecter les headers de section
+    if line_lower.match?(/^icp\s*\(.*\)\s*:/)
+      current_section = :icp
+      next
+    elsif line_lower.match?(/^channels?\s+marketing\s*:/)
+      current_section = :channel
+      next
+    elsif line_lower.match?(/^angles?\s+marketing\s*:/)
+      current_section = :angle
+      next
+    elsif line_lower.start_with?("dis-moi")
+      current_section = nil
+      next
+    end
+
+    # Capturer les items numérotés
+    if line =~ /^(\d+)\.\s*(.+)$/
+      item = $2.strip
+
+      case current_section
+      when :icp
+        icps << item
+      when :channel
+        channels << item
+      when :angle
+        angles << item
+      end
+    end
+  end
+%>
+
+<div class="strategy-card">
+  <div class="strategy-header">
+    <span>🚀</span>
+    <h3 class="strategy-title">Stratégie Marketing</h3>
+  </div>
+  <p class="strategy-subtitle">Basée sur ton produit et ta cible</p>
+
+  <% if icps.any? %>
+    <div class="strategy-section">
+      <h4 class="strategy-section-title">ICP</h4>
+      <ul class="strategy-list">
+        <% icps.each do |icp| %>
+          <li><%= icp %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if channels.any? %>
+    <div class="strategy-section">
+      <h4 class="strategy-section-title">CANAUX MARKETING</h4>
+      <div class="strategy-channels">
+        <% channels.each do |channel| %>
+          <%
+            # Extraire juste le nom du canal (avant le tiret ou les deux-points)
+            channel_name = channel.split(/\s*[–—\-]\s*/).first.strip
+          %>
+          <span class="channel-tag"><%= channel_name %></span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if angles.any? %>
+    <div class="strategy-section">
+      <h4 class="strategy-section-title">ANGLES MARKETING</h4>
+      <ul class="strategy-list">
+        <% angles.each do |angle| %>
+          <li><%= angle.gsub(/«|»/, "").strip %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with url: chat_messages_path(chat), method: :post do |f| %>
+    <%= f.hidden_field "message[content]", value: "Je valide la stratégie proposée." %>
+    <%= f.submit "✓ Valider la stratégie", class: "strategy-validate-btn" %>
+  <% end %>
+</div>

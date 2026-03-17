@@ -232,3 +232,108 @@
     &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 }
+
+/* Strategy Proposal Card */
+.strategy-card {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border-radius: 20px;
+  padding: 30px;
+  margin: 20px 0;
+  max-width: 100%;
+}
+
+.strategy-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.strategy-header span {
+  font-size: 32px;
+}
+
+.strategy-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111;
+  margin: 0;
+}
+
+.strategy-subtitle {
+  font-size: 15px;
+  color: #666;
+  margin: 0 0 24px 0;
+}
+
+.strategy-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.strategy-section:last-of-type {
+  margin-bottom: 24px;
+}
+
+.strategy-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #666;
+  margin: 0 0 12px 0;
+}
+
+.strategy-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.strategy-list li {
+  padding: 8px 0;
+  color: #111;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.strategy-list li::before {
+  content: "› ";
+  color: #16a34a;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.strategy-channels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.channel-tag {
+  background: #dcfce7;
+  color: #166534;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+.strategy-validate-btn {
+  width: 100%;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.strategy-validate-btn:hover {
+  background: #16a34a;
+}

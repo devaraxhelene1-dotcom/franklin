@@ -1,8 +1,101 @@
-<h2>Modifiez votre campagne</h2>
+<div class="campaign-show"
+     data-controller="campaign-edit"
+     data-campaign-edit-status-labels-value='{"draft":"Brouillon","active":"Active","completed":"Terminée"}'>
+  <div class="container">
 
-<%= simple_form_for @campaign do |f| %>
-  <%= f.input :status, collection: ["draft", "active", "completed"], label: "Statut" %>
-  <%= f.submit "Enregistrer", class: "btn btn-primary" %>
-<% end %>
+    <div class="campaign-show-header">
+      <div class="campaign-show-nav">
+        <%= link_to "← Retour à la campagne", @campaign, class: "back-link" %>
+      </div>
+      <div class="campaign-show-title-row">
+        <h1>Modifier la campagne</h1>
+      </div>
+      <p class="campaign-show-date">Valeurs générées par Franklin — vous pouvez les affiner librement.</p>
+    </div>
 
-<%= link_to "Annuler", @campaign, class: "btn btn-secondary" %>
+    <%= simple_form_for @campaign do |f| %>
+
+      <%# ── Section Identité ──────────────────────────────────── %>
+      <div class="edit-section">
+        <div class="edit-section-header">
+          <span class="edit-section-title">Identité</span>
+        </div>
+        <div class="edit-section-body">
+
+          <div class="edit-field">
+            <%= f.label :title, "Titre", class: "edit-label" %>
+            <%= f.text_field :title, class: "edit-input", placeholder: "Ex : Campagne LinkedIn Q1 2025" %>
+          </div>
+
+          <div class="edit-field">
+            <%= f.label :status, "Statut", class: "edit-label" %>
+            <div class="edit-status-row">
+              <%= f.select :status,
+                  [["Brouillon", "draft"], ["Active", "active"], ["Terminée", "completed"]],
+                  {},
+                  class: "form-select edit-select",
+                  data: { campaign_edit_target: "statusSelect", action: "change->campaign-edit#updatePill" } %>
+              <span class="campaign-status-pill <%= @campaign.status %>"
+                    data-campaign-edit-target="statusPill">
+                <%= { "draft" => "Brouillon", "active" => "Active", "completed" => "Terminée" }[@campaign.status] %>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <%# ── Section Stratégie ──────────────────────────────────── %>
+      <div class="edit-section">
+        <div class="edit-section-header">
+          <span class="edit-section-title">Stratégie</span>
+          <span class="edit-section-badge">Généré par Franklin</span>
+        </div>
+        <div class="edit-section-body">
+
+          <div class="edit-field">
+            <div class="edit-field-header">
+              <%= f.label :icp, "ICP", class: "edit-label" %>
+              <span class="edit-field-hint">Un profil par ligne</span>
+            </div>
+            <%= f.text_area :icp,
+                class: "edit-textarea",
+                rows: 4,
+                placeholder: "Freelance développeur (5–10 ans d'expérience)\nStartup B2B SaaS (10–50 employés)\nConsultant indépendant en transformation digitale" %>
+          </div>
+
+          <div class="edit-field">
+            <div class="edit-field-header">
+              <%= f.label :channels, "Channels", class: "edit-label" %>
+              <span class="edit-field-hint">Un channel par ligne</span>
+            </div>
+            <%= f.text_area :channels,
+                class: "edit-textarea",
+                rows: 3,
+                placeholder: "LinkedIn\nEmail\nTwitter / X" %>
+          </div>
+
+          <div class="edit-field">
+            <div class="edit-field-header">
+              <%= f.label :angles, "Angles", class: "edit-label" %>
+              <span class="edit-field-hint">Un angle par ligne</span>
+            </div>
+            <%= f.text_area :angles,
+                class: "edit-textarea",
+                rows: 4,
+                placeholder: "Gain de temps sur la prospection\nRéduction du coût d'acquisition client\nDifférenciation par la preuve sociale" %>
+          </div>
+
+        </div>
+      </div>
+
+      <%# ── Actions ──────────────────────────────────────────── %>
+      <div class="edit-actions">
+        <%= link_to "Annuler", @campaign, class: "btn-edit-cancel" %>
+        <%= f.submit "Enregistrer", class: "btn-edit-save", data: { disable_with: "Enregistrement…" } %>
+      </div>
+
+    <% end %>
+
+  </div>
+</div>

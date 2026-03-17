@@ -47,6 +47,13 @@
       <% end %>
     </li>
 
+    <li class="sidebar-item <%= 'active' if current_page?(calendar_path) %>">
+      <%= link_to calendar_path, class: "sidebar-link" do %>
+        <i class="fa-solid fa-calendar-days icons"></i>
+        <span>Calendrier</span>
+      <% end %>
+    </li>
+
     <li class="sidebar-item <%= 'active' if current_page?(root_path) %>">
       <%= link_to root_path, class: "sidebar-link" do %>
         <i class="fa-solid fa-gear icons"></i>

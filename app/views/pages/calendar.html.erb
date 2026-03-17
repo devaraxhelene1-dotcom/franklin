@@ -1,0 +1,35 @@
+<div class="calendar-page" data-controller="calendar-filter">
+  <div class="calendar-header">
+    <h1>Calendrier</h1>
+    <select class="calendar-filter-select"
+            data-calendar-filter-target="select"
+            data-action="change->calendar-filter#filter">
+      <option value="all">Toutes les campagnes</option>
+      <% @active_campaigns.each do |campaign| %>
+        <option value="<%= campaign.id %>"><%= campaign.title %></option>
+      <% end %>
+    </select>
+  </div>
+
+  <div class="calendar-grid" data-calendar-filter-target="grid">
+    <% %w[Lun Mar Mer Jeu Ven Sam Dim].each do |day_name| %>
+      <div class="calendar-day-header"><%= day_name %></div>
+    <% end %>
+
+    <% (@start_date..@end_date).each do |date| %>
+      <div class="calendar-cell <%= 'today' if date == Date.current %>">
+        <div class="calendar-date"><%= date.day %></div>
+        <div class="calendar-badges">
+          <% @calendar_steps[date].each do |entry| %>
+            <%= link_to campaign_path(entry[:campaign]),
+                  class: "calendar-badge #{channel_css_class(entry[:channel])} #{'done' if entry[:step].status == 'done'}",
+                  data: { campaign_id: entry[:campaign].id },
+                  title: "#{entry[:campaign].title} — #{entry[:channel]}" do %>
+              <%= truncate(entry[:channel].presence || "Step", length: 12) %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

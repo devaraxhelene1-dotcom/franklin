@@ -2,11 +2,24 @@ import { Controller } from "@hotwired/stimulus"
 import { marked } from "marked"
 
 export default class extends Controller {
-  static targets = ["messages", "submit", "loading", "fileInput", "filePreview", "fileName"]
+  static targets = ["messages", "submit", "loading", "fileInput", "filePreview", "fileName", "textarea"]
 
   connect() {
     this.renderMarkdown()
     this.scrollToBottom()
+  }
+
+  autoResize(event) {
+    const textarea = event.target
+    textarea.style.height = "auto"
+    textarea.style.height = textarea.scrollHeight + "px"
+  }
+
+  submitOnEnter(event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault()
+      event.target.closest("form").requestSubmit()
+    }
   }
 
   renderMarkdown() {

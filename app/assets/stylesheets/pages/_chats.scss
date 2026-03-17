@@ -63,6 +63,8 @@
   color: #111;
   font-size: 15px;
   line-height: 1.6;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .bubble-bot {
@@ -72,6 +74,8 @@
   color: #333;
   font-size: 15px;
   line-height: 1.7;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .bubble-bot p {

@@ -67,7 +67,7 @@
           <i class="fa-solid fa-paperclip"></i>
           <%= f.file_field :file, style: "display: none;", data: { action: "change->chat#fileChange", chat_target: "fileInput" } %>
         </label>
-        <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1 %>
+        <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1, data: { action: "input->chat#autoResize keydown->chat#submitOnEnter" } %>
         <%= f.submit "➤", data: { chat_target: "submit" } %>
       </div>
       <div class="file-preview d-none" data-chat-target="filePreview">

@@ -1,0 +1,28 @@
+<% unless @message.content == "Je valide la stratégie proposée." %>
+  <%= turbo_stream.before "loading-indicator" do %>
+    <%= render partial: "messages/message", locals: { message: @message } %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.replace "chat_input_form" do %>
+  <%= form_with model: [@chat, Message.new], url: chat_messages_path(@chat), id: "chat_input_form", multipart: true,
+      data: { action: "submit->chat#submit" } do |f| %>
+    <div class="input-wrapper">
+      <div class="file-preview d-none" data-chat-target="filePreview">
+        <div class="file-chip">
+          <i class="fa-solid fa-file-lines"></i>
+          <span data-chat-target="fileName"></span>
+          <button type="button" class="file-remove-btn" data-action="click->chat#removeFile">&times;</button>
+        </div>
+      </div>
+      <div class="input-row">
+        <label class="file-upload-btn" title="Joindre un fichier">
+          <i class="fa-solid fa-paperclip"></i>
+          <%= f.file_field :file, style: "display: none;", data: { action: "change->chat#fileChange", chat_target: "fileInput" } %>
+        </label>
+        <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1, data: { action: "input->chat#autoResize keydown->chat#submitOnEnter", chat_target: "content" } %>
+        <%= f.submit "➤", data: { chat_target: "submit" } %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

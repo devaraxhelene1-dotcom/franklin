@@ -6,6 +6,7 @@
   flex-direction: column;
   font-family: 'Geist', sans-serif;
   background: radial-gradient(circle at 50% 50%, #dcfce7 0%, #ffffff 60%);
+  position: relative;
 
 }
 
@@ -390,4 +391,35 @@
 
 .strategy-validate-btn:hover {
   background: #16a34a;
+}
+
+// ── Loading backdrop ─────────────────────────────────────────────
+.chat-loading-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: inherit;
+}
+
+.chat-loading-logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  animation: pulse-logo 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-logo {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }

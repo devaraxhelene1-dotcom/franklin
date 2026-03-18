@@ -22,8 +22,11 @@ export default class extends Controller {
 
   autoResize(event) {
     const textarea = event.target
+    const maxHeight = 200
     textarea.style.height = "auto"
-    textarea.style.height = textarea.scrollHeight + "px"
+    const newHeight = Math.min(textarea.scrollHeight, maxHeight)
+    textarea.style.height = newHeight + "px"
+    textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden"
   }
 
   submitOnEnter(event) {

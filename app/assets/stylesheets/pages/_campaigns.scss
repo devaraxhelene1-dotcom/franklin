@@ -24,9 +24,9 @@
   border-radius: 99px;
   text-transform: uppercase;
   white-space: nowrap;
-  &.draft, &.pending { background: #f0f0f0; color: #555; }
-  &.active           { background: #e6faf1; color: #0d8040; }
-  &.done             { background: #CBFED8; color: #000; }
+  &.draft, &.pending { background: #f0f0ee; color: #5a5a58; }
+  &.active           { background: #d2f7e6; color: #15803d; }
+  &.done             { background: #d2f7e6; color: #15803d; }
 }
 
 %empty-state {
@@ -57,7 +57,7 @@
     font-weight: 600;
     padding: 8px 20px;
 
-    &:hover { background: #35ba66; color: white; }
+    &:hover { background: #1EDD88; color: #000; }
   }
 
   .campaigns-list { @extend %list-container; }
@@ -83,7 +83,7 @@
     @extend %badge-base;
     font-size: 0.75rem;
     letter-spacing: 0.04em;
-    &.completed { background: #1EDD88; color: #000; }
+    &.completed { background: #1EDD88; color: #000; font-size: 0.72rem; }
   }
 
   .campaign-progress {
@@ -115,8 +115,12 @@
   margin-bottom: 28px;
   padding: 18px 22px;
   background: #fff;
-  border: 1.5px solid #ebebeb;
+  border: none;
   border-radius: 14px;
+  box-shadow:
+    0 1px 1px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.04),
+    0 8px 18px rgba(0,0,0,0.04);
 }
 
 .journey-progress-left {
@@ -135,9 +139,11 @@
 }
 
 .journey-progress-count {
+  font-family: 'Geist Mono', monospace;
   font-size: 0.95rem;
   font-weight: 700;
   color: #111;
+  font-feature-settings: "tnum";
 }
 
 .journey-progress-bar-wrap {
@@ -472,11 +478,12 @@
 
 .preview-img {
   width: 100%;
-  max-height: 120px;
-  object-fit: contain;
-  background: #f8f8f8;
-  border-radius: 12px;
+  height: auto;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
   margin-bottom: 8px;
+  display: block;
 }
 
 .preview-excerpt {
@@ -568,8 +575,8 @@ body.journey-panel-open { overflow: hidden; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;
-  &.pending { background: #f0f0f0; color: #555; }
-  &.done    { background: #CBFED8; color: #000; }
+  &.pending { background: #f0f0ee; color: #5a5a58; }
+  &.done    { background: #d2f7e6; color: #15803d; }
 }
 
 .panel-close-btn {
@@ -586,12 +593,12 @@ body.journey-panel-open { overflow: hidden; }
 
 .panel-image-wrap {
   margin-bottom: 28px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8f8f8;
   img {
     width: 100%;
-    max-height: 320px;
-    object-fit: contain;
-    background: #f8f8f8;
-    border-radius: 12px;
+    height: auto;
     display: block;
   }
 }
@@ -717,8 +724,8 @@ body.journey-panel-open { overflow: hidden; }
   border-radius: 99px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  &.draft     { background: #f0f0f0;  color: #777; }
-  &.active    { background: #e6faf1;  color: #0d8040; }
+  &.draft     { background: #f0f0ee;  color: #5a5a58; }
+  &.active    { background: #d2f7e6;  color: #15803d; }
   &.completed { background: #1EDD88;  color: #000; }
 }
 
@@ -936,10 +943,10 @@ body.journey-panel-open { overflow: hidden; }
 }
 
 .journey-progress-header.all-done {
-  background: linear-gradient(135deg, #f0fff7 0%, #e8f5f0 100%);
-  border-color: #b3f0d0;
+  background: linear-gradient(135deg, rgba(30,221,136,0.06) 0%, rgba(30,221,136,0.03) 100%);
+  border-color: rgba(30,221,136,0.3);
 
-  .journey-progress-count { color: #0d8040; }
+  .journey-progress-count { color: #15803d; }
 
   .journey-progress-bar-wrap {
     animation: shimmer 2s ease infinite;
@@ -1110,17 +1117,17 @@ body.journey-panel-open { overflow: hidden; }
   display: inline-flex;
   align-items: center;
   padding: 10px 22px;
-  background: #111;
-  color: #fff;
+  background: #1EDD88;
+  color: #000;
   border: none;
   border-radius: 10px;
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: none;
   transition: background 0.15s, transform 0.1s;
 
-  &:hover  { background: #1EDD88; color: #000; }
+  &:hover  { background: #17cc7e; }
   &:active { transform: scale(0.98); }
 }
 

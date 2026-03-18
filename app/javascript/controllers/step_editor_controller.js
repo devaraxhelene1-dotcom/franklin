@@ -20,7 +20,7 @@ export default class extends Controller {
   static targets = [
     "statusBadge", "statusSelect",
     "channelSelect",
-    "contentArea", "charCount",
+    "contentArea", "contentBody", "charCount",
     "previewText", "previewSub", "previewAvatar", "previewAccent",
     "previewActions", "previewChannelName",
   ]
@@ -31,10 +31,66 @@ export default class extends Controller {
     this.updateCharCount()
     this.updatePreview()
     this._applyChannelMeta(this._selectedChannel())
+
+    // Active toolbar state on selection change
+    this._selectionHandler = () => this._updateToolbarState()
+    document.addEventListener("selectionchange", this._selectionHandler)
   }
 
-  // Called on textarea input
+  disconnect() {
+    document.removeEventListener("selectionchange", this._selectionHandler)
+  }
+
+  _updateToolbarState() {
+    const cmdMap = { bold: "bold", italic: "italic", strike: "strikeThrough" }
+    this.element.querySelectorAll("[data-step-editor-fmt-param]").forEach(btn => {
+      const fmt = btn.dataset.stepEditorFmtParam
+      const cmd = cmdMap[fmt]
+      if (cmd) btn.classList.toggle("is-active", document.queryCommandState(cmd))
+    })
+  }
+
+  // Keyboard shortcuts: Ctrl+B, Ctrl+I
+  keyFormat(event) {
+    const ctrl = event.ctrlKey || event.metaKey
+    if (!ctrl) return
+    const map = { b: "bold", i: "italic" }
+    const fmt = map[event.key.toLowerCase()]
+    if (!fmt) return
+    event.preventDefault()
+    this._execFmt(fmt)
+  }
+
+  // Toolbar buttons (mousedown keeps contenteditable focus + selection)
+  format(event) {
+    event.preventDefault()
+    this._execFmt(event.params.fmt)
+  }
+
+  _execFmt(fmt) {
+    const cmdMap = {
+      bold:   ["bold",               null],
+      italic: ["italic",             null],
+      strike: ["strikeThrough",      null],
+      ul:     ["insertUnorderedList", null],
+      ol:     ["insertOrderedList",  null],
+    }
+    const [cmd] = cmdMap[fmt] || []
+    if (!cmd) return
+    this.contentAreaTarget.focus()
+    document.execCommand(cmd, false, null)
+    this._syncContent()
+    this.onInput()
+  }
+
+  _syncContent() {
+    if (this.hasContentBodyTarget)
+      this.contentBodyTarget.value = this.contentAreaTarget.innerHTML
+  }
+
+  // Called on contenteditable input
   onInput() {
+    this._syncContent()
     this.updateCharCount()
     this.updatePreview()
   }
@@ -59,7 +115,7 @@ export default class extends Controller {
   updateCharCount() {
     if (!this.hasContentAreaTarget || !this.hasCharCountTarget) return
 
-    const count  = this.contentAreaTarget.value.length
+    const count  = (this.contentAreaTarget.textContent || "").length
     const limit  = this.channelLimitsValue[this._selectedChannel()] || 0
 
     if (limit > 0) {
@@ -71,18 +127,24 @@ export default class extends Controller {
       this.charCountTarget.className =
         `step-char-count ${over ? "over" : remaining < limit * 0.1 ? "warning" : ""}`
     } else {
-      const cnt = this.contentAreaTarget.value.length
+      const cnt = (this.contentAreaTarget.textContent || "").length
       this.charCountTarget.textContent = cnt > 0 ? `${cnt} car.` : ""
       this.charCountTarget.className = "step-char-count"
     }
   }
 
-  // Live preview text
+  // Live preview — mirrors contenteditable HTML directly
   updatePreview() {
     if (!this.hasPreviewTextTarget || !this.hasContentAreaTarget) return
-    const text = this.contentAreaTarget.value.trim()
-    this.previewTextTarget.textContent = text || "Votre contenu apparaîtra ici…"
-    this.previewTextTarget.classList.toggle("is-placeholder", !text)
+    const html = this.contentAreaTarget.innerHTML || ""
+    const isEmpty = !this.contentAreaTarget.textContent.trim()
+    if (isEmpty) {
+      this.previewTextTarget.textContent = "Votre contenu apparaîtra ici…"
+      this.previewTextTarget.classList.add("is-placeholder")
+    } else {
+      this.previewTextTarget.innerHTML = html
+      this.previewTextTarget.classList.remove("is-placeholder")
+    }
   }
 
   // Apply channel color + sub + actions to preview

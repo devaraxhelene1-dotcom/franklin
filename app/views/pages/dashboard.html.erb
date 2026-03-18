@@ -30,7 +30,7 @@
           </div>
         </div>
         <p class="kpi-label">Campagnes en cours</p>
-        <p class="kpi-value"><%= @active_campaigns_count %></p>
+        <p class="kpi-value" data-target="<%= @active_campaigns_count %>">0</p>
       </div>
 
       <div class="kpi-card">
@@ -40,7 +40,7 @@
           </div>
         </div>
         <p class="kpi-label">Campagnes terminées</p>
-        <p class="kpi-value"><%= @completed_campaigns_count %></p>
+        <p class="kpi-value" data-target="<%= @completed_campaigns_count %>">0</p>
       </div>
     </section>
 
@@ -173,7 +173,13 @@
 
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<%= javascript_include_tag 'dashboard' %>
+  <%= javascript_include_tag 'dashboard' %>
+  <script>
+    initCounters();
+    initRevenueLeadsChart();
+    initDistributionChart();
+    initCampaignChart();
+  </script>
 
 </body>
 </html>

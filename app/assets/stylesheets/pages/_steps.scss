@@ -314,11 +314,13 @@
 }
 
 .step-nav-label {
+  font-family: 'Geist Mono', monospace;
   font-size: 0.83rem;
   font-weight: 700;
   color: var(--sp-text);
   padding: 0 8px;
   white-space: nowrap;
+  font-feature-settings: "tnum";
 }
 
 // ── Editorial content typography ──────────────────────────────────
@@ -351,13 +353,13 @@
   margin: 12px 0 12px;
   border-radius: 8px;
   overflow: hidden;
+  background: #f8f8f8;
 }
 
 .step-preview-image {
   width: 100%;
+  height: auto;
   display: block;
-  object-fit: contain;
-  border-radius: 8px;
 }
 
 // ── Image section (left column) ───────────────────────────────────
@@ -381,8 +383,8 @@
 
 .step-image-full {
   width: 100%;
+  height: auto;
   display: block;
-  object-fit: contain;
 }
 
 // ── Primary action area ───────────────────────────────────────────
@@ -547,11 +549,13 @@
 }
 
 .step-char-count {
+  font-family: 'Geist Mono', monospace;
   font-size: 0.72rem;
-  font-weight: 600;
+  font-weight: 500;
   color: #ccc;
   white-space: nowrap;
   transition: color 0.2s;
+  font-feature-settings: "tnum";
 
   &.warning { color: #f59e0b; }
   &.over    { color: #ef4444; }

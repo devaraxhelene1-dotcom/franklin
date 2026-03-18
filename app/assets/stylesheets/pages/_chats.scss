@@ -4,29 +4,26 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: 'Geist', sans-serif;
-  background: radial-gradient(circle at 50% 50%, #dcfce7 0%, #ffffff 60%);
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(ellipse at 50% 0%, rgba(30,221,136,0.08) 0%, #ffffff 55%);
   position: relative;
-
 }
 
 .chat-title {
   text-align: center;
-    font-family: 'Geist', sans-serif;
-
+  font-family: 'Inter', sans-serif;
 }
 
-.chat-title h2{
-   font-size: 50px;
+.chat-title h2 {
+  font-size: 50px;
   font-weight: 700;
   line-height: 1.15;
-  color: #111;
-    font-family: 'Geist', sans-serif;
-
+  color: #1a1a18;
+  font-family: 'Inter', sans-serif;
 }
 
-.chat-title h2 span{
-  background: linear-gradient(to right, #16a34a, #4ade80);
+.chat-title h2 span {
+  background: linear-gradient(to right, #1EDD88, #17cc7e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -55,13 +52,12 @@
   justify-content: flex-start;
 }
 
-
 .bubble-user {
   background-color: #f3f4f6;
   border-radius: 20px 20px 4px 20px;
   padding: 12px 18px;
   max-width: 70%;
-  color: #111;
+  color: #1a1a18;
   font-size: 15px;
   line-height: 1.6;
   overflow-wrap: break-word;
@@ -72,7 +68,7 @@
   background: none;
   padding: 4px 0;
   max-width: 70%;
-  color: #333;
+  color: #4a4a48;
   font-size: 15px;
   line-height: 1.7;
   overflow-wrap: break-word;
@@ -87,7 +83,6 @@
   margin-bottom: 0;
 }
 
-
 .chat-input {
   padding: 16px 20px;
   position: sticky;
@@ -98,15 +93,19 @@
   display: flex;
   flex-direction: column;
   background: white;
-  border-radius: 24px;
+  border-radius: 16px;
   padding: 12px 16px;
-  border: solid 1px;
+  border: 1px solid #e8e7e4;
+  box-shadow:
+    0 1px 1px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.04),
+    0 8px 18px rgba(0,0,0,0.04);
   gap: 0;
 }
 
 .file-preview {
   padding: 8px 4px 6px;
-  border-bottom: 1px solid #16a34a;
+  border-bottom: 1px solid #1EDD88;
   margin-bottom: 6px;
 }
 
@@ -114,16 +113,16 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #16a34a68;
-  border: 1px solid #16a34a;
+  background: rgba(30,221,136,0.15);
+  border: 1px solid #1EDD88;
   border-radius: 10px;
   padding: 5px 10px;
   font-size: 13px;
-  color: black;
+  color: #1a1a18;
   max-width: 100%;
 
   i {
-    color: black;
+    color: #1a1a18;
     font-size: 14px;
     flex-shrink: 0;
   }
@@ -139,12 +138,15 @@
 .file-remove-btn {
   background: none;
   border: none;
-  color: black;
+  color: #9b9b99;
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
   padding: 0 2px;
   flex-shrink: 0;
+  transition: color 0.15s;
+
+  &:hover { color: #1a1a18; }
 }
 
 .input-row {
@@ -159,14 +161,14 @@
   background: transparent;
   outline: none;
   font-size: 15px;
-  font-family: 'Geist', sans-serif;
+  font-family: 'Inter', sans-serif;
   resize: none;
   line-height: 1.5;
   padding: 6px 0;
 }
 
 .input-row input[type="submit"] {
-  background-color: #111;
+  background-color: #1a1a18;
   color: white;
   border: none;
   border-radius: 50%;
@@ -178,14 +180,16 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: background-color 0.15s;
 }
 
 .input-row input[type="submit"]:hover {
-  background-color: #16a34a;
+  background-color: #1EDD88;
+  color: #000;
 }
 
 .file-upload-btn {
-  background-color: rgb(147, 147, 147);
+  background-color: #e8e7e4;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,15 +197,15 @@
   height: 36px;
   border-radius: 50%;
   cursor: pointer;
-  color: #ffff;
+  color: #4a4a48;
   font-size: 18px;
   flex-shrink: 0;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s, color 0.15s;
 }
 
 .file-upload-btn:hover {
-  background-color: #16a34a;
-  color: #ffff;
+  background-color: #1EDD88;
+  color: #000;
 }
 
 // ── Campaign created banner ───────────────────────────────────────
@@ -209,8 +213,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f0fdf4;
-  border: 1.5px solid #86efac;
+  background: rgba(30,221,136,0.06);
+  border: 1.5px solid rgba(30,221,136,0.3);
   border-radius: 14px;
   padding: 14px 20px;
   margin: 0 0 16px;
@@ -228,14 +232,14 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: #16a34a;
+    color: #15803d;
     margin: 0 0 2px;
   }
 
   .campaign-banner-title {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #111;
+    color: #1a1a18;
     margin: 0;
   }
 
@@ -250,7 +254,7 @@
     white-space: nowrap;
     transition: background 0.15s;
 
-    &:hover { background: #17b870; color: #000; }
+    &:hover { background: #17cc7e; color: #000; }
   }
 }
 
@@ -260,20 +264,24 @@
   align-items: center;
   justify-content: space-between;
   background: #fff;
-  border: 1.5px solid #e4e4e4;
+  border: 1px solid #e8e7e4;
   border-radius: 14px;
   padding: 14px 20px;
   margin: 0 0 12px;
+  box-shadow:
+    0 1px 1px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.04),
+    0 8px 18px rgba(0,0,0,0.04);
 
   .validate-banner-text {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #111;
+    color: #1a1a18;
     margin: 0;
   }
 
   .btn-validate {
-    background: #111;
+    background: #1a1a18;
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -281,20 +289,25 @@
     font-size: 0.9rem;
     padding: 10px 22px;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, color 0.15s;
 
-    &:hover { background: #16a34a; }
+    &:hover { background: #1EDD88; color: #000; }
     &:disabled { opacity: 0.5; cursor: not-allowed; }
   }
 }
 
-/* Strategy Proposal Card */
+// ── Strategy Proposal Card ─────────────────────────────────────────
 .strategy-card {
-  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-  border-radius: 20px;
-  padding: 30px;
-  margin: 20px 0;
+  background: rgba(30,221,136,0.06);
+  border: 1px solid rgba(30,221,136,0.2);
+  border-radius: 14px;
+  padding: 24px;
+  margin: 16px 0;
   max-width: 100%;
+  box-shadow:
+    0 1px 1px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.04),
+    0 8px 18px rgba(0,0,0,0.04);
 }
 
 .strategy-header {
@@ -305,40 +318,46 @@
 }
 
 .strategy-header span {
-  font-size: 32px;
+  font-size: 28px;
 }
 
 .strategy-title {
-  font-size: 24px;
+  font-size: 1.1rem;
   font-weight: 700;
-  color: #111;
+  color: #1a1a18;
   margin: 0;
 }
 
 .strategy-subtitle {
-  font-size: 15px;
-  color: #666;
-  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: #9b9b99;
+  margin: 0 0 20px 0;
 }
 
-.strategy-section {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 16px;
+// Scoped to override _campaigns.scss .strategy-section inside chat card
+.strategy-card .strategy-section {
+  background: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  box-shadow:
+    0 1px 1px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.04);
+  overflow: visible;
 }
 
-.strategy-section:last-of-type {
-  margin-bottom: 24px;
+.strategy-card .strategy-section:last-of-type {
+  margin-bottom: 18px;
 }
 
 .strategy-section-title {
-  font-size: 13px;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #666;
-  margin: 0 0 12px 0;
+  letter-spacing: 0.07em;
+  color: #9b9b99;
+  margin: 0 0 10px 0;
 }
 
 .strategy-list {
@@ -348,49 +367,64 @@
 }
 
 .strategy-list li {
-  padding: 8px 0;
-  color: #111;
-  font-size: 15px;
+  padding: 6px 0;
+  color: #1a1a18;
+  font-size: 14px;
   line-height: 1.5;
 }
 
 .strategy-list li::before {
   content: "› ";
-  color: #16a34a;
+  color: #1EDD88;
   font-weight: 700;
-  margin-right: 8px;
+  margin-right: 6px;
 }
 
 .strategy-channels {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .channel-tag {
-  background: #dcfce7;
-  color: #166534;
+  background: rgba(30,221,136,0.12);
+  color: #15803d;
   font-weight: 600;
-  font-size: 14px;
-  padding: 8px 16px;
-  border-radius: 20px;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 99px;
 }
 
 .strategy-validate-btn {
   width: 100%;
-  background: #111;
+  background: #1a1a18;
   color: white;
   border: none;
-  border-radius: 12px;
-  padding: 16px;
-  font-size: 16px;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
-}
+  transition: background 0.15s, color 0.15s;
+  position: relative;
+  overflow: hidden;
 
-.strategy-validate-btn:hover {
-  background: #16a34a;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: skewX(-18deg);
+    transition: left 0.55s ease;
+  }
+
+  &:hover {
+    background: #1EDD88;
+    color: #000;
+    &::after { left: 160%; }
+  }
 }
 
 // ── Loading backdrop ─────────────────────────────────────────────

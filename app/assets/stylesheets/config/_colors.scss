@@ -1,10 +1,59 @@
-// Define variables for your color scheme
-
-// For example:
-$red: #FD1015;
-$blue: #0D6EFD;
-$yellow: #FFC65A;
-$orange: #E67E22;
-$green: #1EDD88;
-$gray: #0E0000;
+// ── SCSS variables ────────────────────────────────────────────────
+$red:        #FD1015;
+$blue:       #0D6EFD;
+$yellow:     #FFC65A;
+$orange:     #E67E22;
+$green:      #1EDD88;
+$gray:       #1a1a18;
 $light-gray: #F4F4F4;
+
+// ── Global CSS tokens (design system) ─────────────────────────────
+:root {
+  // Primary color
+  --green:          #1EDD88;
+  --green-10:       rgba(30, 221, 136, 0.12);
+  --green-20:       rgba(30, 221, 136, 0.20);
+  --green-light:    #d2f7e6;
+  --green-dark:     #15803d;
+
+  // Text
+  --text:           #1a1a18;
+  --text-2:         #4a4a48;
+  --muted:          #9b9b99;
+
+  // Surfaces
+  --bg:             #ffffff;
+  --card:           #ffffff;
+  --card-header:    #fafaf7;
+  --border:         #e8e7e4;
+  --border-2:       #f0efec;
+
+  // Shadow system (4 layers — référence step edit)
+  --shadow:
+    0 1px 1px rgba(0,0,0,0.04),
+    0 2px 4px rgba(0,0,0,0.04),
+    0 6px 14px rgba(0,0,0,0.05),
+    0 16px 32px rgba(0,0,0,0.04);
+  --shadow-sm:
+    0 1px 1px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.04),
+    0 8px 18px rgba(0,0,0,0.04);
+  --shadow-hover:
+    0 1px 1px rgba(0,0,0,0.04),
+    0 4px 8px rgba(0,0,0,0.06),
+    0 12px 28px rgba(0,0,0,0.08),
+    0 24px 48px rgba(0,0,0,0.06);
+
+  // Radius
+  --radius:         14px;
+  --radius-sm:      10px;
+  --radius-xs:      8px;
+
+  // Typography
+  --font:           'Inter', sans-serif;
+  --font-mono:      'Geist Mono', monospace;
+
+  // Transitions
+  --transition:     0.18s ease;
+  --spring:         cubic-bezier(0.34, 1.56, 0.64, 1);
+}

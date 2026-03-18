@@ -1,17 +1,23 @@
-// Import Google fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito:400,700|Work+Sans:400,700|Inter:400,500,600,700,800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+// ── Fonts chargées via <link> dans application.html.erb ──────────
+// Inter       : UI, labels, body text, buttons     (400–800)
+// Geist Mono  : chiffres, KPIs, métriques          (400–700)
 
-// Define fonts for body and headers
-$body-font: "Inter", sans-serif;
-$headers-font: "Inter", sans-serif;
+// ── SCSS tokens ───────────────────────────────────────────────────
+$body-font:    'Inter', sans-serif;
+$headers-font: 'Inter', sans-serif;
+$mono-font:    'Geist Mono', monospace;
 
-// To use a font file (.woff) uncomment following lines
-// @font-face {
-//   font-family: "Font Name";
-//   src: font-url('FontFile.eot');
-//   src: font-url('FontFile.eot?#iefix') format('embedded-opentype'),
-//        font-url('FontFile.woff') format('woff'),
-//        font-url('FontFile.ttf') format('truetype')
-// }
-// $my-font: "Font Name";
+// ── Global base ───────────────────────────────────────────────────
+body {
+  font-family: $body-font;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ── Mono helper class ─────────────────────────────────────────────
+// Utiliser sur tout chiffre/métrique : <span class="font-mono">42</span>
+.font-mono {
+  font-family: $mono-font;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}

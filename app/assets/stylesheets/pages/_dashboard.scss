@@ -1,35 +1,43 @@
 :root {
   --bg-card:        #ffffff;
-  --bg-card-hover:  #fafcfb;
+  --bg-card-hover:  #fafafa;
 
-  --color-green:    #3ecf8e;
-  --color-green-bg: #e8faf3;
+  --color-green:    #1EDD88;
+  --color-green-bg: rgba(30, 221, 136, 0.12);
   --color-yellow:   #f5a623;
   --color-yellow-bg:#fff5e0;
   --color-blue:     #4a90d9;
   --color-blue-bg:  #e8f1fb;
   --color-red:      #e74c3c;
 
-  --color-text-primary:   #1a1f2e;
-  --color-text-secondary: #6b7280;
-  --color-text-muted:     #9ca3af;
+  --color-text-primary:   #1a1a18;
+  --color-text-secondary: #4a4a48;
+  --color-text-muted:     #9b9b99;
 
-  --color-badge-up-text:  #16a34a;
-  --color-badge-up-bg:    #dcfce7;
+  --color-badge-up-text:  #15803d;
+  --color-badge-up-bg:    #d2f7e6;
   --color-badge-down-text:#dc2626;
   --color-badge-down-bg:  #fee2e2;
 
-  --border-radius-card:  18px;
-  --border-radius-icon:  12px;
+  --border-radius-card:  14px;
+  --border-radius-icon:  10px;
   --border-radius-badge: 20px;
 
-  --shadow-card:       0 2px 12px rgba(0, 0, 0, 0.06);
-  --shadow-card-hover: 0 6px 24px rgba(0, 0, 0, 0.10);
+  --shadow-card:
+    0 1px 1px rgba(0,0,0,0.03),
+    0 2px 6px rgba(0,0,0,0.04),
+    0 8px 18px rgba(0,0,0,0.04);
+  --shadow-card-hover:
+    0 1px 1px rgba(0,0,0,0.04),
+    0 4px 8px rgba(0,0,0,0.06),
+    0 12px 28px rgba(0,0,0,0.08),
+    0 24px 48px rgba(0,0,0,0.06);
 
   --font-display: 'Inter', sans-serif;
   --font-body:    'Inter', sans-serif;
+  --font-mono:    'Geist Mono', monospace;
 
-  --transition: 0.25s ease;
+  --transition: 0.18s ease;
 }
 
 *, *::before, *::after {
@@ -157,11 +165,13 @@ body {
 }
 
 .kpi-value {
-  font-family: var(--font-display);
+  font-family: var(--font-mono);
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--color-text-primary);
   letter-spacing: -0.02em;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
 }
 
 .kpi-badge {
@@ -249,8 +259,8 @@ body {
 
 .legend-dot--revenue { background: #7c5cbf; }
 .legend-dot--leads   { background: #b39ddb; }
-.legend-dot--roi     { background: #3ecf8e; }
-.legend-dot--conv    { background: #57d9a3; }
+.legend-dot--roi     { background: #1EDD88; }
+.legend-dot--conv    { background: rgba(30,221,136,0.55); }
 
 .traffic-stats {
   display: flex;
@@ -303,10 +313,11 @@ body {
 }
 
 .traffic-stat__value {
-  font-family: var(--font-display);
+  font-family: var(--font-mono);
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--color-text-primary);
+  font-feature-settings: "tnum";
 }
 
 @media (max-width: 900px) {

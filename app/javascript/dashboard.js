@@ -1,5 +1,5 @@
 
-document.addEventListener("turbo:load", () => {
+document.addEventListener("turbo:false", () => {
   initCounters();
   initRevenueLeadsChart();
   initDistributionChart();

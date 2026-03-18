@@ -1,6 +1,11 @@
+<% campaign_ids = @active_campaigns.map(&:id) %>
+
 <div class="calendar-page" data-controller="calendar-filter">
   <div class="calendar-header">
-    <h1>Calendrier</h1>
+    <div>
+      <h1>Calendrier</h1>
+      <p class="calendar-month-label"><%= l(@start_date, format: "%B %Y").capitalize %></p>
+    </div>
     <select class="calendar-filter-select"
             data-calendar-filter-target="select"
             data-action="change->calendar-filter#filter">
@@ -17,16 +22,32 @@
     <% end %>
 
     <% (@start_date..@end_date).each do |date| %>
-      <div class="calendar-cell <%= 'today' if date == Date.current %>">
-        <div class="calendar-date"><%= date.day %></div>
+      <% entries = @calendar_steps[date] %>
+      <% past = date < Date.current %>
+      <div class="calendar-cell <%= 'today' if date == Date.current %> <%= 'past' if past %>">
+        <div class="calendar-date-row">
+          <span class="calendar-date"><%= date.day %></span>
+          <% if entries.any? %>
+            <span class="calendar-count"><%= entries.size %></span>
+          <% end %>
+        </div>
         <div class="calendar-badges">
-          <% @calendar_steps[date].each do |entry| %>
-            <%= link_to campaign_path(entry[:campaign]),
-                  class: "calendar-badge #{channel_css_class(entry[:channel])} #{'done' if entry[:step].status == 'done'}",
-                  data: { campaign_id: entry[:campaign].id },
-                  title: "#{entry[:campaign].title} — #{entry[:channel]}" do %>
-              <%= truncate(entry[:channel].presence || "Step", length: 12) %>
-            <% end %>
+          <% entries.first(3).each do |entry| %>
+            <div class="calendar-badge-wrapper">
+              <%= link_to campaign_path(entry[:campaign]),
+                    class: "calendar-badge #{campaign_color_class(entry[:campaign].id, campaign_ids)} #{'done' if entry[:step].status == 'done'}",
+                    data: { campaign_id: entry[:campaign].id } do %>
+                <%= "#{entry[:step_index]}/#{entry[:total_steps]} - #{truncate(entry[:campaign].title, length: 10)}" %>
+              <% end %>
+              <div class="calendar-popover">
+                <div class="popover-step-num"><%= "Step #{entry[:step_index]}/#{entry[:total_steps]}" %></div>
+                <div class="popover-campaign"><%= entry[:campaign].title %></div>
+                <div class="popover-channel"><%= entry[:channel] %></div>
+              </div>
+            </div>
+          <% end %>
+          <% if entries.size > 3 %>
+            <span class="calendar-more">+<%= entries.size - 3 %> autre<%= "s" if entries.size - 3 > 1 %></span>
           <% end %>
         </div>
       </div>

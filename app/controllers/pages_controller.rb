@@ -31,7 +31,9 @@ class PagesController < ApplicationController
         next unless @calendar_steps.key?(real_date)
 
         parsed = step.parse_content
-        @calendar_steps[real_date] << { step: step, campaign: campaign, channel: parsed[:channel] }
+        step_index = campaign.steps.sort_by(&:day).index(step) + 1
+        total_steps = campaign.steps.size
+        @calendar_steps[real_date] << { step: step, campaign: campaign, channel: parsed[:channel], step_index: step_index, total_steps: total_steps }
       end
     end
   end

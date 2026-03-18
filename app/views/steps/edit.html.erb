@@ -14,6 +14,18 @@
 
 <% display_name = current_user.username.presence || current_user.email.split("@").first %>
 <% display_initial = display_name[0].upcase %>
+<% channel_colors = {
+  "LinkedIn"        => "#0A66C2",
+  "Twitter / X"     => "#1a1a18",
+  "Email"           => "#6366f1",
+  "Instagram"       => "#E1306C",
+  "TikTok"          => "#1a1a18",
+  "Facebook"        => "#1877F2",
+  "Blog / Article"  => "#7c3aed",
+  "Forum / Reddit"  => "#FF4500",
+  "Slack / Discord" => "#4A154B",
+  "Autre"           => "#6b7280"
+} %>
 
 <div class="step-page"
      data-controller="step-editor"
@@ -39,10 +51,6 @@
         </span>
       </div>
 
-      <div class="step-topbar-actions">
-        <%= link_to "Annuler", campaign_step_path(@campaign, @step), class: "step-btn-ghost" %>
-        <%= f.submit "Enregistrer", class: "step-btn-save", data: { disable_with: "Enregistrement…" } %>
-      </div>
     </div>
 
     <%# ── Channel nav ──────────────────────────────────────────────── %>
@@ -50,7 +58,7 @@
          data-step-editor-target="channelSelect"
          data-action="change->step-editor#updateChannelUI">
       <% Step::CHANNELS.each do |ch| %>
-        <label class="step-channel-tab">
+        <label class="step-channel-tab" style="--tab-color: <%= channel_colors[ch] || '#1a1a18' %>">
           <input type="radio"
                  name="step[channel]"
                  value="<%= ch %>"
@@ -66,18 +74,54 @@
     <%# ── Two-column: Editor + Preview ────────────────────────────── %>
     <div class="step-two-col">
 
-      <%# Left: content editor %>
+      <%# Left: content editor + instructions %>
       <div class="step-editor-col">
         <div class="step-editor-box">
           <div class="step-editor-box-header">
             <span class="step-editor-box-label">Contenu à poster</span>
             <span class="step-char-count" data-step-editor-target="charCount"></span>
           </div>
-          <textarea name="step[content_body]"
-                    class="step-prose"
-                    placeholder="Rédigez ici le texte complet à copier-coller sur le canal…"
-                    data-step-editor-target="contentArea"
-                    data-action="input->step-editor#onInput"><%= @parsed[:content] %></textarea>
+          <div class="step-format-toolbar">
+            <button type="button" class="step-fmt-btn" title="Gras (Ctrl+B)" data-action="mousedown->step-editor#format" data-step-editor-fmt-param="bold"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg></button>
+            <button type="button" class="step-fmt-btn" title="Italique (Ctrl+I)" data-action="mousedown->step-editor#format" data-step-editor-fmt-param="italic"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
+            <button type="button" class="step-fmt-btn" title="Barré" data-action="mousedown->step-editor#format" data-step-editor-fmt-param="strike"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.3 12H6.7"/><path d="M10 6.3C10 5 11 4 12.5 4s2.5 1 2.5 2.3c0 .7-.3 1.3-.8 1.7"/><path d="M14 17.7c0 1.3-1 2.3-2.5 2.3S9 19 9 17.7c0-.7.3-1.3.8-1.7"/></svg></button>
+            <span class="step-fmt-sep"></span>
+            <button type="button" class="step-fmt-btn" title="Liste à puces" data-action="mousedown->step-editor#format" data-step-editor-fmt-param="ul"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1" fill="currentColor" stroke="none"/></svg></button>
+            <button type="button" class="step-fmt-btn" title="Liste numérotée" data-action="mousedown->step-editor#format" data-step-editor-fmt-param="ol"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></button>
+          </div>
+          <%# Hidden input sent with form — synced from contenteditable via JS %>
+          <input type="hidden" name="step[content_body]"
+                 value="<%= j @parsed[:content] %>"
+                 data-step-editor-target="contentBody">
+          <div class="step-prose step-prose--editable"
+               contenteditable="true"
+               spellcheck="true"
+               data-step-editor-target="contentArea"
+               data-action="input->step-editor#onInput keydown->step-editor#keyFormat"
+               data-placeholder="Rédigez ici le texte complet à copier-coller sur le canal…"><%= raw sanitize(@parsed[:content].to_s, tags: %w[b i strong em del s br div p ul ol li], attributes: []) %></div>
+        </div>
+
+        <div class="step-workflow-section">
+          <div class="step-workflow-header">
+            <span class="step-label" style="margin:0;">Instructions</span>
+            <span class="step-workflow-hint">Une action par ligne</span>
+          </div>
+          <textarea name="step[instructions]"
+                    class="step-workflow-field"
+                    placeholder="Aller sur LinkedIn&#10;Créer une nouvelle publication&#10;Coller le contenu&#10;Ajouter l'image générée&#10;Publier"><%= @parsed[:instructions] %></textarea>
+        </div>
+
+        <div class="step-edit-footer">
+          <div class="step-footer-status-group">
+            <span class="step-footer-label">Statut</span>
+            <%= f.select :status, [["En attente", "pending"], ["Fait", "done"]], {},
+                class: "step-status-select",
+                data: { step_editor_target: "statusSelect", action: "change->step-editor#updateStatusBadge" } %>
+          </div>
+          <div class="step-footer-actions">
+            <%= link_to "Annuler", campaign_step_path(@campaign, @step), class: "step-btn-ghost" %>
+            <%= f.submit "Enregistrer", class: "step-btn-primary", data: { disable_with: "Enregistrement…" } %>
+          </div>
         </div>
       </div>
 
@@ -101,6 +145,11 @@
                     <div class="step-preview-sub" data-step-editor-target="previewSub">LinkedIn · Maintenant · 🌐</div>
                   </div>
                 </div>
+                <% if @step.image.attached? %>
+                  <div class="step-preview-image-wrap">
+                    <%= image_tag @step.image, class: "step-preview-image" %>
+                  </div>
+                <% end %>
                 <p class="step-preview-text is-placeholder" data-step-editor-target="previewText">Votre contenu apparaîtra ici…</p>
                 <div class="step-preview-actions" data-step-editor-target="previewActions">
                   <span>👍 J'aime</span><span>💬 Commenter</span><span>↗ Partager</span>
@@ -109,31 +158,6 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <%# ── Instructions ──────────────────────────────────────────────── %>
-    <div class="step-workflow-section">
-      <div class="step-workflow-header">
-        <span class="step-label" style="margin:0;">Instructions</span>
-        <span class="step-workflow-hint">Une action par ligne — numérotées automatiquement</span>
-      </div>
-      <textarea name="step[instructions]"
-                class="step-workflow-field"
-                placeholder="Aller sur LinkedIn&#10;Créer une nouvelle publication&#10;Coller le contenu&#10;Ajouter l'image générée&#10;Publier"><%= @parsed[:instructions] %></textarea>
-    </div>
-
-    <%# ── Footer ────────────────────────────────────────────────────── %>
-    <div class="step-edit-footer">
-      <div class="step-footer-status-group">
-        <span class="step-footer-label">Statut</span>
-        <%= f.select :status, [["En attente", "pending"], ["Fait", "done"]], {},
-            class: "step-status-select",
-            data: { step_editor_target: "statusSelect", action: "change->step-editor#updateStatusBadge" } %>
-      </div>
-      <div class="step-footer-actions">
-        <%= link_to "Annuler", campaign_step_path(@campaign, @step), class: "step-btn-ghost" %>
-        <%= f.submit "Enregistrer", class: "step-btn-save", data: { disable_with: "Enregistrement…" } %>
       </div>
     </div>
 

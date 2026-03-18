@@ -90,7 +90,8 @@
     </div>
   <% end %>
 
-  <%= form_with url: chat_messages_path(chat), method: :post do |f| %>
+  <%= form_with url: chat_messages_path(chat), method: :post,
+      data: { action: "submit->chat#submitValidation" } do |f| %>
     <%= f.hidden_field "message[content]", value: "Je valide la stratégie proposée." %>
     <%= f.submit "✓ Valider la stratégie", class: "strategy-validate-btn" %>
   <% end %>

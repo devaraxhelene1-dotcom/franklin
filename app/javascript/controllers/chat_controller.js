@@ -2,11 +2,22 @@ import { Controller } from "@hotwired/stimulus"
 import { marked } from "marked"
 
 export default class extends Controller {
-  static targets = ["messages", "submit", "loading", "fileInput", "filePreview", "fileName", "textarea"]
+  static targets = ["messages", "submit", "loading", "validationLoading", "fileInput", "filePreview", "fileName", "content"]
 
   connect() {
     this.renderMarkdown()
     this.scrollToBottom()
+
+    // Observer les nouveaux messages ajoutés par Turbo Stream
+    this.observer = new MutationObserver(() => {
+      this.renderMarkdown()
+      this.scrollToBottom()
+    })
+    this.observer.observe(this.messagesTarget, { childList: true })
+  }
+
+  disconnect() {
+    if (this.observer) this.observer.disconnect()
   }
 
   autoResize(event) {
@@ -24,7 +35,10 @@ export default class extends Controller {
 
   renderMarkdown() {
     this.messagesTarget.querySelectorAll(".bubble-bot").forEach(el => {
+      // Éviter de re-parser un élément déjà converti
+      if (el.dataset.rendered) return
       el.innerHTML = marked.parse(el.textContent.trim())
+      el.dataset.rendered = "true"
     })
   }
 
@@ -35,6 +49,11 @@ export default class extends Controller {
   submit() {
     this.submitTarget.disabled = true
     this.loadingTarget.classList.remove("d-none")
+    this.scrollToBottom()
+  }
+
+  submitValidation() {
+    this.validationLoadingTarget.classList.remove("d-none")
   }
 
   fileChange() {

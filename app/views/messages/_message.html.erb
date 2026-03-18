@@ -1,0 +1,30 @@
+<% return if message.role == 'user' && message.content == "Je valide la stratégie proposée." %>
+<div class="message <%= message.role == 'user' ? 'message-user' : 'message-bot' %>" id="<%= dom_id(message) %>">
+  <%
+    is_strategy = message.role == 'assistant' &&
+                  message.content.include?("[VALIDATE]") &&
+                  message.content.match?(/\*\*ICP.*:\*\*/i) &&
+                  message.content.match?(/\*\*Channels?.*:\*\*/i) &&
+                  message.content.match?(/\*\*Angles?.*:\*\*/i)
+  %>
+
+  <% if is_strategy %>
+    <%= render partial: "chats/strategy_card", locals: { content: message.content, chat: message.chat } %>
+  <% else %>
+    <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
+      <% display = message.content.gsub("[VALIDATE]", "").gsub(/\n\n--- Document (PDF )?fourni par l'utilisateur ---\n.*\z/m, "").strip %>
+      <% display = "" if display == "J'ai joint une image." && message.file.attached? %>
+      <%= simple_format(display) if display.present? %>
+
+      <% if message.file.attached? %>
+        <% if message.file.content_type&.start_with?("image/") %>
+          <%= image_tag rails_blob_path(message.file, disposition: "inline"), class: "chat-image mt-2" %>
+        <% else %>
+          <div class="file-chip mt-2">
+            <i class="fa-solid fa-file-lines"></i><span><%= message.file.filename %></span>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -16,6 +16,7 @@ class GenerateCampaignSteps < RubyLLM::Tool
     campaign = @chat.campaign
 
     return { error: "Aucune campagne liée à ce chat." } unless campaign
+    return { result: "Les steps existent déjà pour cette campagne." } if campaign.steps.any?
 
     Rails.logger.info("=== STEPS RECEIVED ===")
     Rails.logger.info("Class: #{steps.class}")

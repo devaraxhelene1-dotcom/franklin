@@ -1,4 +1,4 @@
-$sidebar-width: 240px;
+$sidebar-width: 250px;
 $sidebar-collapsed-width: 60px;
 
 .sidebar {
@@ -7,13 +7,14 @@ $sidebar-collapsed-width: 60px;
   left: 0;
   width: $sidebar-width;
   height: 100vh;
-  padding: 20px 0;
+  padding: 10px 0;
   display: flex;
   flex-direction: column;
   z-index: 1000;
   transition: width 0.3s ease;
   border-right: solid 1px rgb(82, 82, 82);
   overflow: hidden;
+  background-color: #333;
 }
 
 // --- Header (logo left, toggle right) ---
@@ -21,8 +22,9 @@ $sidebar-collapsed-width: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 15px;
-  margin-bottom: 10px;
+  padding: 0;
+  padding-right: 20px;
+  margin-bottom: 30px;
 }
 
 // --- Toggle button ---
@@ -31,7 +33,7 @@ $sidebar-collapsed-width: 60px;
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #333;
+  color: white;
 }
 
 .sidebar-open-icon {
@@ -57,11 +59,23 @@ $sidebar-collapsed-width: 60px;
   border-radius: 8px;
   margin: 4px 10px;
   white-space: nowrap;
+}
 
-  &.active > .sidebar-link,
-  &.active > form .sidebar-link {
-    background-color: #d4f5d0;
-    border-radius: 8px;
+.sidebar-item.active {
+  background-color: #d4f5d0;
+  border-radius: 8px;
+
+  > .sidebar-link {
+    color: #333;
+  }
+
+  > .sidebar-chevron-btn {
+    color: #333 !important;
+  }
+
+  > .sidebar-submenu {
+    background-color: #333;
+    border-radius: 0 0 8px 8px;
   }
 }
 
@@ -70,7 +84,7 @@ $sidebar-collapsed-width: 60px;
   align-items: center;
   padding: 12px 20px;
   text-decoration: none;
-  color: #333;
+  color: white;
   font-weight: 500;
   font-size: 15px;
 
@@ -115,9 +129,9 @@ $sidebar-collapsed-width: 60px;
 }
 
 .sidebar-user-name {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  color: #333;
+  color: white;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -125,8 +139,8 @@ $sidebar-collapsed-width: 60px;
 
 // --- Logout ---
 .sidebar-logout {
-  font-size: 13px;
-  color: #6b7280;
+  font-size: 15px;
+  color: white;
   border-radius: 8px;
   transition: background 0.15s, color 0.15s;
 
@@ -276,7 +290,7 @@ body.has-sidebar.sidebar-collapsed .main-content {
     border: none;
     cursor: pointer;
     padding: 12px 12px 12px 4px;
-    color: #333;
+    color: white;
   }
 
   .sidebar-chevron {
@@ -299,29 +313,31 @@ body.has-sidebar.sidebar-collapsed .main-content {
 
     &.active .sidebar-submenu-link {
       background-color: #d4f5d0;
+      color: #333;
       border-radius: 6px;
     }
+
   }
 
   .sidebar-submenu-link {
     display: block;
-    padding: 8px 20px 8px 52px;
+    padding: 8px 20px 8px 42px;
     text-decoration: none;
-    color: #333;
+    color: white;
     font-size: 13px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
     &:hover {
-      background-color: #e0e0e0;
+      background-color: #b6b7b5;
       border-radius: 6px;
     }
   }
 }
 
 .new-chath {
-  background-color: #16a34a;
+  background-color: #21c87c;
   border-radius: 10px;
 }
 

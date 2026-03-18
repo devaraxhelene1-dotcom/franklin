@@ -15,12 +15,13 @@ body {
   font-family: var(--font);
 }
 
-.card_header h1 span {
+.home-gradient {
   background: linear-gradient(to right, #1EDD88, #17cc7e);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
 
 .home-btn {
   background-color: $gray;
@@ -70,6 +71,16 @@ body {
   }
 }
 
+.card-dash {
+  max-width: 948px;
+  margin: 40px auto 0;
+  text-align: center;
+
+  img {
+    width: 100%;
+    border-radius: 14px;
+  }
+}
 .card-category h2 {
   font-size: 18px;
   font-weight: 700;

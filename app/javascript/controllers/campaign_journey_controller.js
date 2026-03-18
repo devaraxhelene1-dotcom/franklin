@@ -48,13 +48,13 @@ export default class extends Controller {
   // ─── Positions ───────────────────────────────────────────────
 
   calcPositions(n, W, isMobile) {
-    const padX = 70, padY = 80
+    const padX = 70, padY = 90
     if (isMobile) {
-      return Array.from({ length: n }, (_, i) => ({ x: W / 2, y: padY + i * 110 }))
+      return Array.from({ length: n }, (_, i) => ({ x: W / 2, y: padY + i * 130 }))
     }
-    const perRow = W < 680 ? 3 : 4
+    const perRow = n <= 5 ? n : (W < 680 ? 3 : 4)
     const colW   = perRow > 1 ? (W - padX * 2) / (perRow - 1) : 0
-    const rowH   = 160
+    const rowH   = 180
     return Array.from({ length: n }, (_, i) => {
       const row   = Math.floor(i / perRow)
       const col   = i % perRow
@@ -76,49 +76,86 @@ export default class extends Controller {
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`)
     svg.classList.add("journey-svg")
 
+    // Find last done index for gradient stop
+    let lastDoneIdx = -1
+    steps.forEach((s, i) => { if (s.status === "done") lastDoneIdx = i })
+    const gradStop = positions.length > 1 && lastDoneIdx >= 0
+      ? Math.min(1, (lastDoneIdx + 0.5) / (positions.length - 1))
+      : 0
+
     const defs = document.createElementNS(NS, "defs")
     defs.innerHTML = `
       <filter id="jglow" x="-60%" y="-60%" width="220%" height="220%">
         <feGaussianBlur stdDeviation="5" result="blur"/>
         <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>`
+      </filter>
+      <filter id="pathGlow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <linearGradient id="pathGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#1EDD88"/>
+        <stop offset="${(gradStop * 100).toFixed(1)}%" stop-color="#1EDD88"/>
+        <stop offset="${((gradStop + 0.08) * 100).toFixed(1)}%" stop-color="#e0e0e0"/>
+        <stop offset="100%" stop-color="#e0e0e0"/>
+      </linearGradient>`
     svg.appendChild(defs)
 
-    // Background segments — dashed for upcoming, gray for now (green added below)
+    const fullD = this.fullPath(positions)
+
+    // 1. Glow layer under done path
+    if (lastDoneIdx >= 0) {
+      const glowPath = document.createElementNS(NS, "path")
+      glowPath.setAttribute("d",              fullD)
+      glowPath.setAttribute("fill",           "none")
+      glowPath.setAttribute("stroke",         "rgba(30, 221, 136, 0.2)")
+      glowPath.setAttribute("stroke-width",   "12")
+      glowPath.setAttribute("stroke-linecap", "round")
+      glowPath.setAttribute("filter",         "url(#pathGlow)")
+      glowPath.classList.add("journey-glow-path")
+
+      // Clip glow to done portion
+      if (gradStop < 1) {
+        requestAnimationFrame(() => {
+          const len = glowPath.getTotalLength()
+          glowPath.style.strokeDasharray  = `${len * gradStop} ${len}`
+          glowPath.style.strokeDashoffset = 0
+        })
+      }
+      svg.appendChild(glowPath)
+    }
+
+    // 2. Background segments — upcoming dashed
     for (let i = 1; i < positions.length; i++) {
       const bothDone = steps[i - 1].status === "done" && steps[i].status === "done"
+      if (bothDone) continue // gradient handles done segments
       const seg = document.createElementNS(NS, "path")
       seg.setAttribute("d",              this.segPath(positions[i - 1], positions[i], i))
       seg.setAttribute("fill",           "none")
-      seg.setAttribute("stroke",         "#e0e0e0")        // start gray — green applied below
-      seg.setAttribute("stroke-width",   bothDone ? "2.5" : "2")
+      seg.setAttribute("stroke",         "#e0e0e0")
+      seg.setAttribute("stroke-width",   "2.5")
       seg.setAttribute("stroke-linecap", "round")
-      if (!bothDone) seg.setAttribute("stroke-dasharray", "5 7")  // dashed upcoming
-      seg.dataset.segmentIndex = i
-      seg.dataset.bothDone     = bothDone
+      seg.setAttribute("stroke-dasharray", "6 8")
+      seg.classList.add("journey-dash-upcoming")
       svg.appendChild(seg)
     }
 
-    // Staggered green reveal for done segments after path draw begins
-    setTimeout(() => {
-      svg.querySelectorAll("path[data-segment-index]").forEach(seg => {
-        if (seg.dataset.bothDone === "true") {
-          const idx = parseInt(seg.dataset.segmentIndex)
-          setTimeout(() => {
-            seg.style.transition = "stroke 0.5s ease, stroke-width 0.3s ease"
-            seg.style.stroke     = "#1EDD88"
-          }, idx * 100)
-        }
-      })
-    }, 350)
+    // 3. Main path with gradient (done=green → upcoming=gray)
+    const mainPath = document.createElementNS(NS, "path")
+    mainPath.setAttribute("d",              fullD)
+    mainPath.setAttribute("fill",           "none")
+    mainPath.setAttribute("stroke",         "url(#pathGrad)")
+    mainPath.setAttribute("stroke-width",   "3.5")
+    mainPath.setAttribute("stroke-linecap", "round")
+    svg.appendChild(mainPath)
 
-    // Animated draw overlay
+    // 4. Animated draw overlay
     const dur      = this.isNewValue ? 3 : 2
     const animPath = document.createElementNS(NS, "path")
-    animPath.setAttribute("d",              this.fullPath(positions))
+    animPath.setAttribute("d",              fullD)
     animPath.setAttribute("fill",           "none")
     animPath.setAttribute("stroke",         "#f5f5f5")
-    animPath.setAttribute("stroke-width",   "3.5")
+    animPath.setAttribute("stroke-width",   "5")
     animPath.setAttribute("stroke-linecap", "round")
     animPath.classList.add("journey-anim-path")
     svg.appendChild(animPath)
@@ -133,6 +170,22 @@ export default class extends Controller {
       })
     })
 
+    // 5. Traveling particle on done path
+    if (lastDoneIdx >= 0) {
+      const particle = document.createElementNS(NS, "circle")
+      particle.setAttribute("r",    "4")
+      particle.setAttribute("fill", "#1EDD88")
+      particle.setAttribute("filter", "url(#pathGlow)")
+      particle.classList.add("journey-particle")
+
+      const motionPath = document.createElementNS(NS, "animateMotion")
+      motionPath.setAttribute("dur",         "3s")
+      motionPath.setAttribute("repeatCount", "indefinite")
+      motionPath.setAttribute("path",        this.donePath(positions, lastDoneIdx))
+      particle.appendChild(motionPath)
+      svg.appendChild(particle)
+    }
+
     return svg
   }
 
@@ -140,9 +193,9 @@ export default class extends Controller {
     const dy = b.y - a.y
     if (Math.abs(dy) < 20) {
       const sign = i % 2 === 0 ? -1 : 1
-      return `M ${a.x} ${a.y} Q ${(a.x + b.x) / 2} ${a.y + sign * 28} ${b.x} ${b.y}`
+      return `M ${a.x} ${a.y} Q ${(a.x + b.x) / 2} ${a.y + sign * 40} ${b.x} ${b.y}`
     }
-    return `M ${a.x} ${a.y} C ${a.x} ${a.y + dy * 0.6} ${b.x} ${b.y - dy * 0.6} ${b.x} ${b.y}`
+    return `M ${a.x} ${a.y} C ${a.x} ${a.y + dy * 0.55} ${b.x} ${b.y - dy * 0.55} ${b.x} ${b.y}`
   }
 
   fullPath(positions) {
@@ -153,9 +206,25 @@ export default class extends Controller {
       const dy = b.y - a.y
       if (Math.abs(dy) < 20) {
         const sign = i % 2 === 0 ? -1 : 1
-        d += ` Q ${(a.x + b.x) / 2} ${a.y + sign * 28} ${b.x} ${b.y}`
+        d += ` Q ${(a.x + b.x) / 2} ${a.y + sign * 40} ${b.x} ${b.y}`
       } else {
-        d += ` C ${a.x} ${a.y + dy * 0.6} ${b.x} ${b.y - dy * 0.6} ${b.x} ${b.y}`
+        d += ` C ${a.x} ${a.y + dy * 0.55} ${b.x} ${b.y - dy * 0.55} ${b.x} ${b.y}`
+      }
+    }
+    return d
+  }
+
+  donePath(positions, lastDoneIdx) {
+    if (lastDoneIdx < 1) return `M ${positions[0].x} ${positions[0].y}`
+    let d = `M ${positions[0].x} ${positions[0].y}`
+    for (let i = 1; i <= lastDoneIdx; i++) {
+      const a = positions[i - 1], b = positions[i]
+      const dy = b.y - a.y
+      if (Math.abs(dy) < 20) {
+        const sign = i % 2 === 0 ? -1 : 1
+        d += ` Q ${(a.x + b.x) / 2} ${a.y + sign * 40} ${b.x} ${b.y}`
+      } else {
+        d += ` C ${a.x} ${a.y + dy * 0.55} ${b.x} ${b.y - dy * 0.55} ${b.x} ${b.y}`
       }
     }
     return d
@@ -183,37 +252,35 @@ export default class extends Controller {
       node.style.animationDelay = `${baseDelay + i * stepDelay}ms`
       node.dataset.stepIndex    = i
 
-      // Circle — 40px
+      // Circle — 52px with day number inside
       const circle = document.createElement("div")
       circle.classList.add("node-circle")
       if (state === "done") {
-        circle.innerHTML = `<svg class="node-check" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        circle.innerHTML = `<svg class="node-check" width="20" height="20" viewBox="0 0 16 16" fill="none">
           <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>`
-      } else if (state === "current") {
-        circle.innerHTML = `<span class="node-pulse-ring"></span><span class="node-dot"></span>`
       } else {
-        circle.innerHTML = `<span class="node-dot"></span>`
+        circle.innerHTML = `<span class="node-day-num">${step.day}</span>`
       }
-
-      // Label
-      const label = document.createElement("div")
-      label.classList.add("node-label")
-      label.style.animationDelay = `${baseDelay + 100 + i * stepDelay}ms`
-      label.textContent = `Jour ${step.day}`
 
       node.appendChild(circle)
-      node.appendChild(label)
 
-      // Channel sub-label
-      const channel = this.extractChannel(step.content)
-      if (channel) {
-        const sub = document.createElement("div")
-        sub.classList.add("node-sublabel")
-        sub.style.animationDelay = `${baseDelay + 120 + i * stepDelay}ms`
-        sub.textContent = channel
-        node.appendChild(sub)
+      // "Tu es ici" indicator for current step
+      if (state === "current") {
+        circle.innerHTML += `<span class="node-pulse-ring"></span>`
+        const badge = document.createElement("div")
+        badge.classList.add("node-current-badge")
+        badge.textContent = "À faire"
+        badge.style.animationDelay = `${baseDelay + 100 + i * stepDelay}ms`
+        node.appendChild(badge)
       }
+
+      // Day label
+      const label = document.createElement("div")
+      label.classList.add("node-label")
+      label.style.animationDelay = `${baseDelay + 120 + i * stepDelay}ms`
+      label.textContent = `JOUR ${step.day}`
+      node.appendChild(label)
 
       node.addEventListener("mouseenter", () => this.showPreview(step, pos))
       node.addEventListener("mouseleave", ()  => this.hidePreview())
@@ -229,22 +296,27 @@ export default class extends Controller {
 
   showPreview(step, pos) {
     if (!this._previewEl) return
-    const { channel, content } = this.parseStepContent(step.content)
-    const excerpt = content.replace(/\*\*/g, "").substring(0, 110).trimEnd()
+    const { channel, content, instructions } = this.parseStepContent(step.content)
+    const excerpt = content.replace(/\*\*/g, "").substring(0, 160).trimEnd()
+    const statusLabel = step.status === "done" ? "Fait" : "En attente"
+    const statusClass = step.status === "done" ? "done" : "pending"
 
     this._previewEl.innerHTML = `
-      <div class="preview-day">
-        Jour ${step.day}
-        ${channel ? `<span class="preview-channel">${channel}</span>` : ""}
+      <div class="preview-header">
+        <span class="preview-day">Jour ${step.day}</span>
+        <span class="preview-status ${statusClass}">${statusLabel}</span>
       </div>
+      ${channel ? `<div class="preview-channel-row"><span class="preview-channel">${channel}</span></div>` : ""}
       ${step.image_url ? `<img src="${step.image_url}" class="preview-img" alt="">` : ""}
-      <p class="preview-excerpt">${excerpt}${content.length > 110 ? "…" : ""}</p>
+      <p class="preview-excerpt">${excerpt}${content.length > 160 ? "…" : ""}</p>
+      ${instructions.length ? `<div class="preview-instructions"><span class="preview-instructions-count">${instructions.length} instruction${instructions.length > 1 ? "s" : ""}</span></div>` : ""}
+      <div class="preview-hint">Cliquer pour voir le détail</div>
     `
 
     const canvasW = this.canvasTarget.offsetWidth
-    let left = pos.x + 30
-    let top  = pos.y - 20
-    if (left + 254 > canvasW) left = pos.x - 280
+    let left = pos.x + 36
+    let top  = pos.y - 30
+    if (left + 300 > canvasW) left = pos.x - 320
 
     this._previewEl.style.left = left + "px"
     this._previewEl.style.top  = top  + "px"
@@ -278,22 +350,18 @@ export default class extends Controller {
       </button>` : ""
 
     const checklistHtml = instructions.length ? `
-      <div class="panel-checklist">
-        <h4 class="checklist-title">Instructions</h4>
-        <ul class="checklist-list">
-          ${instructions.map(item => `
-            <li class="checklist-item">
-              <label class="checklist-label">
-                <input type="checkbox" class="checklist-checkbox">
-                <span class="checklist-check">
-                  <svg width="9" height="9" viewBox="0 0 9 9" fill="none">
-                    <path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </span>
+      <div class="panel-card panel-card--instructions">
+        <div class="panel-card-header">
+          <span class="panel-card-label">Instructions</span>
+        </div>
+        <div class="panel-card-body">
+          <ul class="checklist-list">
+            ${instructions.map(item => `
+              <li class="checklist-item">
                 <span class="checklist-text">${item}</span>
-              </label>
-            </li>`).join("")}
-        </ul>
+              </li>`).join("")}
+          </ul>
+        </div>
       </div>` : ""
 
     this.panelBodyTarget.innerHTML = `
@@ -322,14 +390,16 @@ export default class extends Controller {
           Télécharger
         </button>
       </div>` : ""}
-      <div class="panel-content-wrap">
-        ${content ? `<div class="panel-content-header">
-          <span class="panel-content-label">Contenu à poster</span>
-          ${copyBtn}
-        </div>` : ""}
-        <div class="panel-content">${renderedContent}</div>
-      </div>
       ${checklistHtml}
+      <div class="panel-card panel-card--content">
+        <div class="panel-card-header">
+          <span class="panel-card-label">Contenu à poster</span>
+          ${copyBtn}
+        </div>
+        <div class="panel-card-body">
+          <div class="panel-content">${renderedContent}</div>
+        </div>
+      </div>
       <div class="panel-actions">
         <button
           class="btn-mark-done ${step.status}"
@@ -468,12 +538,8 @@ export default class extends Controller {
     this.syncProgressHeader()
   }
 
-  flashSegmentGreen(stepIndex) {
-    const seg = this.canvasTarget.querySelector(`svg path[data-segment-index="${stepIndex}"]`)
-    if (seg) {
-      seg.style.transition = "stroke 0.45s ease"
-      seg.style.stroke     = "#1EDD88"
-    }
+  flashSegmentGreen(_stepIndex) {
+    // Gradient handles green coloring on rebuild
   }
 
   syncProgressHeader() {

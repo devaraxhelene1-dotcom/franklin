@@ -1,6 +1,6 @@
 .navbar-lewagon {
   justify-content: space-between;
-  background: white;
+  background: transparent;
 }
 
 .navbar-lewagon .navbar-collapse {
@@ -12,31 +12,41 @@
 }
 
 .btn-connexion {
-margin-right: 10px;
-background: #4ade80;
-border-radius: 11px;
-color: white;
+  margin-right: 10px;
+  background: $green;
+  border-radius: var(--radius-sm);
+  color: #000;
+  font-weight: 600;
+  transition: background-color var(--transition);
+
   &:hover {
-    background-color: #35ba66;
-    color: white;
+    background-color: darken(#1EDD88, 8%);
+    color: #000;
   }
 }
 
 .btn-login {
-background: #000000;
-border-radius: 11px;
-color: #ffffff;
+  background: $gray;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-weight: 600;
+  transition: background-color var(--transition);
+
   &:hover {
-    color: white;
+    background-color: $green;
+    color: #000;
   }
 }
 
 .btn-logout {
-background: #000000;
-border-radius: 11px;
-color: #FFFFFF;
+  background: $gray;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-weight: 600;
+  transition: background-color var(--transition);
+
   &:hover {
-    background: #FFFFFF;
-    color: #000000;
+    background: #fff;
+    color: #000;
   }
 }

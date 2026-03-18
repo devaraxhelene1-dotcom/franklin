@@ -3,14 +3,15 @@
 }
 
 .btn-connect {
-  background: #CBFED8;
-  border-radius: 11px;
-  color: #000000;
-  font-weight: bolder;
+  background: $green;
+  border-radius: var(--radius-sm);
+  color: #000;
+  font-weight: 700;
+  transition: background-color var(--transition);
 
   &:hover {
-    background: #CBFED8;
-    color: #000000;
+    background: darken(#1EDD88, 8%);
+    color: #000;
   }
 }
 

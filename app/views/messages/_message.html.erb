@@ -8,6 +8,10 @@
                   message.content.match?(/\*\*Angles?.*:\*\*/i)
   %>
 
+  <% if message.role == 'assistant' || message.role == 'bot' %>
+    <%= image_tag "Logo_Franklin.png", class: "bot-avatar", alt: "Franklin" %>
+  <% end %>
+
   <% if is_strategy %>
     <%= render partial: "chats/strategy_card", locals: { content: message.content, chat: message.chat } %>
   <% else %>

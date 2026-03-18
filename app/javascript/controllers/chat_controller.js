@@ -17,6 +17,13 @@ export default class extends Controller {
       this.renderMarkdown()
       this.updateLayout()
       this.scrollToBottom()
+
+      // Afficher le loading seulement après que le message user est apparu dans le chat
+      if (this._waitingForMessage) {
+        this._waitingForMessage = false
+        this.loadingTarget.classList.remove("d-none")
+        this.scrollToBottom()
+      }
     })
     this.observer.observe(this.messagesTarget, { childList: true })
   }
@@ -97,13 +104,7 @@ export default class extends Controller {
 
   submit() {
     this.submitTarget.disabled = true
-    this.loadingTarget.classList.remove("d-none")
-
-    // Mettre à jour le layout et scroller après un court délai
-    setTimeout(() => {
-      this.updateLayout()
-      this.scrollToBottom()
-    }, 100)
+    this._waitingForMessage = true
   }
 
   submitValidation() {

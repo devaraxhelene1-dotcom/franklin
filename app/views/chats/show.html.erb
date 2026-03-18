@@ -1,9 +1,13 @@
 <%= turbo_stream_from @chat %>
 
-<div class="chat-container" data-controller="chat">
+<div class="chat-container <%= 'has-messages' if @chat.messages.any? %>" data-controller="chat">
   <div class="chat-title mt-5">
-    <h2>Discutez avec <span>Franklin</span></h2>
-  </div>
+  <h2>
+    <span class="typewriter-black" data-chat-target="typewriterBlack"></span>
+    <span class="typewriter-green" data-chat-target="typewriterGreen"></span>
+    <span class="typewriter-cursor">|</span>
+  </h2>
+</div>
 
   <% if @chat.campaign&.status == "active" %>
     <div class="campaign-created-banner">
@@ -50,7 +54,7 @@
             <i class="fa-solid fa-paperclip"></i>
             <%= f.file_field :file, style: "display: none;", data: { action: "change->chat#fileChange", chat_target: "fileInput" } %>
           </label>
-          <%= f.text_area :content, placeholder: "Envoyer un message...", rows: 1, data: { action: "input->chat#autoResize keydown->chat#submitOnEnter", chat_target: "content" } %>
+          <%= f.text_area :content, placeholder: "Décrivez votre projet...", rows: 1, data: { action: "input->chat#autoResize keydown->chat#submitOnEnter", chat_target: "content" } %>
           <%= f.submit "➤", data: { chat_target: "submit" } %>
         </div>
       </div>

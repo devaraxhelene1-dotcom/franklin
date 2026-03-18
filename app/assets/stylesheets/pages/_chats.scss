@@ -1,3 +1,4 @@
+
 .chat-container {
   max-width: 800px;
   margin: 0 auto;
@@ -5,13 +6,19 @@
   display: flex;
   flex-direction: column;
   font-family: 'Inter', sans-serif;
-  background: radial-gradient(ellipse at 50% 0%, rgba(30,221,136,0.08) 0%, #ffffff 55%);
+  background: radial-gradient(circle at 50% 50%, rgba(30,221,136,0.30) 0%, rgba(30,221,136,0.18) 15%, rgba(30,221,136,0.10) 30%, rgba(30,221,136,0.05) 45%, #ffffff 65%);
   position: relative;
+  justify-content: center;
+}
+
+.chat-container.has-messages {
+  justify-content: flex-start;
 }
 
 .chat-title {
   text-align: center;
   font-family: 'Inter', sans-serif;
+  margin-bottom: 32px;
 }
 
 .chat-title h2 {
@@ -22,20 +29,52 @@
   font-family: 'Inter', sans-serif;
 }
 
-.chat-title h2 span {
-  background: linear-gradient(to right, #1EDD88, #17cc7e);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.chat-container.has-messages .chat-title {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.typewriter-black {
+  color: #1a1a18 !important;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: #1a1a18 !important;
+  background-clip: unset !important;
+}
+
+.typewriter-green {
+  background: linear-gradient(to right, #1EDD88, #17cc7e) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.typewriter-cursor {
+  color: #1a1a18 !important;
+  animation: none;
+}
+
+.typewriter-finished .typewriter-cursor {
+  animation: blink 1s infinite;
+  display: inline; /* Ajouté pour s'assurer qu'il reste visible */
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
 .chat-messages {
   flex: 1;
   overflow-y: auto;
   padding: 30px 20px;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 24px;
+}
+
+.chat-container.has-messages .chat-messages {
+  display: flex;
 }
 
 .message {
@@ -53,16 +92,23 @@
 }
 
 .bubble-user {
-  background-color: #f3f4f6;
+  background-color: #525252;
   border-radius: 20px 20px 4px 20px;
   padding: 12px 18px;
   max-width: 70%;
-  color: #1a1a18;
+  color: white;
   font-size: 15px;
   line-height: 1.6;
   overflow-wrap: break-word;
   word-break: break-word;
+  display: flex;
+  align-items: center;
 }
+
+.bubble-user p {
+  margin: 0;
+}
+
 
 .bubble-bot {
   background: none;
@@ -85,8 +131,13 @@
 
 .chat-input {
   padding: 16px 20px;
+  position: relative;
+}
+
+.chat-container.has-messages .chat-input {
   position: sticky;
   bottom: 0;
+  margin-top: auto;
 }
 
 .input-wrapper {
@@ -94,7 +145,7 @@
   flex-direction: column;
   background: white;
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 18px 16px;
   border: 1px solid #e8e7e4;
   box-shadow:
     0 1px 1px rgba(0,0,0,0.03),
@@ -120,19 +171,19 @@
   font-size: 13px;
   color: #1a1a18;
   max-width: 100%;
+}
 
-  i {
-    color: #1a1a18;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
+.file-chip i {
+  color: #1a1a18;
+  font-size: 14px;
+  flex-shrink: 0;
+}
 
-  span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 240px;
-  }
+.file-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 240px;
 }
 
 .file-remove-btn {
@@ -145,13 +196,15 @@
   padding: 0 2px;
   flex-shrink: 0;
   transition: color 0.15s;
+}
 
-  &:hover { color: #1a1a18; }
+.file-remove-btn:hover {
+  color: #1a1a18;
 }
 
 .input-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
 }
 
@@ -160,11 +213,12 @@
   border: none;
   background: transparent;
   outline: none;
-  font-size: 15px;
+  font-size: 16px;
   font-family: 'Inter', sans-serif;
   resize: none;
-  line-height: 1.5;
-  padding: 6px 0;
+  line-height: 60px; /* Même valeur que min-height */
+  padding: 0;
+  min-height: 60px;
 }
 
 .input-row input[type="submit"] {
@@ -181,6 +235,7 @@
   justify-content: center;
   flex-shrink: 0;
   transition: background-color 0.15s;
+  margin-top: 8px;
 }
 
 .input-row input[type="submit"]:hover {
@@ -201,6 +256,7 @@
   font-size: 18px;
   flex-shrink: 0;
   transition: background-color 0.15s, color 0.15s;
+  margin-top: 8px;
 }
 
 .file-upload-btn:hover {
@@ -208,7 +264,6 @@
   color: #000;
 }
 
-// ── Campaign created banner ───────────────────────────────────────
 .campaign-created-banner {
   display: flex;
   align-items: center;
@@ -218,47 +273,51 @@
   border-radius: 14px;
   padding: 14px 20px;
   margin: 0 0 16px;
-
-  .campaign-banner-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .campaign-banner-icon { font-size: 1.4rem; }
-
-  .campaign-banner-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #15803d;
-    margin: 0 0 2px;
-  }
-
-  .campaign-banner-title {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #1a1a18;
-    margin: 0;
-  }
-
-  .btn-campaign-link {
-    background: #1EDD88;
-    color: #000;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    padding: 8px 18px;
-    white-space: nowrap;
-    transition: background 0.15s;
-
-    &:hover { background: #17cc7e; color: #000; }
-  }
 }
 
-// ── Validate banner ───────────────────────────────────────────────
+.campaign-created-banner .campaign-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.campaign-created-banner .campaign-banner-icon {
+  font-size: 1.4rem;
+}
+
+.campaign-created-banner .campaign-banner-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #15803d;
+  margin: 0 0 2px;
+}
+
+.campaign-created-banner .campaign-banner-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a18;
+  margin: 0;
+}
+
+.campaign-created-banner .btn-campaign-link {
+  background: #1EDD88;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 8px 18px;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.campaign-created-banner .btn-campaign-link:hover {
+  background: #17cc7e;
+  color: #000;
+}
+
 .validate-banner {
   display: flex;
   align-items: center;
@@ -272,31 +331,37 @@
     0 1px 1px rgba(0,0,0,0.03),
     0 2px 6px rgba(0,0,0,0.04),
     0 8px 18px rgba(0,0,0,0.04);
-
-  .validate-banner-text {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #1a1a18;
-    margin: 0;
-  }
-
-  .btn-validate {
-    background: #1a1a18;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    padding: 10px 22px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-
-    &:hover { background: #1EDD88; color: #000; }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
-  }
 }
 
-// ── Strategy Proposal Card ─────────────────────────────────────────
+.validate-banner .validate-banner-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1a1a18;
+  margin: 0;
+}
+
+.validate-banner .btn-validate {
+  background: #1a1a18;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.validate-banner .btn-validate:hover {
+  background: #1EDD88;
+  color: #000;
+}
+
+.validate-banner .btn-validate:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .strategy-card {
   background: rgba(30,221,136,0.06);
   border: 1px solid rgba(30,221,136,0.2);
@@ -334,7 +399,6 @@
   margin: 0 0 20px 0;
 }
 
-// Scoped to override _campaigns.scss .strategy-section inside chat card
 .strategy-card .strategy-section {
   background: #ffffff;
   border: none;
@@ -408,26 +472,29 @@
   transition: background 0.15s, color 0.15s;
   position: relative;
   overflow: hidden;
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 55%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    transform: skewX(-18deg);
-    transition: left 0.55s ease;
-  }
-
-  &:hover {
-    background: #1EDD88;
-    color: #000;
-    &::after { left: 160%; }
-  }
 }
 
-// ── Loading backdrop ─────────────────────────────────────────────
+.strategy-validate-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.55s ease;
+}
+
+.strategy-validate-btn:hover {
+  background: #1EDD88;
+  color: #000;
+}
+
+.strategy-validate-btn:hover::after {
+  left: 160%;
+}
+
 .chat-loading-backdrop {
   position: absolute;
   inset: 0;
@@ -456,4 +523,22 @@
     opacity: 1;
     transform: scale(1.1);
   }
+}
+
+.chat-container.has-messages .chat-title {
+  display: none;
+}
+.bot-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  object-fit: contain;
+  align-self: flex-start;
+  margin-bottom: 40px;
+}
+
+.message-bot {
+  justify-content: flex-start;
+  align-items: flex-start;
 }

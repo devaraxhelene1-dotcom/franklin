@@ -2,15 +2,20 @@ import { Controller } from "@hotwired/stimulus"
 import { marked } from "marked"
 
 export default class extends Controller {
-  static targets = ["messages", "submit", "loading", "validationLoading", "fileInput", "filePreview", "fileName", "content"]
+  static targets = ["messages", "submit", "loading", "validationLoading", "fileInput", "filePreview", "fileName", "content", "typewriterBlack", "typewriterGreen"]
 
   connect() {
     this.renderMarkdown()
+    this.updateLayout()
     this.scrollToBottom()
+
+    // Lancer l'effet typewriter
+    this.typeWriterDual()
 
     // Observer les nouveaux messages ajoutés par Turbo Stream
     this.observer = new MutationObserver(() => {
       this.renderMarkdown()
+      this.updateLayout()
       this.scrollToBottom()
     })
     this.observer.observe(this.messagesTarget, { childList: true })
@@ -18,6 +23,37 @@ export default class extends Controller {
 
   disconnect() {
     if (this.observer) this.observer.disconnect()
+  }
+
+  typeWriterDual() {
+    const blackText = "Discutez avec "
+    const greenText = "Franklin"
+    let index = 0
+
+    const typeBlack = () => {
+      if (index < blackText.length) {
+        this.typewriterBlackTarget.textContent += blackText.charAt(index)
+        index++
+        setTimeout(typeBlack, 80)
+      } else {
+        index = 0
+        setTimeout(typeGreen, 80)
+      }
+    }
+
+    const typeGreen = () => {
+      if (index < greenText.length) {
+        this.typewriterGreenTarget.textContent += greenText.charAt(index)
+        index++
+        setTimeout(typeGreen, 80)
+      } else {
+        // Animation terminée, cacher le curseur
+        const title = this.typewriterBlackTarget.closest('.chat-title')
+        if (title) title.classList.add('typewriter-finished')
+      }
+    }
+
+    typeBlack()
   }
 
   autoResize(event) {
@@ -46,10 +82,25 @@ export default class extends Controller {
     this.messagesTarget.scrollTop = this.messagesTarget.scrollHeight
   }
 
+  updateLayout() {
+    const messagesContainer = this.messagesTarget
+    // Compter les messages (en excluant le loading indicator)
+    const messageCount = messagesContainer.querySelectorAll(".message:not(#loading-indicator)").length
+    const hasMessages = messageCount > 0
+
+    // Ajouter ou retirer la classe has-messages
+    this.element.classList.toggle("has-messages", hasMessages)
+  }
+
   submit() {
     this.submitTarget.disabled = true
     this.loadingTarget.classList.remove("d-none")
-    this.scrollToBottom()
+
+    // Mettre à jour le layout et scroller après un court délai
+    setTimeout(() => {
+      this.updateLayout()
+      this.scrollToBottom()
+    }, 100)
   }
 
   submitValidation() {

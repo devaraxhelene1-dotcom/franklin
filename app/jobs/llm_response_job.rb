@@ -59,7 +59,7 @@ class LlmResponseJob < ApplicationJob
       action: :replace,
       target: "loading-indicator",
       html: <<~HTML
-        <div class="message message-bot d-none" id="loading-indicator">
+        <div class="message message-bot d-none" id="loading-indicator" data-chat-target="loading">
           <div class="message-content bubble-bot">Franklin est en train d'écrire...</div>
         </div>
       HTML

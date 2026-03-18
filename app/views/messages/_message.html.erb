@@ -9,26 +9,26 @@
   %>
 
   <% if message.role == 'assistant' || message.role == 'bot' %>
-    <%= image_tag "Logo_Franklin.png", class: "bot-avatar", alt: "Franklin" %>
+    <%= image_tag "Franklin.png", class: "bot-avatar", alt: "Franklin" %>
   <% end %>
 
   <% if is_strategy %>
     <%= render partial: "chats/strategy_card", locals: { content: message.content, chat: message.chat } %>
   <% else %>
     <div class="message-content <%= message.role == 'user' ? 'bubble-user' : 'bubble-bot' %>">
-      <% display = message.content.gsub("[VALIDATE]", "").gsub(/\n\n--- Document (PDF )?fourni par l'utilisateur ---\n.*\z/m, "").strip %>
-      <% display = "" if display == "J'ai joint une image." && message.file.attached? %>
-      <%= simple_format(display) if display.present? %>
-
       <% if message.file.attached? %>
         <% if message.file.content_type&.start_with?("image/") %>
-          <%= image_tag rails_blob_path(message.file, disposition: "inline"), class: "chat-image mt-2" %>
+          <%= image_tag rails_blob_path(message.file, disposition: "inline"), class: "chat-image mb-2" %>
         <% else %>
-          <div class="file-chip mt-2">
+          <div class="file-chip mb-2">
             <i class="fa-solid fa-file-lines"></i><span><%= message.file.filename %></span>
           </div>
         <% end %>
       <% end %>
+
+      <% display = message.content.gsub("[VALIDATE]", "").gsub(/\n\n--- Document (PDF )?fourni par l'utilisateur ---\n.*\z/m, "").strip %>
+      <% display = "" if display == "J'ai joint une image." && message.file.attached? %>
+      <%= simple_format(display) if display.present? %>
     </div>
   <% end %>
 </div>

@@ -5,32 +5,47 @@
       <%= link_to "Nouvelle campagne", chats_path, data: { turbo_method: :post }, class: "btn btn-new-campaign" %>
     </div>
 
-    <div class="campaigns-list">
-      <% if @campaigns.any? %>
+    <% if @campaigns.any? %>
+      <div class="campaigns-grid">
         <% @campaigns.each do |campaign| %>
-          <%= link_to campaign_path(campaign), class: "campaign-item" do %>
-            <div class="campaign-info">
-              <span class="campaign-title"><%= campaign.title %></span>
-              <span class="campaign-status <%= campaign.status %>">
+          <% done_count = campaign.steps.done.count %>
+          <% total_count = campaign.steps.count %>
+          <% pct = total_count > 0 ? (done_count * 100.0 / total_count).round : 0 %>
+          <div class="campaign-card <%= 'campaign-card--completed' if campaign.status == 'completed' %>">
+            <%= link_to campaign_path(campaign), class: "campaign-card-link" do %>
+            <div class="campaign-card-top">
+              <span class="campaign-card-status <%= campaign.status %>">
                 <%= case campaign.status
                     when "draft" then "Brouillon"
                     when "active" then "Active"
                     when "completed" then "Terminée"
                     end %>
               </span>
+              <span class="campaign-card-date"><%= campaign.created_at.strftime("%d %b %Y") %></span>
             </div>
-            <div class="campaign-progress">
-              <span>Étape <%= campaign.steps.done.count %>/<%= campaign.steps.count %></span>
-              <span class="campaign-date"><%= campaign.created_at.strftime("%d/%m/%Y") %></span>
+            <h2 class="campaign-card-title"><%= campaign.title %></h2>
+            <div class="campaign-card-progress">
+              <div class="campaign-card-bar-wrap">
+                <div class="campaign-card-bar" style="width: <%= pct %>%"></div>
+              </div>
+              <span class="campaign-card-steps"><%= done_count %>/<%= total_count %> étapes</span>
             </div>
-            <span class="campaign-arrow">→</span>
-          <% end %>
+            <div class="campaign-card-footer">
+              <span class="campaign-card-cta">Voir la campagne <span class="campaign-card-arrow">→</span></span>
+              <% end %>
+              <%= button_to campaign_path(campaign), method: :delete, class: "campaign-card-delete", title: "Supprimer", data: { turbo_confirm: "Supprimer cette campagne ?" } do %>
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M1.75 3.5h10.5M5.25 3.5V2.33c0-.46.37-.83.83-.83h1.84c.46 0 .83.37.83.83V3.5m1.5 0v7.58c0 .7-.56 1.25-1.25 1.25H5c-.69 0-1.25-.56-1.25-1.25V3.5h6.5z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              <% end %>
+            </div>
+          </div>
         <% end %>
-      <% else %>
-        <div class="campaigns-empty">
-          <p>Aucune campagne pour l'instant.</p>
-        </div>
-      <% end %>
-    </div>
+      </div>
+    <% else %>
+      <div class="campaigns-empty">
+        <p>Aucune campagne pour l'instant.</p>
+      </div>
+    <% end %>
   </div>
 </div>

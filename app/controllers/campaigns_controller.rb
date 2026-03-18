@@ -1,14 +1,22 @@
 class CampaignsController < ApplicationController
-  before_action :set_campaign, only: [:show, :edit, :update]
+  before_action :set_campaign, only: [:show, :edit, :update, :destroy]
 
   def index
-    @campaigns = current_user.campaigns.where.not(status: :draft).includes(:steps).order(created_at: :desc)
+    @campaigns = current_user.campaigns
+      .where.not(status: :draft)
+      .includes(:steps)
+      .order(Arel.sql("CASE WHEN status = 'completed' THEN 1 ELSE 0 END, created_at DESC"))
   end
 
   def show
   end
 
   def edit
+  end
+
+  def destroy
+    @campaign.destroy
+    redirect_to campaigns_path, notice: "Campagne supprimée."
   end
 
   def update

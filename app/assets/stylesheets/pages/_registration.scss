@@ -1,13 +1,15 @@
 .btn-registration {
-  border-radius: 11px;
+  border-radius: var(--radius-sm);
   text-align: center;
-  background-color: #4ade80;
-  color: white;
+  background-color: $green;
+  color: #000;
   width: 100%;
   display: block;
+  font-weight: 700;
+  transition: background-color var(--transition);
 
   &:hover {
-    background-color: #35ba66;
-    color: white;
+    background-color: darken(#1EDD88, 8%);
+    color: #000;
   }
 }

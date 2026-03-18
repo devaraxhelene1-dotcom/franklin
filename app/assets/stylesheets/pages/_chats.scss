@@ -204,7 +204,7 @@
 
 .input-row {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 8px;
 }
 
@@ -216,8 +216,8 @@
   font-size: 16px;
   font-family: 'Inter', sans-serif;
   resize: none;
-  line-height: 60px; /* Même valeur que min-height */
-  padding: 0;
+  line-height: 1.5;
+  padding: 18px 0;
   min-height: 60px;
 }
 
@@ -235,7 +235,7 @@
   justify-content: center;
   flex-shrink: 0;
   transition: background-color 0.15s;
-  margin-top: 8px;
+  margin-bottom: 10px;
 }
 
 .input-row input[type="submit"]:hover {
@@ -256,7 +256,7 @@
   font-size: 18px;
   flex-shrink: 0;
   transition: background-color 0.15s, color 0.15s;
-  margin-top: 8px;
+  margin-bottom: 12px;
 }
 
 .file-upload-btn:hover {

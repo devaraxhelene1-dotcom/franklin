@@ -92,15 +92,15 @@ body {
   letter-spacing: 0.05em;
 }
 
-.kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
 .kpi-campaign {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 

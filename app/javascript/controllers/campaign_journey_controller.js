@@ -37,6 +37,7 @@ export default class extends Controller {
     canvas.innerHTML    = ""
     canvas.style.height = totalH + "px"
 
+    this._positions = positions
     canvas.appendChild(this.buildSvg(W, totalH, positions, steps))
     canvas.appendChild(this.buildNodes(positions, steps))
 
@@ -163,10 +164,10 @@ export default class extends Controller {
     requestAnimationFrame(() => {
       const len = animPath.getTotalLength()
       animPath.style.strokeDasharray  = len
-      animPath.style.strokeDashoffset = len
+      animPath.style.strokeDashoffset = 0
       requestAnimationFrame(() => {
         animPath.style.transition       = `stroke-dashoffset ${dur}s cubic-bezier(0.4, 0, 0.2, 1)`
-        animPath.style.strokeDashoffset = 0
+        animPath.style.strokeDashoffset = len
       })
     })
 
@@ -313,10 +314,24 @@ export default class extends Controller {
       <div class="preview-hint">Cliquer pour voir le détail</div>
     `
 
-    const canvasW = this.canvasTarget.offsetWidth
-    let left = pos.x + 36
-    let top  = pos.y - 30
-    if (left + 300 > canvasW) left = pos.x - 320
+    const canvasRect  = this.canvasTarget.getBoundingClientRect()
+    const cardW       = 300
+    const cardH       = this._previewEl.offsetHeight || 220
+    const margin      = 12
+
+    let left = canvasRect.left + pos.x + 36
+    let top  = canvasRect.top  + pos.y - 30
+
+    // Déborde à droite → passer à gauche du node
+    if (left + cardW > window.innerWidth - margin) {
+      left = canvasRect.left + pos.x - cardW - 12
+    }
+    // Déborde en bas → remonter la carte
+    if (top + cardH > window.innerHeight - margin) {
+      top = window.innerHeight - cardH - margin
+    }
+    // Déborde en haut
+    if (top < margin) top = margin
 
     this._previewEl.style.left = left + "px"
     this._previewEl.style.top  = top  + "px"
@@ -330,6 +345,7 @@ export default class extends Controller {
   // ─── Panel ───────────────────────────────────────────────────
 
   openPanel(step, stepIndex) {
+    this.hidePreview()
     this._activeStep      = step
     this._activeStepIndex = stepIndex
 
@@ -417,6 +433,7 @@ export default class extends Controller {
       </div>
     `
 
+    this.panelBodyTarget.scrollTop = 0
     this.panelTarget.classList.add("open")
     this.overlayTarget.classList.add("visible")
     document.body.classList.add("journey-panel-open")
@@ -514,6 +531,7 @@ export default class extends Controller {
       if (data.status === "done") {
         const nodeEl = this.canvasTarget.querySelector(`.journey-node[data-step-index="${stepIndex}"]`)
         nodeEl?.classList.add("completing")
+        this.addRipple(stepIndex)
         this.flashSegmentGreen(stepIndex)
 
         setTimeout(() => {
@@ -523,7 +541,13 @@ export default class extends Controller {
 
         setTimeout(() => this.rebuildWith(stepId, data.status), 650)
       } else {
-        this.rebuildWith(stepId, data.status)
+        const nodeEl = this.canvasTarget.querySelector(`.journey-node[data-step-index="${stepIndex}"]`)
+        if (nodeEl) {
+          nodeEl.style.transition = "opacity 0.2s ease, transform 0.2s ease"
+          nodeEl.style.opacity    = "0.4"
+          nodeEl.style.transform  = "translate(-50%, -50%) scale(0.9)"
+        }
+        setTimeout(() => this.rebuildWith(stepId, data.status), 220)
       }
     } catch {
       this.resetBtn(btn)
@@ -538,8 +562,49 @@ export default class extends Controller {
     this.syncProgressHeader()
   }
 
-  flashSegmentGreen(_stepIndex) {
-    // Gradient handles green coloring on rebuild
+  addRipple(stepIndex) {
+    const pos = this._positions?.[stepIndex]
+    if (!pos) return
+    const svg = this.canvasTarget.querySelector(".journey-svg")
+    if (!svg) return
+
+    const NS     = "http://www.w3.org/2000/svg"
+    const ripple = document.createElementNS(NS, "circle")
+    ripple.setAttribute("cx",           pos.x)
+    ripple.setAttribute("cy",           pos.y)
+    ripple.setAttribute("r",            "28")
+    ripple.setAttribute("fill",         "none")
+    ripple.setAttribute("stroke",       "#1EDD88")
+    ripple.setAttribute("stroke-width", "2.5")
+    ripple.classList.add("node-complete-ripple")
+    svg.appendChild(ripple)
+  }
+
+  flashSegmentGreen(stepIndex) {
+    const positions = this._positions
+    if (!positions || stepIndex >= positions.length - 1) return
+
+    const svg = this.canvasTarget.querySelector(".journey-svg")
+    if (!svg) return
+
+    const NS    = "http://www.w3.org/2000/svg"
+    const a     = positions[stepIndex]
+    const b     = positions[stepIndex + 1]
+    const d     = this.segPath(a, b, stepIndex + 1)
+
+    const flash = document.createElementNS(NS, "path")
+    flash.setAttribute("d",              d)
+    flash.setAttribute("fill",           "none")
+    flash.setAttribute("stroke",         "#1EDD88")
+    flash.setAttribute("stroke-width",   "3.5")
+    flash.setAttribute("stroke-linecap", "round")
+    flash.style.opacity    = "0"
+    flash.style.transition = "opacity 0.18s ease"
+    svg.appendChild(flash)
+
+    requestAnimationFrame(() => {
+      flash.style.opacity = "1"
+    })
   }
 
   syncProgressHeader() {

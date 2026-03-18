@@ -1,6 +1,6 @@
 .calendar-page {
-  padding: 40px 20px;
-  max-width: 940px;
+  padding: 36px 24px 48px;
+  max-width: 1100px;
   margin: 0 auto;
   min-height: 100vh;
 }
@@ -10,26 +10,20 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 24px;
-
-  h1 {
-    font-size: 28px;
-    font-weight: 800;
-    color: #333;
-    margin: 0;
-  }
 }
 
-.calendar-month-label {
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #999;
-  margin: 4px 0 0 0;
+.calendar-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  line-height: 1.1;
 }
 
 .calendar-subtitle {
-  font-size: 0.85rem;
-  color: #888;
-  margin-bottom: 24px;
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
   font-weight: 400;
 }
 

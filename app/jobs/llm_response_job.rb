@@ -60,7 +60,7 @@ class LlmResponseJob < ApplicationJob
       target: "loading-indicator",
       html: <<~HTML
         <div class="message message-bot d-none" id="loading-indicator" data-chat-target="loading">
-          <div class="message-content bubble-bot">Franklin est en train d'écrire...</div>
+          <img src="#{ActionController::Base.helpers.asset_path('Logo_Franklin.png')}" class="loading-logo-inline" alt="Franklin écrit..." />
         </div>
       HTML
     )

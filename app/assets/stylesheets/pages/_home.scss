@@ -174,14 +174,13 @@ body { background-color: $lp-1; }
 .lp-logos .photo-scroll-container { padding: 0; }
 
 .lp-logos .photo-scroll img {
-  background: #ffffff;
   border-radius: 10px;
   padding: 12px 20px;
   height: 80px;
   object-fit: contain;
-  filter: none;
+  filter: brightness(1.3) contrast(1.15);
   opacity: 1;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
 
   &:hover {
     transform: scale(1.06);

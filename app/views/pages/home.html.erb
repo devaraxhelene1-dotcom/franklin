@@ -1,70 +1,227 @@
-<div class="container">
+<div data-controller="landing">
 
-  <div class="card_header row justify-content-center">
-    <div class="mt-5 col-12 col-lg-7 text-center">
-      <h1>Lancez votre Saas avec </h1>
-      <h1><span class="home-gradient"> une stratégie marketing IA </span></h1>
-        <p>Franklin aide les SaaS en phase de lancement à créer, automatiser et optimiser
-          leur stratégie marketing. De l'analyse à l'exécution, pilotez vos campagnes avec intelligence.</p>
-          <div class="text-center mt-5">
-          <%= button_to "Lancer Franklin", chats_path, class: "btn home-btn" %>
-          </div>
+<%# ── HERO ─────────────────────────────────────────────────────────── %>
+<section class="lp-hero">
+  <div class="lp-orb lp-orb--1"></div>
+  <div class="lp-orb lp-orb--2"></div>
+  <div class="lp-orb lp-orb--3"></div>
+  <div class="lp-hero__inner">
+    <div class="lp-hero__badge">
+      <i class="fa-solid fa-sparkles"></i>
+      Propulsé par GPT-4.1
+    </div>
+    <h1 class="lp-hero__h1">
+      <span>Lancez votre SaaS avec</span>
+      <span class="lp-hero__gradient" data-typing>une stratégie marketing IA</span>
+    </h1>
+    <p class="lp-hero__sub">
+      Franklin analyse votre produit, génère vos ICP, canaux et angles marketing,
+      puis crée un plan d'action jour par jour. De la stratégie à l'exécution, en minutes.
+    </p>
+    <div class="lp-hero__cta">
+      <%= button_to "Générer ma stratégie gratuitement →", chats_path, class: "lp-btn lp-btn--primary" %>
+      <span class="lp-hero__hint">Prêt en 1 minute · Aucune carte requise</span>
     </div>
   </div>
+</section>
 
-  <div class="cards">
-    <div class="card-category">
-      <i class="icon-home fa-sharp fa-solid fa-bullseye"></i>
-      <h2>Stratégie personnalisée</h2>
-      <p>Créez des stratégies marketing adaptées à votre SaaS avec des KPI ciblés et
-        des objectifs mesurables.
-      </p>
-    </div>
 
-    <div class="card-category">
-      <i class="icon-home fa-solid fa-bolt"></i>
-      <h2>Automation intelligente</h2>
-      <p>Créez des stratégies marketing adaptées à votre SaaS avec des KPI ciblés et
-     des objectifs mesurables.</p>
-    </div>
-
-    <div class="card-category">
-      <i class="icon-home fa-solid fa-chart-simple"></i>
-      <h2>Analytics en temps réel</h2>
-      <p>Suivez vos performances avec un dashboard complet : ROI, conversions, leads et plus.</p>
+<%# ── LOGOS ────────────────────────────────────────────────────────── %>
+<section class="lp-logos">
+  <p class="lp-logos__label">Ils font confiance à Franklin</p>
+  <div class="photo-scroll-container">
+    <div class="photo-scroll">
+      <%= image_tag "pokeplant.png",  alt: "Pokeplant"  %>
+      <%= image_tag "opendevis.png",  alt: "OpenDevis"  %>
+      <%= image_tag "ludex.png",      alt: "Ludex"      %>
+      <%= image_tag "ideal.png",      alt: "Ideal"      %>
+      <%= image_tag "pokeplant.png",  alt: "Pokeplant"  %>
+      <%= image_tag "opendevis.png",  alt: "OpenDevis"  %>
+      <%= image_tag "ludex.png",      alt: "Ludex"      %>
+      <%= image_tag "ideal.png",      alt: "Ideal"      %>
     </div>
   </div>
+</section>
 
-
-<div class="span12 widget-span widget-type-cell cell_16727496178665-background-layers cell_16727496178665-background-color dnd-column">
-
-</div>
-
-
-<div class="photo-scroll-container mt-4">
-  <div class="photo-scroll">
-    <%= image_tag "pokeplant.png", alt: "Client 1" %>
-    <%= image_tag "opendevis.png", alt: "Client 2" %>
-    <%= image_tag "ludex.png", alt: "Client 3" %>
-    <%= image_tag "ideal.png", alt: "Client 4" %>
-
-   <%= image_tag "pokeplant.png", alt: "Client 1" %>
-    <%= image_tag "opendevis.png", alt: "Client 2" %>
-    <%= image_tag "ludex.png", alt: "Client 3" %>
-        <%= image_tag "ideal.png", alt: "Client 4" %>
-
+<%# ── FEATURES ─────────────────────────────────────────────────────── %>
+<section class="lp-features">
+  <div class="lp-section-header reveal">
+    <h2 class="lp-section-title">Tout ce dont vous avez besoin</h2>
+    <p class="lp-section-sub">Une seule plateforme pour passer de la doc produit à la campagne active</p>
   </div>
-</div>
+  <div class="lp-cards reveal-stagger">
+    <div class="lp-card reveal">
+      <div class="lp-card__icon"><i class="fa-solid fa-bullseye"></i></div>
+      <h3>Stratégie personnalisée</h3>
+      <p>ICP, canaux et angles générés sur mesure pour votre SaaS. Pas de template générique.</p>
+    </div>
+    <div class="lp-card reveal">
+      <div class="lp-card__icon"><i class="fa-solid fa-bolt"></i></div>
+      <h3>Automation intelligente</h3>
+      <p>Séquences outbound, contenus multicanaux et plan d'action créés en quelques minutes.</p>
+    </div>
+    <div class="lp-card reveal">
+      <div class="lp-card__icon"><i class="fa-solid fa-chart-simple"></i></div>
+      <h3>Pilotage en temps réel</h3>
+      <p>Dashboard complet pour suivre vos campagnes, avancer étape par étape et mesurer vos résultats.</p>
+    </div>
+  </div>
+</section>
 
-<div class="card-dash mb-5">
-  <%= image_tag "Dashboard.png", alt: "Dashboard Screen" %>
-</div>
+<%# ── HOW IT WORKS ─────────────────────────────────────────────────── %>
+<section class="lp-how">
+  <div class="lp-section-header reveal">
+    <h2 class="lp-section-title">Comment ça marche</h2>
+    <p class="lp-section-sub">De votre doc produit à une campagne complète en 3 étapes</p>
+  </div>
 
-    <div class="card-banner mb-5">
-      <h2>Prêt à transformer votre marketing ?</h2>
-      <p>Rejoignez les SaaS qui automatisent leur <br> croissance avec Franklin</p>
-      <div class="text-center mt-2">
-        <%= button_to "Commencer maintenant", chats_path, class: "home-btn" %>
+  <div class="lp-steps">
+    <div class="lp-step reveal">
+      <div class="lp-step__left">
+        <div class="lp-step__num">01</div>
+        <div class="lp-step__line"></div>
+      </div>
+      <div class="lp-step__body">
+        <div class="lp-step__icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+        <div class="lp-step__text">
+          <h3>Uploadez votre doc produit</h3>
+          <p>Partagez votre pitch, one-pager ou landing page. Franklin lit, analyse et pose les bonnes questions pour comprendre votre marché.</p>
+        </div>
       </div>
     </div>
+
+    <div class="lp-step reveal">
+      <div class="lp-step__left">
+        <div class="lp-step__num">02</div>
+        <div class="lp-step__line"></div>
+      </div>
+      <div class="lp-step__body">
+        <div class="lp-step__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="lp-step__text">
+          <h3>Franklin génère votre stratégie</h3>
+          <p>ICP, canaux prioritaires et angles de message générés par l'IA. Vous validez ou challengez — rien n'est créé sans votre accord.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lp-step lp-step--last reveal">
+      <div class="lp-step__left">
+        <div class="lp-step__num">03</div>
+      </div>
+      <div class="lp-step__body">
+        <div class="lp-step__icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <div class="lp-step__text">
+          <h3>Votre plan jour par jour</h3>
+          <p>Une campagne complète avec chaque action détaillée : contenu prêt à poster, canal, timing et instructions d'exécution.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ── SCREENSHOT + LIVRABLES ───────────────────────────────────────── %>
+<section class="lp-closing">
+  <div class="lp-closing__inner">
+    <%= image_tag "Dashboard.png", alt: "Dashboard Franklin", class: "lp-screenshot__img reveal", loading: "lazy" %>
+
+    <div class="lp-closing__deliverables">
+      <p class="lp-closing__eyebrow">Ce que vous obtenez</p>
+      <h2>Tout ce qu'une agence marketing<br>vous facturerait des milliers d'euros.</h2>
+      <ul class="lp-checklist reveal-stagger">
+        <li class="reveal"><i class="fa-solid fa-check"></i><div><strong>ICP détaillés</strong> Persona, rôle, douleurs et déclencheurs d'achat pour chaque profil cible</div></li>
+        <li class="reveal"><i class="fa-solid fa-check"></i><div><strong>Canaux prioritaires</strong> LinkedIn, email, communautés — sélectionnés selon votre marché</div></li>
+        <li class="reveal"><i class="fa-solid fa-check"></i><div><strong>Angles de message</strong> Les accroches qui parlent à vos prospects, pas des généralités</div></li>
+        <li class="reveal"><i class="fa-solid fa-check"></i><div><strong>Plan 14 jours</strong> Chaque action planifiée jour par jour avec canal et timing</div></li>
+        <li class="reveal"><i class="fa-solid fa-check"></i><div><strong>Contenus rédigés</strong> Posts, emails et messages prêts à copier-coller</div></li>
+        <li class="reveal"><i class="fa-solid fa-check"></i><div><strong>Instructions d'exécution</strong> Quoi faire exactement à chaque étape, sans ambiguïté</div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<%# ── FAQ ─────────────────────────────────────────────────────────── %>
+<section class="lp-faq">
+  <div class="lp-faq__inner">
+    <div class="lp-section-header reveal">
+      <h2 class="lp-section-title">Questions fréquentes</h2>
+      <p class="lp-section-sub">Tout ce que vous voulez savoir avant de vous lancer</p>
+    </div>
+
+    <div class="lp-accordion reveal-stagger" id="faqAccordion">
+
+      <div class="lp-accordion__item reveal">
+        <button class="lp-accordion__trigger" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true">
+          Ça marche pour quel type de SaaS ?
+          <i class="fa-solid fa-chevron-down lp-accordion__icon"></i>
+        </button>
+        <div id="faq1" class="collapse show" data-bs-parent="#faqAccordion">
+          <div class="lp-accordion__body">
+            Franklin est conçu pour les SaaS B2B en phase de lancement ou de croissance early-stage. Il fonctionne particulièrement bien pour les outils métier, les plateformes de productivité et les logiciels verticaux. Si vous avez un produit clair et une cible définie, Franklin peut générer une stratégie en quelques minutes.
+          </div>
+        </div>
+      </div>
+
+      <div class="lp-accordion__item reveal">
+        <button class="lp-accordion__trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false">
+          En combien de temps je vois des résultats ?
+          <i class="fa-solid fa-chevron-down lp-accordion__icon"></i>
+        </button>
+        <div id="faq2" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="lp-accordion__body">
+            La stratégie est générée en moins de 1 minute. Les premiers retours terrain (réponses LinkedIn, ouvertures d'emails) arrivent généralement en 48-72h selon les canaux choisis. L'essentiel est d'exécuter les actions du plan de manière régulière.
+          </div>
+        </div>
+      </div>
+
+      <div class="lp-accordion__item reveal">
+        <button class="lp-accordion__trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false">
+          Je dois être expert en marketing pour utiliser Franklin ?
+          <i class="fa-solid fa-chevron-down lp-accordion__icon"></i>
+        </button>
+        <div id="faq3" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="lp-accordion__body">
+            Non. Franklin est fait pour les fondateurs qui n'ont pas de background marketing. Vous apportez la connaissance de votre produit — Franklin apporte l'expertise marketing B2B. Vous validez, challengez, et ajustez. Aucune compétence technique requise.
+          </div>
+        </div>
+      </div>
+
+      <div class="lp-accordion__item reveal">
+        <button class="lp-accordion__trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false">
+          Mes données sont-elles sécurisées ?
+          <i class="fa-solid fa-chevron-down lp-accordion__icon"></i>
+        </button>
+        <div id="faq4" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="lp-accordion__body">
+            Vos documents et données produit sont utilisés uniquement pour générer votre stratégie. Ils ne sont ni partagés, ni utilisés pour entraîner des modèles tiers. Chaque compte est isolé et vos campagnes restent privées.
+          </div>
+        </div>
+      </div>
+
+      <div class="lp-accordion__item reveal">
+        <button class="lp-accordion__trigger collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false">
+          C'est vraiment gratuit ?
+          <i class="fa-solid fa-chevron-down lp-accordion__icon"></i>
+        </button>
+        <div id="faq5" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="lp-accordion__body">
+            Oui. Aucune carte bancaire requise pour démarrer. Vous pouvez générer votre première campagne complète gratuitement et voir exactement ce que Franklin produit avant de prendre la moindre décision.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<%# ── FINAL PUSH ───────────────────────────────────────────────────── %>
+<section class="lp-final">
+  <h2 class="lp-final__headline">
+    Votre stratégie marketing,<br>
+    <span class="lp-hero__gradient">en 1 minute chrono.</span>
+  </h2>
+  <p class="lp-final__sub">Pas de réunion. Pas d'agence. Pas d'attente.<br>Juste Franklin et votre doc produit.</p>
+  <%= button_to "Générer ma stratégie gratuitement", chats_path, class: "lp-btn lp-btn--primary lp-btn--pulse" %>
+</section>
+
 </div>

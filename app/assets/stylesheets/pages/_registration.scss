@@ -1,15 +1,1 @@
-.btn-registration {
-  border-radius: var(--radius-sm);
-  text-align: center;
-  background-color: $green;
-  color: #000;
-  width: 100%;
-  display: block;
-  font-weight: 700;
-  transition: background-color var(--transition);
-
-  &:hover {
-    background-color: darken(#1EDD88, 8%);
-    color: #000;
-  }
-}
+// Styles moved to _login.scss

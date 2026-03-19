@@ -3,18 +3,20 @@ $sidebar-collapsed-width: 60px;
 
 .sidebar {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 8px;
+  left: 8px;
   width: $sidebar-width;
-  height: 100vh;
+  height: calc(100vh - 16px);
   padding: 10px 0;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   z-index: 1000;
   transition: width 0.3s ease;
-  border-right: solid 1px rgb(82, 82, 82);
+  border-right: solid 1px rgba(255, 255, 255, 0.07);
   overflow: hidden;
-  background-color: #333;
+  background-color: #0d0d0b;
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(30, 221, 136, 0.32) 0%, transparent 65%);
 }
 
 // --- Header (logo left, toggle right) ---
@@ -101,7 +103,7 @@ $sidebar-collapsed-width: 60px;
 .sidebar-footer {
   margin-top: auto;
   padding: 12px 10px;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -224,7 +226,7 @@ $sidebar-collapsed-width: 60px;
   // Footer collapsed : avatar only
   .sidebar-footer {
     padding: 12px 5px;
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
     display: flex;
   }
 
@@ -253,7 +255,7 @@ $sidebar-collapsed-width: 60px;
 
 // --- Main content offset (only when sidebar is present) ---
 .main-content {
-  margin-left: $sidebar-width;
+  margin-left: calc(#{$sidebar-width} + 16px);
   transition: margin-left 0.3s ease;
 }
 

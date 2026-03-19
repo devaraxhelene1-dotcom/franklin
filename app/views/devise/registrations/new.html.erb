@@ -1,36 +1,43 @@
-<div class="card carte shadow-sm mx-auto mt-5" style="max-width:420px">
-  <div class="card-body p-4">
-    <h2 class="fw-bold mb-1">Créer un compte</h2>
-<%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= f.error_notification %>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card__logo">
+      <%= link_to root_path do %>
+        <%= image_tag "Logo_Franklin.png", style: "height: 44px; width: auto;" %>
+      <% end %>
+    </div>
 
-  <div class="form-inputs">
-    <%= f.input :username,
-                required: true,
-                autofocus: true,
-                label: "Nom d'utilisateur",
-                input_html: { autocomplete: "username" } %>
-    <%= f.input :email,
-                required: true,
-                autofocus: true,
-                label: "Adresse e-mail",
-                input_html: { autocomplete: "email" }%>
-    <%= f.input :password,
-                required: true,
-                label: "Mot de passe",
-                hint: ("#{@minimum_password_length} caractères minimum" if @minimum_password_length),
-                input_html: { autocomplete: "new-password" } %>
-    <%= f.input :password_confirmation,
-                required: true,
-                label: "Confirmation du mot de passe",
-                input_html: { autocomplete: "new-password" } %>
-  </div>
+    <h2 class="auth-card__title">Créer un compte</h2>
+    <p class="auth-card__sub">Lancez votre stratégie en 1 minute</p>
 
-  <div class="form-actions">
-     <%= f.button :submit, "S'inscrire", class: "btn-registration" %>
-  </div>
-<% end %>
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= f.error_notification %>
 
-<%= render "devise/shared/links" %>
+      <%= f.input :username,
+            required: true,
+            autofocus: true,
+            label: "Nom d'utilisateur",
+            input_html: { autocomplete: "username", class: "auth-input" },
+            wrapper_html: { class: "auth-field" } %>
+      <%= f.input :email,
+            required: true,
+            label: "Adresse e-mail",
+            input_html: { autocomplete: "email", class: "auth-input" },
+            wrapper_html: { class: "auth-field" } %>
+      <%= f.input :password,
+            required: true,
+            label: "Mot de passe",
+            hint: ("#{@minimum_password_length} caractères minimum" if @minimum_password_length),
+            input_html: { autocomplete: "new-password", class: "auth-input" },
+            wrapper_html: { class: "auth-field" } %>
+      <%= f.input :password_confirmation,
+            required: true,
+            label: "Confirmation du mot de passe",
+            input_html: { autocomplete: "new-password", class: "auth-input" },
+            wrapper_html: { class: "auth-field" } %>
+
+      <%= f.button :submit, "Créer mon compte →", class: "lp-btn lp-btn--primary auth-submit" %>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
   </div>
 </div>

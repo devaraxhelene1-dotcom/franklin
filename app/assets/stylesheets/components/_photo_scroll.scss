@@ -12,8 +12,9 @@
 
 .photo-scroll {
   display: flex;
-  gap: 50px;
-  animation: scroll 30s linear infinite;
+  width: max-content;
+  will-change: transform;
+  animation: scroll 40s linear infinite;
 
   img {
     height: 80px;
@@ -21,11 +22,10 @@
     object-fit: contain;
     flex-shrink: 0;
     opacity: 0.5;
-    transition: all 0.3s ease;
+    margin-right: 64px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 
     &:hover {
-      filter: grayscale(0%);
-
       transform: scale(1.1);
     }
   }

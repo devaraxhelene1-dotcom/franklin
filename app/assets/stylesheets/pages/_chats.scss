@@ -506,6 +506,14 @@
   left: 160%;
 }
 
+.loading-logo-inline {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  animation: pulse-logo 1.5s ease-in-out infinite;
+  margin-left: -25px;
+}
+
 .chat-loading-backdrop {
   position: fixed;
   inset: 0;

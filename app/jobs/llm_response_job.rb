@@ -34,10 +34,10 @@ class LlmResponseJob < ApplicationJob
     generate_steps_tool = GenerateCampaignSteps.new
     generate_steps_tool.chat = @chat
 
-    # generate_image_tool = GenerateCampaignImage.new
-    # generate_image_tool.chat = @chat
+    generate_image_tool = GenerateCampaignImage.new
+    generate_image_tool.chat = @chat
 
-    llm_chat.with_tools(create_campaign_tool, generate_steps_tool)
+    llm_chat.with_tools(create_campaign_tool, generate_steps_tool, generate_image_tool)
 
     previous_messages = @chat.messages.order(:created_at).where.not(id: @message.id)
     previous_messages.each do |msg|

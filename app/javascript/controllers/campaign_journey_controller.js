@@ -81,7 +81,7 @@ export default class extends Controller {
     let lastDoneIdx = -1
     steps.forEach((s, i) => { if (s.status === "done") lastDoneIdx = i })
     const gradStop = positions.length > 1 && lastDoneIdx >= 0
-      ? Math.min(1, (lastDoneIdx + 0.5) / (positions.length - 1))
+      ? Math.min(1, lastDoneIdx / (positions.length - 1))
       : 0
 
     const defs = document.createElementNS(NS, "defs")

@@ -3,12 +3,12 @@ $sidebar-collapsed-width: 60px;
 
 .sidebar {
   position: fixed;
-  top: 8px;
-  left: 8px;
+  top: 0;
+  left: 0;
   width: $sidebar-width;
-  height: calc(100vh - 16px);
+  height: 100vh;
   padding: 10px 0;
-  border-radius: 16px;
+  border-radius: 0 16px 16px 0;
   display: flex;
   flex-direction: column;
   z-index: 1000;
@@ -255,7 +255,7 @@ $sidebar-collapsed-width: 60px;
 
 // --- Main content offset (only when sidebar is present) ---
 .main-content {
-  margin-left: calc(#{$sidebar-width} + 16px);
+  margin-left: $sidebar-width;
   transition: margin-left 0.3s ease;
 }
 

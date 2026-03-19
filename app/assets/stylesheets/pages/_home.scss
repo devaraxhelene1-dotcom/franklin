@@ -158,7 +158,7 @@ body { background-color: $lp-1; }
 // ── [2] LOGOS ────────────────────────────────────────────────────────
 .lp-logos {
   background: linear-gradient(to bottom, $lp-2 calc(100% - 120px), $lp-3 100%);
-  padding: 48px 0;
+  padding: 0 0 0 48px;
   text-align: center;
 
   &__label {
@@ -471,7 +471,7 @@ body { background-color: $lp-1; }
 
 // ── FAQ ───────────────────────────────────────────────────────────────
 .lp-faq {
-  background: linear-gradient(to bottom, $lp-4 0%, #616160 calc(100% - 200px), $lp-6 100%);
+  background: linear-gradient(to top, $lp-5 0%, $lp-4 100%);
   padding: 64px 24px;
 
   &__inner {

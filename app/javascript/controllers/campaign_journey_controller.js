@@ -261,7 +261,7 @@ export default class extends Controller {
           <path d="M3 8L6.5 11.5L13 4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>`
       } else {
-        circle.innerHTML = `<span class="node-day-num">${step.day}</span>`
+        circle.innerHTML = `<span class="node-day-num">${i + 1}</span>`
       }
 
       node.appendChild(circle)

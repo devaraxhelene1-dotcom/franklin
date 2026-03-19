@@ -949,7 +949,7 @@ body.journey-panel-open { overflow: hidden; }
   &:disabled { opacity: 0.5; cursor: default; transform: none; }
 
   &.pending { background: #1EDD88; color: #000; }
-  &.done    { background: #f0f0ee; color: #555; border: 1px solid #e0e0e0; }
+  &.done    { background: #1EDD88; color: #000; }
 }
 
 @media (max-width: 600px) {
